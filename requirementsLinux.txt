@@ -1,8 +1,7 @@
-aiogram==2.21
-ujson==5.4.0
+aiogram==2.25
+ujson==5.7.0
 cchardet==2.1.7
 aiodns==3.0.0
-aiohttp[speedups]==3.8.1
-Numberize==1.0.2
-requests==2.26.0
-uvloop==0.16.0
+aiohttp[speedups]==3.8.4
+requests==2.29.0
+uvloop==0.17.0
