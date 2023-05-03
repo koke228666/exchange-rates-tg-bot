@@ -40,6 +40,9 @@ def SpecialSplit(MesTxt: str) -> list:
     while MesTxt.find("  ") != -1: # Removing double spaces
         MesTxt = MesTxt.replace("  ", " ")
 
+    while MesTxt.find("'") != -1: # Removing apostrophes
+        MesTxt = MesTxt.replace("'", "")
+
     for i in range(len(MesTxt) - 2):
         if MesTxt[i].isdigit() and MesTxt[i + 2].isdigit() and MesTxt[i + 1] == ",":
             MesTxt = MesTxt[0:i + 1] + "." + MesTxt[i + 2:len(MesTxt)] # comma to dot

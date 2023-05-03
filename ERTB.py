@@ -418,7 +418,7 @@ async def MainVoid(message: types.Message):
     
     result = AnswerText(NumArray, chatID, chatType)
     try:
-        await message.reply(result, parse_mode = "HTML", reply_markup = CustomMarkup.DeleteMarkup(chatID, chatType))
+        await message.reply(result, parse_mode = "HTML", disable_web_page_preview = True, reply_markup = CustomMarkup.DeleteMarkup(chatID, chatType))
     except:
         Print("Cannot send message", "E")
         Print("Username: " + str(message.from_user.username) + " | User ID: " + str(message.from_user.id) + " | First name: " + str(message.from_user.first_name) + " | Last name: " + str(message.from_user.last_name), "E")
