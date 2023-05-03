@@ -5,7 +5,6 @@ from Token import botToken, botUsername
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types.message import ContentType
 from aiogram.types.inline_keyboard import InlineKeyboardMarkup, InlineKeyboardButton
-import numberize
 from threading import Thread
 import sys
 from datetime import datetime
@@ -18,21 +17,17 @@ from NewPrint import Print, EnableLogging, DisableLogging, PrintMainInfo
 from SkipUpdates import EnableUpdates, DisableUpdates, IsUpdate
 from GetExchangeRates import SheduleUpdate, SheduleCryptoUpdate 
 from BlackList import IsUserInBlackList, LoadBlackList, RemoveFromBlackList, AddToBlackList
-import Processing
-from Processing import AnswerText, LoadCurrencies, LoadCrypto, LoadDictionaries, LoadFlags, SearchValuesAndCurrencies, SpecialSplit, TextToDigit, RemoveLinksAndWords
+from Processing import AnswerText, LoadCurrencies, LoadCrypto, LoadDictionaries, LoadFlags, SearchValuesAndCurrencies, SpecialSplit, RemoveLinksAndWords
 import TextHelper as CustomMarkup
 from TextHelper import LoadTexts, GetText
 import ListsCache
 import StopDDoS
+from w2n import ConvertWordsToNumber
 
 # Main variables
 bot = Bot(token=botToken)
 dp = Dispatcher(bot)
 IsStartedCount = False
-
-numberizerUA = numberize.Numberizer(lang='uk')
-numberizerRU = numberize.Numberizer(lang='ru')
-numberizerEN = numberize.Numberizer(lang='en')
 
 # Public commands
 @dp.message_handler(commands=['about'])  # analog about and source
@@ -354,25 +349,22 @@ async def StartVoid(message: types.Message):
     if chatType == "private":
         await message.reply(GetText(chatID, "main_settings_menu", chatType), reply_markup = CustomMarkup.SettingsMarkup(chatID, chatType))
 
+def IsFromBot(message: types.Message):
+    try:
+        if message.forward_from.username == botUsername:
+            return True
+    except:
+        return False
+
 @dp.message_handler(content_types=ContentType.ANY)
 async def MainVoid(message: types.Message):
     fromUserId = message.from_user.id
     chatID = message.chat.id
     chatType = message.chat.type
- 
-    def w2n(MesString: str, lang: str):
-        if lang == "ua":
-            return numberizerUA.replace_numerals(MesString)
-        elif lang == "ru":
-            return numberizerRU.replace_numerals(MesString)
-        else:
-            return numberizerEN.replace_numerals(MesString)
 
-    try:
-        if message.forward_from.username == botUsername:
-            return
-    except:
-        pass
+    # Checking if the message is from the bot
+    if IsFromBot(message):
+        return
 
     # Checking if a user is on the blacklist
     if IsUserInBlackList(fromUserId, chatID):
@@ -391,18 +383,11 @@ async def MainVoid(message: types.Message):
     # Checking the chat in the database
     IsChatExist(chatID, chatType)
 
-    # word to num
+    # preparing a message
     OriginalMessageText = MessageText
     MessageText = MessageText.lower()
     MessageText = RemoveLinksAndWords(MessageText)
-    MessageText = w2n(MessageText, 'ru')
-    MessageText = w2n(MessageText, 'uk')
-    MessageText = w2n(MessageText, 'en')
     Print(MessageText, "L")
-
-    # Check digit
-    if not any(map(str.isdigit, MessageText)):
-        return
 
     # Preparing a message for searching currencies
     try:
@@ -412,8 +397,8 @@ async def MainVoid(message: types.Message):
         return
     Print(str(TextArray), "L")
 
-    # '5kk USD' to '5000000 USD'
-    TextArray = TextToDigit(TextArray)
+    # Word to number
+    TextArray = ConvertWordsToNumber(TextArray)
     Print(str(TextArray), "L")
     
     # Searching Currencies
@@ -611,6 +596,7 @@ def LoadDataForBot():
     LoadFlags()
     LoadDictionaries()
     LoadTexts()
+    ListsCache.SetTokensForW2N()
 
 def RegularBackup():
     while True:

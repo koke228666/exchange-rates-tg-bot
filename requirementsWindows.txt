@@ -4,3 +4,4 @@ cchardet==2.1.7
 aiodns==3.0.0
 aiohttp[speedups]==3.8.4
 requests==2.29.0
+pandas==2.0.1
