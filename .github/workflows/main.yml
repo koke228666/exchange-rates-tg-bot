@@ -32,4 +32,4 @@ jobs:
           script: |
             screen -X -S ERTB quit
             cd bot/exchange-rates-tg-bot-master/
-            screen -S ERTB -d -m python3.7 ERTB.py -l off
+            screen -S ERTB -d -m python3 ERTB.py -l off
