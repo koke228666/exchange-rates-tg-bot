@@ -1,8 +1,12 @@
+import pandas as pd
+
 ListOfCur = []
 ListOfCrypto = []
 
 DictOfFlags = {}
 EmptyDictOfFlags = {}
+
+TokensForW2N = ""
 
 def SetEmptyDictOfFlags(newEmptyDictOfFlags: dict):
     global EmptyDictOfFlags
@@ -35,3 +39,11 @@ def SetListOfCur(newListOfCur: list):
 def GetListOfCur() -> list:
     global ListOfCur
     return ListOfCur
+
+def SetTokensForW2N():
+    global TokensForW2N
+    TokensForW2N = pd.read_csv('Dictionaries/w2n_tokens.csv', sep=';')
+
+def GetTokensForW2N() -> pd.DataFrame:
+    global TokensForW2N
+    return TokensForW2N

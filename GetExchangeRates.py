@@ -12,6 +12,8 @@ cryptoList = ["ADA", "BCH", "BNB", "BTC", "DASH", "DOGE", "ETC", "ETH", "LTC", "
 exchangeRates = {}
 cryptoRates = []
 
+headers={'Cache-Control': 'no-cache'}
+
 def SheduleUpdate():
     global exchangeRates
     while True:
@@ -29,7 +31,7 @@ def UpdateExchangeRates() -> dict:
     Print("Updating of exchange rates has started.", "S")
     try:
         url = "http://data.fixer.io/api/latest?access_key=" + apiKey
-        response = requests.get(url)
+        response = requests.get(url,headers=headers)
         exchangeRates = response.json()['rates']
         exchangeRates['TMT'] = exchangeRates['RUB']/2
         UpdateExchangeRatesDB(exchangeRates.copy())
@@ -40,12 +42,13 @@ def UpdateExchangeRates() -> dict:
         exchangeRates = GetExchangeRates()
     return exchangeRates.copy()
 
+
 def UpdateCryptoRates() -> dict:
     global cryptoRates
     Print("Updating of crypto rates has started.", "S")
     try:
         url = "https://api.binance.com/api/v3/ticker/price"
-        response = requests.get(url)
+        response = requests.get(url,headers=headers)
         cryptoRates = {}
         for pair in response.json():
             if pair['symbol'].find("USDT") != -1 and any(pair['symbol'][:-4] == s for s in cryptoList):
@@ -56,7 +59,7 @@ def UpdateCryptoRates() -> dict:
         Print("Updating CR failed. Trying different endpoint", "E")
         try:
             url = "https://api1.binance.com/api/v3/ticker/price"
-            response = requests.get(url)
+            response = requests.get(url, headers=headers)
             cryptoRates = {}
             for pair in response.json():
                 if pair['symbol'].find("USDT") != -1 and any(pair['symbol'][:-4] == s for s in cryptoList):
@@ -67,7 +70,7 @@ def UpdateCryptoRates() -> dict:
             Print("Updating CR failed. Trying different endpoint", "E")
             try:
                 url = "https://api2.binance.com/api/v3/ticker/price"
-                response = requests.get(url)
+                response = requests.get(url,headers=headers)
                 cryptoRates = {}
                 for pair in response.json():
                     if pair['symbol'].find("USDT") != -1 and any(pair['symbol'][:-4] == s for s in cryptoList):
@@ -78,7 +81,7 @@ def UpdateCryptoRates() -> dict:
                 Print("Updating CR failed. Trying different endpoint", "E")
                 try:
                     url = "https://api3.binance.com/api/v3/ticker/price"
-                    response = requests.get(url)
+                    response = requests.get(url,headers=headers)
                     cryptoRates = {}
                     for pair in response.json():
                         if pair['symbol'].find("USDT") != -1 and any(pair['symbol'][:-4] == s for s in cryptoList):
