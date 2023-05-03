@@ -27,7 +27,7 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_SERVER_HOST }}
           username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
-          password: ${{ secrets.DEPLOY_SERVER_KEY }}
+          password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
           script: |
             screen -X -S ERTB quit
