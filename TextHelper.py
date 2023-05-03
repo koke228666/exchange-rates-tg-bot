@@ -106,7 +106,7 @@ def LanguageMenuMarkup(chatID: str, chatType: str):
     dictLang = ButtonTexts[lang]
     LanguageMenuMU = InlineKeyboardMarkup()
     LanguageMenuMU.add(InlineKeyboardButton("🇬🇧EN" + RulesMark('en', AllSettings), callback_data = "lang_en"))
-    LanguageMenuMU.add(InlineKeyboardButton("🏴‍☠️RU" + RulesMark('ru', AllSettings), callback_data = "lang_ru"))
+    LanguageMenuMU.add(InlineKeyboardButton("💩RU" + RulesMark('ru', AllSettings), callback_data = "lang_ru"))
     LanguageMenuMU.add(InlineKeyboardButton("🇺🇦UA" + RulesMark('ua', AllSettings), callback_data = "lang_ua"))
     LanguageMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
     return LanguageMenuMU
