@@ -11,6 +11,5 @@ The original code is open source and distributed under the MIT license. License 
 
 More information about the bot: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/README.md
 
-Current version: 2.0
-
+Current version: 3.0 Dev
 Authors: @volkovskey and @vladikko

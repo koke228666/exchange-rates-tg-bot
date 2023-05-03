@@ -11,6 +11,6 @@ ERTB - exchange rates telegram bot.
 
 Больше информации о боте: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/README.md
 
-Актуальная версия: 2.0
+Актуальная версия: 3.0 Dev
 
 Авторы: @volkovskey и @vladikko
