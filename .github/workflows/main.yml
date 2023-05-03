@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 env:
   DEPLOY_PATH: "/root/bot/exchange-rates-tg-bot-master"
-  BUILD_SCRIPT_OUTPUT: "/"
+  BUILD_SCRIPT_OUTPUT: "."
 
 jobs:
   Deploy:
