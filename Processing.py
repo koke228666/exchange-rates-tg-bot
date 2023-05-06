@@ -389,7 +389,7 @@ def SearchValuesAndCurrencies(arr: list) -> list:
         i += 1
         j = 0
     answ_ar = [Values, CurNumber, CryptoValues, CryptoNumber]
-
+    #remove duplicates
     n = len(answ_ar[0])
     i = 0
     while i < n:
@@ -412,6 +412,25 @@ def SearchValuesAndCurrencies(arr: list) -> list:
                 n -= 1
                 break
         i += 1
+    #remove 0 values
+    n = len(answ_ar[0])
+    i = 0
+    while i < n:
+        if answ_ar[0][i] == '0':
+            answ_ar[0].pop(i)
+            answ_ar[1].pop(i)
+            n -= 1
+            i -= 1
+        i += 1
+    n = len(answ_ar[2])
+    i = 0
+    while i < n:
+        if answ_ar[2][i] == '0':
+            answ_ar[2].pop(i)
+            answ_ar[3].pop(i)
+            n -= 1
+            i -= 1
+        i += 1
     return answ_ar
     
 def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
@@ -431,11 +450,9 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
 
     answer = ''
     for i in range(len(Arr[1])): #Проходимся по всем распознаным классическим валютам
-        
-        
-        answer += "\n" + "======" + "\n"
         CurVault = float(Arr[0][i])
         CurCurrency = ListsCache.GetListOfCur()[Arr[1][i]]
+        answer += "\n" + "======" + "\n"
         PartOfAnswer = DictOfFlagsForChat[CurCurrency] + str(f'{CurVault:,.2f}'.replace(","," ")) + " " + CurCurrency + "\n"
 
         ListOfChatCurrencies = GetAllCurrencies(chatID)

@@ -161,8 +161,7 @@ async def EchoVoid(message: types.Message):
         MessageToUsers = (message.text).replace("/write ", "")
         index = MessageToUsers.find(" ")
         toChatID = MessageToUsers[0:index]
-        print(toChatID)
-        MessageToUsers = MessageToUsers.replace(str(chatID) + " ", "")
+        MessageToUsers = MessageToUsers.replace(str(toChatID) + " ", "")
         try:
             await bot.send_message(toChatID, MessageToUsers)
             await bot.send_message(fromUserId, "Сообщение отправлено.")
@@ -395,15 +394,15 @@ async def MainVoid(message: types.Message):
     except:
         Print("Error split.", "E")
         return
-    Print(str(TextArray), "L")
+    Print("After SpecialSplit(): " + str(TextArray), "L")
 
     # Word to number
     TextArray = ConvertWordsToNumber(TextArray)
-    Print(str(TextArray), "L")
+    Print("After ConvertWordsToNumber(): " + str(TextArray), "L")
     
     # Searching Currencies
     NumArray = SearchValuesAndCurrencies(TextArray)
-    Print(str(NumArray), "L")
+    Print("After SearchValuesAndCurrencies(): " + str(NumArray), "L")
 
     # If there are no currencies, then work is interrupted
     if NumArray == [[],[],[],[]]:

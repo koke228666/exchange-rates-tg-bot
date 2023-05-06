@@ -22,6 +22,8 @@ def levenstein(str_1, str_2):
     return current_row[n]
 
 def stringDeviation(str_1, str_2):
+    if str_1[0] != str_2[0]:
+        return 1
     return levenstein(str_1, str_2)/len(str_1)
 
 def wordsMatching(word, tokens):
@@ -42,7 +44,7 @@ def ConvertWordsToNumber(words):
     df = GetTokensForW2N()
     arr = []
     for word in words:
-        if wordsMatching(word, df['token'])[1] < 0.5 or word.isdigit():
+        if wordsMatching(word, df['token'])[1] / len(word) < 0.1 or word[0].isdigit():
             arr.append(1)
         else:
             arr.append(0)
@@ -75,9 +77,8 @@ def wordsToNumber(words):
     globalValue = 0
     localValue = 0
     for word in words:
-        
-        if word.isdigit():
-            localValue += int(word)
+        if word[0].isdigit():
+            localValue += float(word)
             continue
 
         if not df.loc[df['token'] == word].to_dict('records'):
