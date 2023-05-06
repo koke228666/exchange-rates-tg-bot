@@ -69,7 +69,7 @@ isk
 jep
 jmd
 jod
-jpy
+jpy,єн,єна
 kes
 kgs
 khr
