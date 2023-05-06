@@ -144,7 +144,7 @@ twd
 tzs
 uah,грн,₴,hrn
 ugx
-usd,долл,дол,$
+usd,долл,дол,$,usdt,usdc,busd,tusd
 uyu
 uzs,сум,som
 vef
