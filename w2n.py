@@ -44,7 +44,8 @@ def ConvertWordsToNumber(words):
     df = GetTokensForW2N()
     arr = []
     for word in words:
-        if wordsMatching(word, df['token'])[1] / len(word) < 0.1 or word[0].isdigit():
+        errorValue = wordsMatching(word, df['token'])[1]
+        if errorValue / len(word) < 0.1 and errorValue < 0.67 or word[0].isdigit():
             arr.append(1)
         else:
             arr.append(0)
