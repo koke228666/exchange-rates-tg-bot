@@ -42,7 +42,7 @@ def GetListOfCur() -> list:
 
 def SetTokensForW2N():
     global TokensForW2N
-    TokensForW2N = pd.read_csv('Dictionaries/w2n_tokens.csv', sep=';')
+    TokensForW2N = pd.read_csv('Dictionaries/w2n_tokens.csv', sep=',')
 
 def GetTokensForW2N() -> pd.DataFrame:
     global TokensForW2N
