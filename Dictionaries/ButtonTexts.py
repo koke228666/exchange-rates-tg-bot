@@ -1,10 +1,10 @@
 ButtonTexts = {'en':
                     {'donate': 'Donate',
                     'delete': 'Delete',
-                    'currencies': 'Currencies settings',
+                    'currencies': 'Currency settings',
                     'delete_button': 'Delete-Button settings',
                     'flags': 'Appearance settings',
-                    'permisssions': 'Permisssions settings',
+                    'permisssions': 'Permisssion settings',
                     'lang': 'Language settings',
                     'creator': 'Creator',
                     'admins': 'Administrators',
@@ -12,7 +12,7 @@ ButtonTexts = {'en':
                     'delbutton': 'Delete-Button',
                     'back': 'Back',
                     'flags_button': 'Flags',
-                    'cur_menu': 'Classic currency settings',
+                    'cur_menu': 'National currency settings',
                     'crypto_menu': 'Cryptocurrency settings'},
                 'ru':
                     {'donate': 'Поддержать',
@@ -28,7 +28,7 @@ ButtonTexts = {'en':
                     'delbutton': 'Кнопка \'Удалить\'',
                     'back': 'Назад',
                     'flags_button': 'Флаги',
-                    'cur_menu': 'Настройки классических валют',
+                    'cur_menu': 'Настройки национальных валют',
                     'crypto_menu': 'Настройки криптовалют'},
                 'ua':
                     {'donate': 'Підтримати',
@@ -44,6 +44,6 @@ ButtonTexts = {'en':
                     'delbutton': 'Кнопка \'Видалити\'',
                     'back': 'Назад',
                     'flags_button': 'Прапори',
-                    'cur_menu': 'Налаштування класичних валют',
+                    'cur_menu': 'Налаштування національних валют',
                     'crypto_menu': 'Налаштування криптовалют'}
                 }

@@ -45,9 +45,9 @@ def ConvertWordsToNumber(words):
     arr = []
     for word in words:
         errorValue = wordsMatching(word, df['token'])[1]
-        #tokenWord = wordsMatching(word, df['token'])[0]
-        #print("Word:", word, "Token:", tokenWord, "Error:", errorValue, "Coef:", errorValue / len(word))
-        if errorValue / len(word) < 0.1 and errorValue < 0.67 or word[0].isdigit():
+        tokenWord = wordsMatching(word, df['token'])[0]
+        print("Word:", word, "| Token:", tokenWord, "| Error:", errorValue, "| Coef:", errorValue / len(word))
+        if errorValue / len(word) < 0.1 and errorValue < 0.5 or word[0].isdigit():
             arr.append(1)
         else:
             arr.append(0)

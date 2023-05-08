@@ -416,7 +416,7 @@ def SearchValuesAndCurrencies(arr: list) -> list:
     n = len(answ_ar[0])
     i = 0
     while i < n:
-        if answ_ar[0][i] == '0':
+        if answ_ar[0][i] == '0' or answ_ar[0][i] == '0.0':
             answ_ar[0].pop(i)
             answ_ar[1].pop(i)
             n -= 1
@@ -425,7 +425,7 @@ def SearchValuesAndCurrencies(arr: list) -> list:
     n = len(answ_ar[2])
     i = 0
     while i < n:
-        if answ_ar[2][i] == '0':
+        if answ_ar[2][i] == '0' or answ_ar[2][i] == '0.0':
             answ_ar[2].pop(i)
             answ_ar[3].pop(i)
             n -= 1
