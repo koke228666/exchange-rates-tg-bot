@@ -273,42 +273,58 @@ def LoadDictionaries():
                         ListCryptoEqual[i].append(newRUword)
 
 def SearchValuesAndCurrencies(arr: list) -> list:
-    Values = [] #содержит суммы
-    CurNumber = [] #содержит номера валют
-    CryptoValues = [] #сожержит суммы
-    CryptoNumber = [] #содержит номера криптовалют
+    Values = [] #values of national currencies
+    CurNumber = [] #numbers of national currencies
+    CryptoValues = [] #values of cryptocurrencies
+    CryptoNumber = [] #numbers of cryptocurrencies
     i = 0
     j = 0
     while i < len(ListEntry):
         while j < len(ListEntry[i]):
             for u in range(len(arr)):
-                if u != len(arr) - 1 and (arr[u] + " " + arr[u + 1]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
-                    if u <= len(arr) - 3 and u != 0:
-                        if arr[u + 2][0].isdigit():
-                            Values.append(arr[u + 2])
-                            CurNumber.append(i)
-                        elif arr[u - 1][0].isdigit():
-                            Values.append(arr[u - 1])
-                            CurNumber.append(i)
-                    elif u == len(arr) - 2 and arr[u - 1][0].isdigit():
-                        Values.append(arr[u - 1])
+                # if it is a range of numbers
+                if u <= len(arr) - 3 and arr[u][0].isdigit and arr[u + 2][0].isdigit and arr[u + 1] == "-":
+                    # two words in the name of the currency
+                    u += 2
+                    if u <= len(arr) - 3 and (arr[u + 1] + " " + arr[u + 2]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
+                        Values.append(arr[u])
                         CurNumber.append(i)
-                    elif u == 0 and arr[u + 2][0].isdigit():
+                        Values.append(arr[u - 2])
+                        CurNumber.append(i)
+                    u -= 2
+                    if u >= 2 and (arr[u - 2] + " " + arr[u - 1]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
+                        Values.append(arr[u])
+                        CurNumber.append(i)
                         Values.append(arr[u + 2])
                         CurNumber.append(i)
-                elif arr[u].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
-                    if u != len(arr) - 1 and u != 0:
-                        if arr[u + 1][0].isdigit():
-                            Values.append(arr[u + 1])
-                            CurNumber.append(i)
-                        elif arr[u - 1][0].isdigit():
-                            Values.append(arr[u - 1])
-                            CurNumber.append(i)
-                    elif u == len(arr) - 1 and arr[u - 1][0].isdigit():
-                        Values.append(arr[u - 1])
+                    # one word in the name of the currency
+                    u += 2
+                    if u <= len(arr) - 2 and arr[u + 1].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
+                        Values.append(arr[u])
                         CurNumber.append(i)
-                    elif u == 0 and arr[u + 1][0].isdigit():
-                        Values.append(arr[u + 1])
+                        Values.append(arr[u - 2])
+                        CurNumber.append(i)
+                    u -= 2
+                    if u >= 1 and arr[u - 1].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
+                        Values.append(arr[u])
+                        CurNumber.append(i)
+                        Values.append(arr[u + 2])
+                        CurNumber.append(i)
+                    u += 2
+                elif arr[u][0].isdigit:
+                    # two words in the name of the currency
+                    if u <= len(arr) - 3 and (arr[u + 1] + " " + arr[u + 2]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
+                        Values.append(arr[u])
+                        CurNumber.append(i)
+                    if u >= 2 and (arr[u - 2] + " " + arr[u - 1]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
+                        Values.append(arr[u])
+                        CurNumber.append(i)
+                    # one word in the name of the currency
+                    if u <= len(arr) - 2 and arr[u + 1].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
+                        Values.append(arr[u])
+                        CurNumber.append(i)
+                    if u >= 1 and arr[u - 1].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
+                        Values.append(arr[u])
                         CurNumber.append(i)
             j += 1
         i += 1
@@ -318,28 +334,32 @@ def SearchValuesAndCurrencies(arr: list) -> list:
     while i < len(ListEqual):
         while j < len(ListEqual[i]):
             for u in range(len(arr)):
-                if arr[u] == ListEqual[i][j]:
-                    if u != len(arr) - 1 and u != 0:
-                        if arr[u + 1][0].isdigit():
-                            #Indexes.append(u)
-                            Values.append(arr[u + 1])
-                            CurNumber.append(i)
-                        elif arr[u - 1][0].isdigit():
-                            #Indexes.append(u)
-                            Values.append(arr[u - 1])
-                            CurNumber.append(i)
-                    elif u == len(arr) - 1 and arr[u - 1][0].isdigit():
-                        #Indexes.append(u)
-                        Values.append(arr[u - 1])
+                # if it is a range of numbers
+                if u <= len(arr) - 3 and arr[u][0].isdigit and arr[u + 2][0].isdigit and arr[u + 1] == "-":
+                    u += 2
+                    if u <= len(arr) - 2 and arr[u + 1] == ListEqual[i][j]:
+                        Values.append(arr[u])
                         CurNumber.append(i)
-                    elif u == 0 and arr[u + 1][0].isdigit():
-                        #Indexes.append(u)
-                        Values.append(arr[u + 1])
+                        Values.append(arr[u - 2])
+                        CurNumber.append(i)
+                    u -= 2
+                    if u >= 1 and arr[u - 1] == ListEqual[i][j]:
+                        Values.append(arr[u])
+                        CurNumber.append(i)
+                        Values.append(arr[u + 2])
+                        CurNumber.append(i)
+                    u += 2
+                elif arr[u][0].isdigit:
+                    # one word in the name of the currency
+                    if u <= len(arr) - 2 and arr[u + 1] == ListEqual[i][j]:
+                        Values.append(arr[u])
+                        CurNumber.append(i)
+                    if u >= 1 and arr[u - 1] == ListEqual[i][j]:
+                        Values.append(arr[u])
                         CurNumber.append(i)
             j += 1
         i += 1
         j = 0
-    
     i = 0
     j = 0
     while i < len(ListCryptoEntry):
