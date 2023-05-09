@@ -1,31 +1,81 @@
 # exchange-rates-tg-bot
-<b>Requirements:</b>
-<ul>
-  <li>Python 3.7+ (Recommended 3.8.10)</li>
-  <li>Aiogram 2.14+</li>
-  <li>uvloop (not support at Windows)</li>
-  <li>ujson</li>
-  <li>cchardet</li>
-  <li>aiodns</li>
-  <li>aiohttp[speedups]</li>
-  <li>Numberize 1.0.1</li>
-  <li>Requests 2.26.0</li>
-</ul>
-<b>ENGLISH VERSION</b><br>
-ERTB – exchange rates telegram bot.<br>
-The bot recognizes currencies and amounts in the text, and then sends a message with other currencies. An example of a working bot: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a><br><br>
-<b>An example of how the bot works:</b><br>
-Your message:<br>
-<pre>5 euro</pre>
-Bot's answer:
-<pre>🇪🇺5.0 EUR
 
-🇨🇭5.39 CHF
-🇮🇱19.73 ILS
-🇺🇸6.06 USD</pre><br>
-<b>Bot run</b><br>
-By default, the bot is launched like this: <pre>python3 ERTB.py</pre> You can also enable logging of messages and errors to the terminal: <pre>python3 ERTB.py -l on</pre>or<br><br><pre>python3 ERTB.py --logs on</pre><br>
-Below are all the arguments to run:
+<img alt="GitHub" src="https://img.shields.io/github/license/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square">
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/1.6.2/total?style=flat-square">
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square">
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0.3/total?style=flat-square"><br>
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/VirtualSoftKey/exchange-rates-tg-bot/main.yml?style=flat-square">
+<img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square">
+<br><br>
+<b>Requirements (versions are specified on which the bot was developed and tested):</b>
+<ul>
+  <li>Python 3.10</li>
+  <li>Aiogram 2.25</li>
+  <li>uvloop 0.17.0 (not support at Windows)</li>
+  <li>ujson 5.7.0</li>
+  <li>cchardet 2.1.7</li>
+  <li>aiodns 3.0.0</li>
+  <li>aiohttp[speedups] 3.8.4</li>
+  <li>Requests 2.29.0</li>
+  <li>Pandas 2.0.1</li>
+</ul>
+<b id='en'>ENGLISH VERSION</b><br>Ukrainian <a href="#ua">here</a><br><br>
+ERTB – exchange rates telegram bot.<br>
+The bot is created to recognize pairs of numbers and currencies in the text, with automatic further conversion to other currencies at current rates. An example of a working bot: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a><br><br>
+<b>An example of bot work</b><br>
+Your message:<br>
+<pre>5 dollars</pre>
+Bot answer:
+<pre>🇺🇸5.0 USD<br>
+🇪🇺4.13 EUR
+🇷🇺365.98 RUB
+🇺🇦139.83 UAH</pre><br>
+<b>Features of the bot</b>
+<table>
+  <tr>
+    <th>Text recognition languages</th>
+    <td>English, Ukrainian, Russian (no longer updated). Polish and Belarusian are coming soon.</td>
+  </tr>
+  <tr>
+    <th>Bot interface languages</th>
+    <td>English, Ukrainian, Russian. Polish and Belarusian are coming soon.</td>
+  </tr>
+  <tr>
+    <th>Recognizing and converting national currencies</th>
+    <td>161 currencies, gold and silver (in ounces).</td>
+  </tr>
+  <tr>
+    <th>Enhanced recognition of national currencies</th>
+    <td>29 national currencies, gold and silver (in ounces).</td>
+  </tr>
+  <tr>
+    <th>Recognizing and converting cryptocurrencies</th>
+    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP.<br>
+    SOL, MATIC, DOT, SHIB, AVAX, TON are coming soon.</td>
+  </tr>
+  <tr>
+    <th>Enhanced cryptocurrency recognition</th>
+    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP</td>
+  </tr>
+  <tr>
+    <th>API for national currencies</th>
+    <td><a href="http://data.fixer.io/api/">Fixer.io</a> (once a 24 hour)</td>
+  </tr>
+  <tr>
+    <th>API for cryptocurrencies</th>
+    <td><a href="https://api.binance.com/api/v3/">Binance.com</a> (several times a minute)</td>
+  </tr>
+</table><br>
+
+<b>Running the bot</b><br>
+By default, the bot can be run as follows:
+<pre>python3 ERTB.py</pre>
+You can also enable logging in the terminal:
+<pre>python3 ERTB.py -l on</pre>
+or
+<pre>python3 ERTB.py --logs on</pre><br>
+All the arguments for run:
 <table>
   <tr>
     <th>Name</th>
@@ -44,9 +94,9 @@ Below are all the arguments to run:
   <tr>
     <td>Adding an administrator for the bot</td>
     <td><code>--admin</code> or <code>-a</code></td>
-    <td>ID user</td>
+    <td>user ID</td>
     <td><code>python3 ERTB.py --admin 123456789</code></td>
-    <td>missing</td>
+    <td>none</td>
   </tr>
   <tr>
     <td>Processing received messages on start</td>
@@ -56,208 +106,254 @@ Below are all the arguments to run:
     <td><code>off</code></td>
   </tr>
 </table><br>
-<b>Список команд в Телеграме для рядового пользователя</b><br><br>
+<b>Commands in Telegram for the user</b><br><br>
 <table>
   <tr>
     <th>Command</th>
-    <th>Command Description</th>
+    <th>Command description</th>
   </tr>
   <tr>
     <td><code>/about</code></td>
-    <td>Brief information about authors, version, source code and/or license.</td>
+    <td>Short information about the authors, version, API, code, and license.</td>
   </tr>
   <tr>
     <td><code>/help</code></td>
-    <td>Help in using and configuring the bot.</td>
+    <td>Information about the bot, commands, and settings.</td>
   </tr>
   <tr>
     <td><code>/settings</code></td>
-    <td>Here you can set up a bot for your chat.</td>
+    <td>Setting up a bot in the current chat.</td>
   </tr>
   <tr>
     <td><code>/donate</code></td>
-    <td>You can support the development of the bot with a dollar.</td>
+    <td>Link to the donation for developers.</td>
   </tr>
   <tr>
     <td><code>/wrong</code></td>
-    <td>Reply the message is incorrectly recognized.</td>
+    <td>A command to report an incorrect recognition of a message by a bot.</td>
   </tr>
 </table><br>
-<b>List of commands in Telegram for developers/administrators</b><br><br>
+<b>Commands in Telegram for administrators</b><br><br>
 <table>
   <tr>
     <th>Command</th>
-    <th>Command Description</th>
+    <th>Command description</th>
   </tr>
   <tr>
-    <td><code>/echo</code></td>
-    <td>Sending messages to all chats. After the command, you need to write the text that you want to send.</td>
+    <td>
+    <code>/echo</code>
+    </td>
+    <td>
+    Sending messages to all chats.<br>
+    Example of use: <code>/echo Test messaging</code><br>
+    Users will receive: <code>Test messaging</code>
+    </td>
+  </tr>
+  <tr>
+  <td>
+  <code>/write</code>
+  </td>
+  <td>
+  Write to a specific chat.<br>
+  Example of use:: <code>/write 12345789 Test message</code><br>
+  The chat user(s) will receive: <code>Test message</code>
+  </td>
   </tr>
   <tr>
     <td><code>/count</code></td>
-    <td>Getting information about the number of bot users. You can use <code>/count short</code> for counting only in group chats </td>
+    <td>Counting the number of active users of the bot. You can write <code>/count short</code> and the count will be kept only for group chats.</td>
   </tr>
   <tr>
     <td><code>/newadmin</code></td>
-    <td>Add administror. <code>/newadmin 123456789</code></td>
+    <td>Add an administrator. Example: <code>/newadmin 123456789</code></td>
   </tr>
   <tr>
     <td><code>/stats</code></td>
-    <td>Getting information on the number of group and personal chats.</td>
+    <td>Number of chats and groups where the bot has been used at least once.</td>
   </tr>
   <tr>
     <td><code>/fullstats</code></td>
-    <td>Obtaining information on the number of group and personal chats for the entire time, week and month.</td>
+    <td>The number of chats and groups in which the bot was used at least once for the all time, 24 hours, week, and month.</td>
   </tr>
   <tr>
     <td><code>/backup</code></td>
     <td>Sends an archive with copies of databases.</td>
   </tr>
   <tr>
+    <td><code>/ban</code></td>
+    <td>Block a user/group chat by ID. <code>/ban 123456789</code></td>
+  </tr>
+  <tr>
     <td><code>/unban</code></td>
-    <td>Unban user by ID. <code>/unban 123456789</code></td>
+    <td>Unblock user/group chat by ID. <code>/unban 123456789</code></td>
   </tr>
 </table>
-<b>RUSSIAN VERSION</b><br>
+<br><br><br>
+<b id='ua'>UKRAiNIAN VERSION</b><br>English <a href="#en">here</a><br><br>
 ERTB – exchange rates telegram bot.<br>
-Бот распознает в тексте валюты и суммы, а затем присылает сообщение уже с другими валютами. Пример работающего бота: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a><br><br>
-<b>Пример работы бота</b><br>
-Ваше сообщение:<br>
-<pre>5 баксов</pre>
-Ответ бота:
-<pre>🇺🇸5.0 USD
-
+Бот створений для розпізнавання в тексті пар чисел та валют, з автоматичною наступною конвертацією в інші валюти за актуальними курсами. Приклад працюючого бота: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a><br><br>
+<b>Приклад роботи бота</b><br>
+Ваше повідомлення:<br>
+<pre>5 баксів</pre>
+Відповідь бота:
+<pre>🇺🇸5.0 USD<br>
 🇪🇺4.13 EUR
 🇷🇺365.98 RUB
 🇺🇦139.83 UAH</pre><br>
 <b>Характеристики бота</b>
 <table>
   <tr>
-    <th>Языки распознавания текста</th>
-    <td>Английский, русский и украинский.</td>
+    <th>Мови розпізнавання тексту</th>
+    <td>Англійська, українська, російська (більше не оновлюється). Польська та білоруська – скоро.</td>
   </tr>
   <tr>
-    <th>Языки интерфейса бота</th>
-    <td>Английский, русский и украинский.</td>
+    <th>Мови інтерфейсу боту</th>
+    <td>Англійська, українська, російська. Польська та білоруська – скоро.</td>
   </tr>
   <tr>
-    <th>Распознавание и конвертация классических валют</th>
-    <td>161 классическая валюта, а также золото и серебро (в унициях).</td>
+    <th>Розпізнавання та конвертація національних валют</th>
+    <td>161 валюта, а також золото та срібло (в унціях).</td>
   </tr>
   <tr>
-    <th>Улучшенное распознавание валют</th>
-    <td>29 классических валюта, а также золото и серебро (в унициях).</td>
+    <th>Покращене розпізнавання національних валют</th>
+    <td>29 національних валют, а також золото та срібло (в унціях).</td>
   </tr>
   <tr>
-    <th>Распознавание и конвертация криптовалют</th>
-    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP.</td>
+    <th>Розпізнавання та конвертація криптовалют</th>
+    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP.<br>
+    SOL, MATIC, DOT, SHIB, AVAX, TON – скоро.</td>
   </tr>
   <tr>
-    <th>Улучшенное распознавание криптовалют</th>
-    <td>Для всех криптовалют, но только на русском и английском.</td>
+    <th>Покращене розпізнавання криптовалют</th>
+    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP</td>
   </tr>
   <tr>
-    <th>API классических валют</th>
-    <td><a href="http://data.fixer.io/api/">Fixer.io</a></td>
+    <th>API національних валют валют</th>
+    <td><a href="http://data.fixer.io/api/">Fixer.io</a> (раз у добу)</td>
   </tr>
   <tr>
-    <th>API классических валют</th>
-    <td><a href="https://api.binance.com/api/v3/">Binance.com</a></td>
+    <th>API криптовалютвалют</th>
+    <td><a href="https://api.binance.com/api/v3/">Binance.com</a> (декілька разів за хвилину)</td>
   </tr>
 </table><br>
 
-<b>Запуск бота</b><br>
-По умолчанию бот запускается вот так: <pre>python3 ERTB.py</pre> Также можно включить логирование сообщений и ошибок в терминал: <pre>python3 ERTB.py -l on</pre> или<br><br><pre>python3 ERTB.py --logs on</pre><br>
-Ниже приведены все аргументы для запуска:
+<b>Запуск боту</b><br>
+За замовчуванням бот запускається так:
+<pre>python3 ERTB.py</pre>
+Також можна увімнкути логування в термінал:
+<pre>python3 ERTB.py -l on</pre>
+або
+<pre>python3 ERTB.py --logs on</pre><br>
+Всі аргументи для запуску:
 <table>
   <tr>
-    <th>Название</th>
+    <th>Назва</th>
     <th>Аргумент</th>
-    <th>Значение</th>
-    <th>Пример</th>
-    <th>По умолчанию</th>
+    <th>Значення</th>
+    <th>Приклад</th>
+    <th>За замовчуванням</th>
   </tr>
   <tr>
-    <td>Логирование сообщений и ошибок в терминал</td>
-    <td><code>--logs</code> или <code>-l</code></td>
-    <td><code>on</code> или <code>off</code></td>
+    <td>Логування у термінал</td>
+    <td><code>--logs</code> або <code>-l</code></td>
+    <td><code>on</code> або <code>off</code></td>
     <td><code>python3 ERTB.py --logs on</code></td>
-    <td><code>off</code></td>
+    <td><code>on</code></td>
   </tr>
   <tr>
-    <td>Добавление администратора для бота</td>
-    <td><code>--admin</code> или <code>-a</code></td>
-    <td>ID пользователя</td>
+    <td>Додати адміністратора для боту</td>
+    <td><code>--admin</code> або <code>-a</code></td>
+    <td>ID юзера</td>
     <td><code>python3 ERTB.py --admin 123456789</code></td>
-    <td>отсутствует</td>
+    <td>відсутнє</td>
   </tr>
   <tr>
-    <td>Обработка полученых сообщений при включение</td>
-    <td><code>--updates</code> или <code>-u</code></td>
-    <td><code>on</code> или <code>off</code></td>
+    <td>Опрацювання повідомлень, що надійшли від API Телеграму при старті бота</td>
+    <td><code>--updates</code> або <code>-u</code></td>
+    <td><code>on</code> або <code>off</code></td>
     <td><code>python3 ERTB.py --updates on</code></td>
     <td><code>off</code></td>
   </tr>
 </table><br>
-<b>Список команд в Телеграме для рядового пользователя</b><br><br>
+<b>Команди в Telegram для користувача</b><br><br>
 <table>
   <tr>
-    <th>Комманда</th>
-    <th>Описание команды</th>
+    <th>Команда</th>
+    <th>Опис команди</th>
   </tr>
   <tr>
     <td><code>/about</code></td>
-    <td>Краткая информация про авторов, версию, исходный код и/или лицензию.</td>
+    <td>Коротка інформація про авторів, версія, API, код та ліцензію.</td>
   </tr>
   <tr>
     <td><code>/help</code></td>
-    <td>Помощь в использовании и настройки бота.</td>
+    <td>Довідка про бота, користування командами та налаштуваннями.</td>
   </tr>
   <tr>
     <td><code>/settings</code></td>
-    <td>Тут можно настроить бота для вашего чата.</td>
+    <td>Налаштування бота у поточному чаті.</td>
   </tr>
   <tr>
     <td><code>/donate</code></td>
-    <td>Вы можете поддержать разработку бота чеканной монетой.</td>
+    <td>Посилання на донат для розробників.</td>
   </tr>
   <tr>
     <td><code>/wrong</code></td>
-    <td>Ответьте на сообщение, которое бот неправильно распознал данной командой.</td>
+    <td>Команда, щоб повідомити про не правильне розпізнавання ботом повідомлення.</td>
   </tr>
 </table><br>
-<b>Список команд в Телеграме для разработчиков/администраторов</b><br><br>
+<b>Команди в Telegram для адміністраторів</b><br><br>
 <table>
   <tr>
-    <th>Комманда</th>
-    <th>Описание команды</th>
+    <th>Команда</th>
+    <th>Опис команди</th>
   </tr>
   <tr>
-    <td><code>/echo</code></td>
-    <td>Рассылка сообщения по всем чатам. После команды нужно написать текст, который желаете разослать.</td>
+    <td>
+    <code>/echo</code>
+    </td>
+    <td>
+    Розсилка повідомлень по всіх чатах.<br>
+    Приклад використання: <code>/echo Тестова розсилка</code><br>
+    Користувачі отримають: <code>Тестова розсилка</code>
+    </td>
+  </tr>
+  <tr>
+  <td>
+  <code>/write</code>
+  </td>
+  <td>
+  Написати у конкретний чат.<br>
+  Приклад використання: <code>/write 12345789 Тестове повідомлення</code><br>
+  Користувач(і) чату отримають: <code>Тестове повідомлення</code>
+  </td>
   </tr>
   <tr>
     <td><code>/count</code></td>
-    <td>Получение информации про количество пользователей бота. Можно написать <code>/count short</code> и подсчёт произойдёт только по групповым чатам.</td>
+    <td>Підрахунок кількості активних користувачів бота. Можна написати <code>/count short</code> і підрахунок буде вестись лише по групових чатах.</td>
   </tr>
   <tr>
     <td><code>/newadmin</code></td>
-    <td>Добавить администратора. <code>/newadmin 123456789</code></td>
+    <td>Додати адміністратора. Приклад: <code>/newadmin 123456789</code></td>
   </tr>
   <tr>
     <td><code>/stats</code></td>
-    <td>Получение информации по количеству чатов групповых и личных.</td>
+    <td>Кількість чатів та груп у яких хоча би раз користувались ботом.</td>
   </tr>
   <tr>
     <td><code>/fullstats</code></td>
-    <td>Получение информации по количеству чатов групповых и личных за всё время, неделю и месяц.</td>
+    <td>Кількість чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць.</td>
   </tr>
   <tr>
     <td><code>/backup</code></td>
-    <td>Присылает архив с копиями баз данных.</td>
+    <td>Надсилає архів з копіями баз даних.</td>
+  </tr>
+  <tr>
+    <td><code>/ban</code></td>
+    <td>Заблокувати користувача/груповий чат по ID. <code>/ban 123456789</code></td>
   </tr>
   <tr>
     <td><code>/unban</code></td>
-    <td>Разбанить пользователя по ID. <code>/unban 123456789</code></td>
+    <td>Розблокувати користувача/груповий чат по ID. <code>/unban 123456789</code></td>
   </tr>
 </table>
