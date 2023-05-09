@@ -272,6 +272,34 @@ def LoadDictionaries():
                     if newRUword not in ListCryptoEqual[i]:    
                         ListCryptoEqual[i].append(newRUword)
 
+def SearchCurrency(cur: str) -> int:
+    for i in range(len(ListEntry)):
+        for j in range(len(ListEntry[i])):
+            if cur.find(' ') != -1:
+                if cur.find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
+                    return i
+            elif cur.find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
+                return i
+    for i in range(len(ListEqual)):
+        for j in range(len(ListEqual[i])):
+            if cur == ListEqual[i][j]:
+                return i
+    return -1
+
+def SearchCrypto(cur: str) -> int:
+    for i in range(len(ListCryptoEntry)):
+        for j in range(len(ListCryptoEntry[i])):
+            if cur.find(' ') != -1:
+                if cur.find(ListCryptoEntry[i][j]) == 0 and ListCryptoEntry[i] != [''] and ListCryptoEntry[i][j].find(' ') != -1:
+                    return i
+            elif cur.find(ListCryptoEntry[i][j]) == 0 and ListCryptoEntry[i] != ['']:
+                return i
+    for i in range(len(ListCryptoEqual)):
+        for j in range(len(ListCryptoEqual[i])):
+            if cur == ListCryptoEqual[i][j]:
+                return i
+    return -1
+
 def SearchValuesAndCurrencies(arr: list) -> list:
     Values = [] #values of national currencies
     CurNumber = [] #numbers of national currencies
@@ -279,135 +307,103 @@ def SearchValuesAndCurrencies(arr: list) -> list:
     CryptoNumber = [] #numbers of cryptocurrencies
     i = 0
     j = 0
-    while i < len(ListEntry):
-        while j < len(ListEntry[i]):
-            for u in range(len(arr)):
-                # if it is a range of numbers
-                if u <= len(arr) - 3 and arr[u][0].isdigit and arr[u + 2][0].isdigit and arr[u + 1] == "-":
-                    # two words in the name of the currency
-                    u += 2
-                    if u <= len(arr) - 3 and (arr[u + 1] + " " + arr[u + 2]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                        Values.append(arr[u - 2])
-                        CurNumber.append(i)
-                    u -= 2
-                    if u >= 2 and (arr[u - 2] + " " + arr[u - 1]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                        Values.append(arr[u + 2])
-                        CurNumber.append(i)
-                    # one word in the name of the currency
-                    u += 2
-                    if u <= len(arr) - 2 and arr[u + 1].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                        Values.append(arr[u - 2])
-                        CurNumber.append(i)
-                    u -= 2
-                    if u >= 1 and arr[u - 1].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                        Values.append(arr[u + 2])
-                        CurNumber.append(i)
-                    u += 2
-                elif arr[u][0].isdigit:
-                    # two words in the name of the currency
-                    if u <= len(arr) - 3 and (arr[u + 1] + " " + arr[u + 2]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                    if u >= 2 and (arr[u - 2] + " " + arr[u - 1]).find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                    # one word in the name of the currency
-                    if u <= len(arr) - 2 and arr[u + 1].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                    if u >= 1 and arr[u - 1].find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-            j += 1
-        i += 1
-        j = 0
-    i = 0
-    j = 0
-    while i < len(ListEqual):
-        while j < len(ListEqual[i]):
-            for u in range(len(arr)):
-                # if it is a range of numbers
-                if u <= len(arr) - 3 and arr[u][0].isdigit and arr[u + 2][0].isdigit and arr[u + 1] == "-":
-                    u += 2
-                    if u <= len(arr) - 2 and arr[u + 1] == ListEqual[i][j]:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                        Values.append(arr[u - 2])
-                        CurNumber.append(i)
-                    u -= 2
-                    if u >= 1 and arr[u - 1] == ListEqual[i][j]:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                        Values.append(arr[u + 2])
-                        CurNumber.append(i)
-                    u += 2
-                elif arr[u][0].isdigit:
-                    # one word in the name of the currency
-                    if u <= len(arr) - 2 and arr[u + 1] == ListEqual[i][j]:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-                    if u >= 1 and arr[u - 1] == ListEqual[i][j]:
-                        Values.append(arr[u])
-                        CurNumber.append(i)
-            j += 1
-        i += 1
-        j = 0
-    i = 0
-    j = 0
-    while i < len(ListCryptoEntry):
-        while j < len(ListCryptoEntry[i]):
-            for u in range(len(arr)):
-                if arr[u].find(ListCryptoEntry[i][j]) == 0 and ListCryptoEntry[i] != ['']:
-                    if u != len(arr) - 1 and u != 0:
-                        if arr[u + 1][0].isdigit():
-                            CryptoValues.append(arr[u + 1])
-                            CryptoNumber.append(i)
-                        elif arr[u - 1][0].isdigit():
-                            CryptoValues.append(arr[u - 1])
-                            CryptoNumber.append(i)
-                    elif u == len(arr) - 1 and arr[u - 1][0].isdigit():
-                        CryptoValues.append(arr[u - 1])
-                        CryptoNumber.append(i)
-                    elif u == 0 and arr[u + 1][0].isdigit():
-                        CryptoValues.append(arr[u + 1])
-                        CryptoNumber.append(i)
-            j += 1
-        i += 1
-        j = 0
-    i = 0
-    j = 0
-    while i < len(ListCryptoEqual):
-        while j < len(ListCryptoEqual[i]):
-            for u in range(len(arr)):
-                if arr[u] == ListCryptoEqual[i][j]:
-                    if u != len(arr) - 1 and u != 0:
-                        if arr[u + 1][0].isdigit():
-                            #Indexes.append(u)
-                            CryptoValues.append(arr[u + 1])
-                            CryptoNumber.append(i)
-                        elif arr[u - 1][0].isdigit():
-                            #Indexes.append(u)
-                            CryptoValues.append(arr[u - 1])
-                            CryptoNumber.append(i)
-                    elif u == len(arr) - 1 and arr[u - 1][0].isdigit():
-                        #Indexes.append(u)
-                        CryptoValues.append(arr[u - 1])
-                        CryptoNumber.append(i)
-                    elif u == 0 and arr[u + 1][0].isdigit():
-                        #Indexes.append(u)
-                        CryptoValues.append(arr[u + 1])
-                        CryptoNumber.append(i)
-            j += 1
-        i += 1
-        j = 0
+
+    # search for national currencies
+    for u in range(len(arr)):
+        # if it is a range of numbers
+        if u <= len(arr) - 3 and arr[u][0].isdigit() and arr[u + 2][0].isdigit() and arr[u + 1] == "-":
+            # two words in the name of the currency
+            u += 2
+            if u <= len(arr) - 3:
+                curIndex = SearchCurrency(arr[u + 1] + " " + arr[u + 2])
+                if curIndex != -1:
+                    Values.append(arr[u])
+                    CurNumber.append(curIndex)
+                    Values.append(arr[u - 2])
+                    CurNumber.append(curIndex)
+            u -= 2
+            if u >= 2 and SearchCurrency(arr[u - 2] + " " + arr[u - 1]) != -1:
+                Values.append(arr[u])
+                CurNumber.append(SearchCurrency(arr[u - 2] + " " + arr[u - 1]))
+                Values.append(arr[u + 2])
+                CurNumber.append(SearchCurrency(arr[u - 2] + " " + arr[u - 1]))
+            # one word in the name of the currency
+            u += 2
+            if u <= len(arr) - 2 and SearchCurrency(arr[u + 1]) != -1:
+                Values.append(arr[u])
+                CurNumber.append(SearchCurrency(arr[u + 1]))
+                Values.append(arr[u - 2])
+                CurNumber.append(SearchCurrency(arr[u + 1]))
+            u -= 2
+            if u >= 1 and SearchCurrency(arr[u - 1]) != -1:
+                Values.append(arr[u])
+                CurNumber.append(SearchCurrency(arr[u - 1]))
+                Values.append(arr[u + 2])
+                CurNumber.append(SearchCurrency(arr[u - 1]))
+            u += 2
+        elif arr[u][0].isdigit():
+            # two words in the name of the currency
+            if u <= len(arr) - 3 and SearchCurrency(arr[u + 1] + " " + arr[u + 2]) != -1:
+                Values.append(arr[u])
+                CurNumber.append(SearchCurrency(arr[u + 1] + " " + arr[u + 2]))
+            if u >= 2 and SearchCurrency(arr[u - 2] + " " + arr[u - 1]) != -1:
+                Values.append(arr[u])
+                CurNumber.append(SearchCurrency(arr[u - 2] + " " + arr[u - 1]))
+            # one word in the name of the currency
+            if u <= len(arr) - 2 and SearchCurrency(arr[u + 1]) != -1:
+                Values.append(arr[u])
+                CurNumber.append(SearchCurrency(arr[u + 1]))
+            if u >= 1 and SearchCurrency(arr[u - 1]) != -1:
+                Values.append(arr[u])
+                CurNumber.append(SearchCurrency(arr[u - 1]))
+
+    # search for cryptocurrencies
+    for u in range(len(arr)):
+        # if it is a range of numbers
+        if u <= len(arr) - 3 and arr[u][0].isdigit() and arr[u + 2][0].isdigit() and arr[u + 1] == "-":
+            # two words in the name of the currency
+            u += 2
+            if u <= len(arr) - 3 and SearchCrypto(arr[u + 1] + " " + arr[u + 2]) != -1:
+                CryptoValues.append(arr[u])
+                CryptoNumber.append(SearchCrypto(arr[u + 1] + " " + arr[u + 2]))
+                CryptoValues.append(arr[u - 2])
+                CryptoNumber.append(SearchCrypto(arr[u + 1] + " " + arr[u + 2]))
+            u -= 2
+            if u >= 2 and SearchCrypto(arr[u - 2] + " " + arr[u - 1]) != -1:
+                CryptoValues.append(arr[u])
+                CryptoNumber.append(SearchCrypto(arr[u - 2] + " " + arr[u - 1]))
+                CryptoValues.append(arr[u + 2])
+                CryptoNumber.append(SearchCrypto(arr[u - 2] + " " + arr[u - 1]))
+            # one word in the name of the currency
+            u += 2
+            if u <= len(arr) - 2 and SearchCrypto(arr[u + 1]) != -1:
+                CryptoValues.append(arr[u])
+                CryptoNumber.append(SearchCrypto(arr[u + 1]))
+                CryptoValues.append(arr[u - 2])
+                CryptoNumber.append(SearchCrypto(arr[u + 1]))
+            u -= 2
+            if u >= 1 and SearchCrypto(arr[u - 1]) != -1:
+                CryptoValues.append(arr[u])
+                CryptoNumber.append(SearchCrypto(arr[u - 1]))
+                CryptoValues.append(arr[u + 2])
+                CryptoNumber.append(SearchCrypto(arr[u - 1]))
+            u += 2
+        elif arr[u][0].isdigit():
+            # two words in the name of the currency
+            if u <= len(arr) - 3 and SearchCrypto(arr[u + 1] + " " + arr[u + 2]) != -1:
+                CryptoValues.append(arr[u])
+                CryptoNumber.append(SearchCrypto(arr[u + 1] + " " + arr[u + 2]))
+            if u >= 2 and SearchCrypto(arr[u - 2] + " " + arr[u - 1]) != -1:
+                CryptoValues.append(arr[u])
+                CryptoNumber.append(SearchCrypto(arr[u - 2] + " " + arr[u - 1]))
+            # one word in the name of the currency
+            if u <= len(arr) - 2 and SearchCrypto(arr[u + 1]) != -1:
+                CryptoValues.append(arr[u])
+                CryptoNumber.append(SearchCrypto(arr[u + 1]))
+            if u >= 1 and SearchCrypto(arr[u - 1]) != -1:
+                CryptoValues.append(arr[u])
+                CryptoNumber.append(SearchCrypto(arr[u - 1]))
+
     answ_ar = [Values, CurNumber, CryptoValues, CryptoNumber]
     #remove duplicates
     n = len(answ_ar[0])
