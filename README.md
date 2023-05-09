@@ -1,7 +1,7 @@
 # exchange-rates-tg-bot
 
 <img alt="GitHub" src="https://img.shields.io/github/license/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
-<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/1.6.2/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0.3/total?style=flat-square"><br>
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/1.6.2/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0d3/total?style=flat-square"><br>
 <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/VirtualSoftKey/exchange-rates-tg-bot/main.yml?style=flat-square"> <img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square">
 <br>
 <b>Requirements (versions are specified on which the bot was developed and tested):</b>
@@ -63,7 +63,34 @@ Bot answer:
     <td><a href="https://api.binance.com/api/v3/">Binance.com</a> (several times a minute)</td>
   </tr>
 </table><br>
-
+<b>Before running the bot</b><br>
+If you downloaded the code from the <code>"Releases"</code> page, then open the file <code>Token.py</code> and fill in the corresponding variables. If you downloaded the code from the main page, or you do not have the <code>Token.py</code> file, then create a file with that name and place it next to <code>ERTB.py</code>. Then fill it out as below:<br>
+<table>
+  <tr>
+    <th>Name of the variable</th>
+    <th>The value of the variable</th>
+    <th>Example</th>
+    <th>Where to get it</th>
+  </tr>
+  <tr>
+  <td><code>botToken</code></td>
+  <td>Your bot's token, which you will use to authenticate your bot and give it access to the Telegram API.</td>
+  <td><code>botToken="1234567890:BBCkM9ooUa4NKGa8asdGdsa1iB4qwqZTqlc"</code></td>
+  <td>In Telegram, at the bot <a href="https://t.me/BotFather">@BotFather</a></td>
+  </tr>
+  <tr>
+  <td><code>apiKey</code></td>
+  <td>A key for <a href="https://fixer.io/">Fixer.io</a> to use the national currency API.</td>
+  <td><code>apiKey="2597f6f5j2f0fc8bf228c7f798ghgkleb"</code></td>
+  <td>On <a href="https://apilayer.com/marketplace/fixer-api#pricing">this</a> page of the website.</td>
+  </tr>
+  <tr>
+  <td><code>botUsername</code></td>
+  <td>The bot's username is the one you set up in <a href="https://t.me/BotFather">@BotFather</a></td>
+  <td><code>botUsername = "ertb_test_bot"</code></td>
+  <td>In Telegram, at the bot <a href="https://t.me/BotFather">@BotFather</a></td>
+  </tr>
+<table><br>
 <b>Running the bot</b><br>
 By default, the bot can be run as follows:
 <pre>python3 ERTB.py</pre>
@@ -232,7 +259,34 @@ ERTB – exchange rates telegram bot.<br>
     <td><a href="https://api.binance.com/api/v3/">Binance.com</a> (декілька разів за хвилину)</td>
   </tr>
 </table><br>
-
+<b>Перед запуском боту</b><br>
+Якщо ви завантажили код з розділу <code>"Releases"</code>, то відкрийте файл <code>Token.py</code> та заповніть відповідні змінні. Якщо ви скачали код з головної сторінки, або у вас відсутній файл <code>Token.py</code>, то створіть файл з таким іменим розмістіть поруч з <code>ERTB.py</code>. Потім заповніть його таким чином:<br>
+<table>
+  <tr>
+    <th>Назва змінної</th>
+    <th>Значення змінної</th>
+    <th>Приклад</th>
+    <th>Де взяти</th>
+  </tr>
+  <tr>
+  <td><code>botToken</code></td>
+  <td>Токен вашого бота, який ви використовуватимете для автентифікації свого бота та надання йому доступу до API телеграму.</td>
+  <td><code>botToken="1234567890:BBCkM9ooUa4NKGa8asdGdsa1iB4qwqZTqlc"</code></td>
+  <td>В Telegram у бота <a href="https://t.me/BotFather">@BotFather</a></td>
+  </tr>
+  <tr>
+  <td><code>apiKey</code></td>
+  <td>Ключ для <a href="https://fixer.io/">Fixer.io</a>, щоб користуватись API національних валют.</td>
+  <td><code>apiKey="2597f6f5j2f0fc8bf228c7f798ghgkleb"</code></td>
+  <td>На <a href="https://apilayer.com/marketplace/fixer-api#pricing">цій</a> сторінці сайту.</td>
+  </tr>
+  <tr>
+  <td><code>botUsername</code></td>
+  <td>Юзернейм бота, такий який ви налаштували в <a href="https://t.me/BotFather">@BotFather</a></td>
+  <td><code>botUsername = "ertb_test_bot"</code></td>
+  <td>В Telegram у бота <a href="https://t.me/BotFather">@BotFather</a></td>
+  </tr>
+<table><br>
 <b>Запуск боту</b><br>
 За замовчуванням бот запускається так:
 <pre>python3 ERTB.py</pre>
