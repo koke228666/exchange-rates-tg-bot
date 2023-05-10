@@ -2,8 +2,8 @@
 
 <img alt="GitHub" src="https://img.shields.io/github/license/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
 <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/1.6.2/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0d3/total?style=flat-square"><br>
-<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/VirtualSoftKey/exchange-rates-tg-bot/main.yml?style=flat-square"> <img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square">
-<br>
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/VirtualSoftKey/exchange-rates-tg-bot/main.yml?style=flat-square"> <img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
+<hr>
 <b>Requirements (versions are specified on which the bot was developed and tested):</b>
 <ul>
   <li>Python 3.10</li>
@@ -16,6 +16,11 @@
   <li>Requests 2.29.0</li>
   <li>Pandas 2.0.1</li>
 </ul>
+<hr>
+<b>Releases</b><br>
+Last stable release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.<br>
+Pre-release of ERTB – ver. 3.0.0d3. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0d3">here</a>.<br>
+<hr><br>
 <b id='en'>ENGLISH VERSION</b><br>Ukrainian <a href="#ua">here</a><br><br>
 ERTB – exchange rates telegram bot.<br>
 The bot is created to recognize pairs of numbers and currencies in the text, with automatic further conversion to other currencies at current rates. An example of a working bot: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a><br><br>
@@ -223,8 +228,9 @@ All the arguments for run:
     <td>Unblock user/group chat by ID. <code>/unban 123456789</code></td>
   </tr>
 </table>
-<br><br><br>
-<b id='ua'>UKRAiNIAN VERSION</b><br>English <a href="#en">here</a><br><br>
+<br>
+<hr>
+<b id='ua'>UKRAINIAN VERSION</b><br>English <a href="#en">here</a><br><br>
 ERTB – exchange rates telegram bot.<br>
 Бот створений для розпізнавання в тексті пар чисел та валют, з автоматичною наступною конвертацією в інші валюти за актуальними курсами. Приклад працюючого бота: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a><br><br>
 <b>Приклад роботи бота</b><br>
