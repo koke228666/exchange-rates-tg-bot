@@ -3,15 +3,12 @@ from NewPrint import Print
 from DBH import GetAllCrypto, GetAllCurrencies, GetExchangeRates, GetListOfCrypto, GetListOfCurrencies, GetDictOfFlags, GetSetting
 import GetExchangeRates
 import ListsCache
+import os
 
 ListEntry = []
 ListEqual = []
 ListCryptoEntry = []
 ListCryptoEqual = []
-
-_eng_chars = u"`qwertyuiop[]asdfghjkl;'zxcvbnm,.QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM,."
-_rus_chars = u"ёйцукенгшщзхъфывапролджэячсмитьбюЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ"
-_ukr_chars = u"'йцукенгшщзхїфівапролджєячсмитьбюЙЦУКЕНГШЩЗХЇФІВАПРОЛДЖЄЯЧСМИТЬБЮ"
 
 def RemoveLinksAndWords(MesTxt: str) -> str:
     indexOfAtSign = -1
@@ -107,170 +104,82 @@ def LoadFlags():
 def LoadDictionaries():
     global ListEntry, ListEqual, ListCryptoEntry, ListCryptoEqual
 
-    DicEntry = open("Dictionaries/CurEntry.txt", "r")
-    ListEntry = DicEntry.readlines()
-    DicEntry.close()
-    for i in range(len(ListEntry)):
-        if ListEntry[i].find(","):
-            ListEntry[i] = ListEntry[i].split(",")
-        elif ListEntry == "":
-            ListEntry[i] = []
-        else:
-            ListEntry[i] = [ListEntry[i]]
-        ListEntry[i][len(ListEntry[i]) - 1] = ListEntry[i][len(ListEntry[i]) - 1].replace("\n", "")
-    for i in range(len(ListEntry)):
-        if ListEntry[i] == ['']:
-            pass
-        else:
-            for j in range(len(ListEntry[i])):
-                word = ListEntry[i][j]
-                if word[0] in _eng_chars:
-                    newRUword = ''
-                    newUAword = ''
-                    for k in range(len(word)):
-                        index = _eng_chars.find(word[k])
-                        newRUword += _rus_chars[index]
-                        newUAword += _ukr_chars[index]
-                    if newRUword not in ListEntry[i]:
-                        ListEntry[i].append(newRUword)
-                    if newUAword not in ListEntry[i]:
-                        ListEntry[i].append(newUAword)
-                elif word[0] in _rus_chars:
-                    newENword = ''
-                    newUAword = ''
-                    for k in range(len(word)):
-                        index = _rus_chars.find(word[k])
-                        newENword += _eng_chars[index]
-                        newUAword += _ukr_chars[index]
-                    if newENword not in ListEntry[i]:
-                        ListEntry[i].append(newENword)
-                    if newUAword not in ListEntry[i]:
-                        ListEntry[i].append(newUAword)
-                elif word[0] in _ukr_chars:
-                    newENword = ''
-                    newRUword = ''
-                    for k in range(len(word)):
-                        index = _ukr_chars.find(word[k])
-                        newENword += _eng_chars[index]
-                        newRUword += _rus_chars[index]
-                    if newENword not in ListEntry[i]:
-                        ListEntry[i].append(newENword)
-                    if newRUword not in ListEntry[i]:    
-                        ListEntry[i].append(newRUword)
+    # Find all files where CurEntry in name
+    filesEntry = []
+    filesCryptoEntry = []
+    for i in os.listdir("Dictionaries/Currencies"):
+        if i.find("CurEntry") != -1:
+            filesEntry.append(i)
+        elif i.find("CryptoEntry") != -1:
+            filesCryptoEntry.append(i)
+    
 
-    DicEqual = open("Dictionaries/CurEqual.txt", "r")
-    ListEqual = DicEqual.readlines()
-    DicEqual.close()
-    for i in range(len(ListEqual)):
-        if ListEqual[i].find(","):
-            ListEqual[i] = ListEqual[i].split(",")
-        elif ListEqual == "":
-            ListEqual[i] = []
-        else:
-            ListEqual[i] = [ListEqual[i]]
-        ListEqual[i][len(ListEqual[i]) - 1] = ListEqual[i][len(ListEqual[i]) - 1].replace("\n", "")
+    # Fill ListEntry
+    for i in filesEntry:
+        FileEntry = open("Dictionaries/Currencies/" + i, "r")
+        DicEntry = FileEntry.readlines()
+        counter = 0
+        for j in range(len(DicEntry)):
+            if len(ListEntry) - 1 < counter:
+                ListEntry.append("")
+                ListEntry[counter] = DicEntry[j].replace("\n", "").split(",")
+            else:
+                ListEntry[counter] += DicEntry[j].replace("\n", "").split(",")
+            for k in ListEntry[counter]:
+                if k == "":
+                    ListEntry[counter].remove(k)
+            counter += 1
+        FileEntry.close()
 
-    DicCryptoEntry = open("Dictionaries/CryptoEntry.txt", "r")
-    ListCryptoEntry = DicCryptoEntry.readlines()
-    DicCryptoEntry.close()
-    for i in range(len(ListCryptoEntry)):
-        if ListCryptoEntry[i].find(","):
-            ListCryptoEntry[i] = ListCryptoEntry[i].split(",")
-        elif ListCryptoEntry == "":
-            ListCryptoEntry[i] = []
+    # Fill ListEqual
+    FileEqual = open("Dictionaries/Currencies/CurEqual.txt", "r")
+    DicEqual = FileEqual.readlines()
+    counter = 0
+    for j in range(len(DicEqual)):
+        if len(ListCryptoEqual) - 1 < counter:
+            ListCryptoEqual.append("")
+            ListCryptoEqual[counter] = DicEqual[j].replace("\n", "").split(",")
         else:
-            ListCryptoEntry[i] = [ListCryptoEntry[i]]
-        ListCryptoEntry[i][len(ListCryptoEntry[i]) - 1] = ListCryptoEntry[i][len(ListCryptoEntry[i]) - 1].replace("\n", "")
-    for i in range(len(ListCryptoEntry)):
-        if ListCryptoEntry[i] == ['']:
-            pass
-        else:
-            for j in range(len(ListCryptoEntry[i])):
-                word = ListCryptoEntry[i][j]
-                if word[0] in _eng_chars:
-                    newRUword = ''
-                    newUAword = ''
-                    for k in range(len(word)):
-                        index = _eng_chars.find(word[k])
-                        newRUword += _rus_chars[index]
-                        newUAword += _ukr_chars[index]
-                    if newRUword not in ListCryptoEntry[i]:
-                        ListCryptoEntry[i].append(newRUword)
-                    if newUAword not in ListCryptoEntry[i]:
-                        ListCryptoEntry[i].append(newUAword)
-                elif word[0] in _rus_chars:
-                    newENword = ''
-                    newUAword = ''
-                    for k in range(len(word)):
-                        index = _rus_chars.find(word[k])
-                        newENword += _eng_chars[index]
-                        newUAword += _ukr_chars[index]
-                    if newENword not in ListCryptoEntry[i]:
-                        ListCryptoEntry[i].append(newENword)
-                    if newUAword not in ListCryptoEntry[i]:
-                        ListCryptoEntry[i].append(newUAword)
-                elif word[0] in _ukr_chars:
-                    newENword = ''
-                    newRUword = ''
-                    for k in range(len(word)):
-                        index = _ukr_chars.find(word[k])
-                        newENword += _eng_chars[index]
-                        newRUword += _rus_chars[index]
-                    if newENword not in ListCryptoEntry[i]:
-                        ListCryptoEntry[i].append(newENword)
-                    if newRUword not in ListCryptoEntry[i]:    
-                        ListCryptoEntry[i].append(newRUword)
+            ListCryptoEqual[counter] += DicEqual[j].replace("\n", "").split(",")
+        for k in ListCryptoEqual[counter]:
+            if k == "":
+                ListCryptoEqual[counter].remove(k)
+        counter += 1
+    FileEqual.close()
 
-    DicCryptoEqual = open("Dictionaries/CryptoEqual.txt", "r")
-    ListCryptoEqual = DicCryptoEqual.readlines()
-    DicCryptoEqual.close()
-    for i in range(len(ListCryptoEqual)):
-        if ListCryptoEqual[i].find(","):
-            ListCryptoEqual[i] = ListCryptoEqual[i].split(",")
-        elif ListCryptoEqual == "":
-            ListCryptoEqual[i] = []
+    # Fill ListCryptoEntry
+    for i in filesCryptoEntry:
+        FileEntry = open("Dictionaries/Currencies/" + i, "r")
+        DicEntry = FileEntry.readlines()
+        counter = 0
+        for j in range(len(DicEntry)):
+            if len(ListCryptoEntry) - 1 < counter:
+                ListCryptoEntry.append("")
+                ListCryptoEntry[counter] = DicEntry[j].replace("\n", "").split(",")
+            else:
+                ListCryptoEntry[counter] += DicEntry[j].replace("\n", "").split(",")
+            for k in ListCryptoEntry[counter]:
+                if k == "":
+                    ListCryptoEntry[counter].remove(k)
+            counter += 1
+        FileEntry.close()
+
+    # Fill ListCryptoEqual
+    FileEqual = open("Dictionaries/Currencies/CryptoEqual.txt", "r")
+    DicEqual = FileEqual.readlines()
+    counter = 0
+    for j in range(len(DicEqual)):
+        if len(ListCryptoEqual) - 1 < counter:
+            ListCryptoEqual.append("")
+            ListCryptoEqual[counter] = DicEqual[j].replace("\n", "").split(",")
         else:
-            ListCryptoEqual[i] = [ListCryptoEqual[i]]
-        ListCryptoEqual[i][len(ListCryptoEqual[i]) - 1] = ListCryptoEqual[i][len(ListCryptoEqual[i]) - 1].replace("\n", "")
-    for i in range(len(ListCryptoEqual)):
-        if ListCryptoEqual[i] == ['']:
-            pass
-        else:
-            for j in range(len(ListCryptoEqual[i])):
-                word = ListCryptoEqual[i][j]
-                if word[0] in _eng_chars:
-                    newRUword = ''
-                    newUAword = ''
-                    for k in range(len(word)):
-                        index = _eng_chars.find(word[k])
-                        newRUword += _rus_chars[index]
-                        newUAword += _ukr_chars[index]
-                    if newRUword not in ListCryptoEqual[i]:
-                        ListCryptoEqual[i].append(newRUword)
-                    if newUAword not in ListCryptoEqual[i]:
-                        ListCryptoEqual[i].append(newUAword)
-                elif word[0] in _rus_chars:
-                    newENword = ''
-                    newUAword = ''
-                    for k in range(len(word)):
-                        index = _rus_chars.find(word[k])
-                        newENword += _eng_chars[index]
-                        newUAword += _ukr_chars[index]
-                    if newENword not in ListCryptoEqual[i]:
-                        ListCryptoEqual[i].append(newENword)
-                    if newUAword not in ListCryptoEqual[i]:
-                        ListCryptoEqual[i].append(newUAword)
-                elif word[0] in _ukr_chars:
-                    newENword = ''
-                    newRUword = ''
-                    for k in range(len(word)):
-                        index = _ukr_chars.find(word[k])
-                        newENword += _eng_chars[index]
-                        newRUword += _rus_chars[index]
-                    if newENword not in ListCryptoEqual[i]:
-                        ListCryptoEqual[i].append(newENword)
-                    if newRUword not in ListCryptoEqual[i]:    
-                        ListCryptoEqual[i].append(newRUword)
+            ListCryptoEqual[counter] += DicEqual[j].replace("\n", "").split(",")
+        for k in ListCryptoEqual[counter]:
+            if k == "":
+                ListCryptoEqual[counter].remove(k)
+        counter += 1
+    FileEqual.close()
+        
 
 def SearchCurrency(cur: str) -> int:
     for i in range(len(ListEntry)):
