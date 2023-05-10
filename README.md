@@ -30,12 +30,16 @@ Bot answer:
 <b>Features of the bot</b>
 <table>
   <tr>
-    <th>Text recognition languages</th>
-    <td>English, Ukrainian, Russian (no longer updated). Polish and Belarusian are coming soon.</td>
-  </tr>
-  <tr>
     <th>Bot interface languages</th>
-    <td>English, Ukrainian, Russian. Polish and Belarusian are coming soon.</td>
+    <td>
+    <ul>
+    <li><b>English</b></li>
+    <li><b>Ukrainian</b></li>
+    <li><b>Russian</b></li>
+    <li><b>Polish</b> (coming soon)</li>
+    <li><b>Belarusian</b> (coming soon)</li>
+    </ul>
+    </td>
   </tr>
   <tr>
     <th>Recognizing and converting national currencies</th>
@@ -43,7 +47,15 @@ Bot answer:
   </tr>
   <tr>
     <th>Enhanced recognition of national currencies</th>
-    <td>29 national currencies, gold and silver (in ounces).</td>
+    <td>
+    <ul>
+    <li><b>English</b> – 47 and gold and silver (in ounces)</li>
+    <li><b>Ukrainian</b> – 50 and gold and silver (in ounces)</li>
+    <li><b>Russian</b> <i>(no longer support)</i> – 24 and gold and silver (in ounces)</li>
+    <li><b>Polish</b> (coming soon)</li>
+    <li><b>Belarusian</b> (coming soon)</li>
+    </ul>
+    </td>
   </tr>
   <tr>
     <th>Recognizing and converting cryptocurrencies</th>
@@ -87,7 +99,7 @@ If you downloaded the code from the <code>"Releases"</code> page, then open the 
   <tr>
   <td><code>botUsername</code></td>
   <td>The bot's username is the one you set up in <a href="https://t.me/BotFather">@BotFather</a></td>
-  <td><code>botUsername = "ertb_test_bot"</code></td>
+  <td><code>botUsername = "test_bot"</code></td>
   <td>In Telegram, at the bot <a href="https://t.me/BotFather">@BotFather</a></td>
   </tr>
 <table><br>
@@ -178,7 +190,7 @@ All the arguments for run:
   </td>
   <td>
   Write to a specific chat.<br>
-  Example of use:: <code>/write 12345789 Test message</code><br>
+  Example of use: <code>/write 12345789 Test message</code><br>
   The chat user(s) will receive: <code>Test message</code>
   </td>
   </tr>
@@ -226,12 +238,16 @@ ERTB – exchange rates telegram bot.<br>
 <b>Характеристики бота</b>
 <table>
   <tr>
-    <th>Мови розпізнавання тексту</th>
-    <td>Англійська, українська, російська (більше не оновлюється). Польська та білоруська – скоро.</td>
-  </tr>
-  <tr>
     <th>Мови інтерфейсу боту</th>
-    <td>Англійська, українська, російська. Польська та білоруська – скоро.</td>
+    <td>
+    <ul>
+    <li><b>Англійська</b></li>
+    <li><b>Українська</b></li>
+    <li><b>російська</b></li>
+    <li><b>Польська</b> (скоро)</li>
+    <li><b>Білоруська</b> (скоро)</li>
+    </ul>
+    </td>
   </tr>
   <tr>
     <th>Розпізнавання та конвертація національних валют</th>
@@ -239,7 +255,15 @@ ERTB – exchange rates telegram bot.<br>
   </tr>
   <tr>
     <th>Покращене розпізнавання національних валют</th>
-    <td>29 національних валют, а також золото та срібло (в унціях).</td>
+    <td>
+    <ul>
+    <li><b>Англійська</b> – 47, а також золото та срібло (в унціях)</li>
+    <li><b>Українська</b> – 50, а також золото та срібло (в унціях)</li>
+    <li><b>російська</b> <i>(підтримку закінчено)</i> – 24, а також золото та срібло (в унціях)</li>
+    <li><b>Польська</b> (скоро)</li>
+    <li><b>Білоруська</b> (скоро)</li>
+    </ul>
+    </td>
   </tr>
   <tr>
     <th>Розпізнавання та конвертація криптовалют</th>
@@ -283,7 +307,7 @@ ERTB – exchange rates telegram bot.<br>
   <tr>
   <td><code>botUsername</code></td>
   <td>Юзернейм бота, такий який ви налаштували в <a href="https://t.me/BotFather">@BotFather</a></td>
-  <td><code>botUsername = "ertb_test_bot"</code></td>
+  <td><code>botUsername = "test_bot"</code></td>
   <td>В Telegram у бота <a href="https://t.me/BotFather">@BotFather</a></td>
   </tr>
 <table><br>

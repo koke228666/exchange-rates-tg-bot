@@ -1,0 +1,14 @@
+cardano
+bitcoin cash
+binance coin
+bitcoin
+dash
+dogecoin,doge coin
+ethereum classic
+ethereum
+litecoin
+ravencoin
+tron
+stellar
+monero
+ripple
