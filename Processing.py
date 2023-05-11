@@ -136,14 +136,14 @@ def LoadDictionaries():
     DicEqual = FileEqual.readlines()
     counter = 0
     for j in range(len(DicEqual)):
-        if len(ListCryptoEqual) - 1 < counter:
-            ListCryptoEqual.append("")
-            ListCryptoEqual[counter] = DicEqual[j].replace("\n", "").split(",")
+        if len(ListEqual) - 1 < counter:
+            ListEqual.append("")
+            ListEqual[counter] = DicEqual[j].replace("\n", "").split(",")
         else:
-            ListCryptoEqual[counter] += DicEqual[j].replace("\n", "").split(",")
-        for k in ListCryptoEqual[counter]:
+            ListEqual[counter] += DicEqual[j].replace("\n", "").split(",")
+        for k in ListEqual[counter]:
             if k == "":
-                ListCryptoEqual[counter].remove(k)
+                ListEqual[counter].remove(k)
         counter += 1
     FileEqual.close()
 
