@@ -3,6 +3,7 @@ from ListsCache import GetTokensForW2N
 
 #df = pd.read_excel('tokens.xlsx')
 df = ""
+exceptions = ["патриот"]
 
 def levenstein(str_1, str_2):
     n, m = len(str_1), len(str_2)
@@ -22,7 +23,7 @@ def levenstein(str_1, str_2):
     return current_row[n]
 
 def stringDeviation(str_1, str_2):
-    if str_1[0] != str_2[0]:
+    if str_1[0] != str_2[0] or str_2 in exceptions:
         return 1
     return levenstein(str_1, str_2)/len(str_1)
 
@@ -45,8 +46,8 @@ def ConvertWordsToNumber(words):
     arr = []
     for word in words:
         errorValue = wordsMatching(word, df['token'])[1]
-        #tokenWord = wordsMatching(word, df['token'])[0]
-        #print("Word:", word, "| Token:", tokenWord, "| Error:", errorValue, "| Coef:", errorValue / len(word))
+        tokenWord = wordsMatching(word, df['token'])[0]
+        print("Word:", word, "| Token:", tokenWord, "| Error:", errorValue, "| Coef:", errorValue / len(word))
         if errorValue / len(word) < 0.12 and errorValue < 0.5 or word[0].isdigit():
             arr.append(1)
         else:
