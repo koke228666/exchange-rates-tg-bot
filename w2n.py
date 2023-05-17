@@ -5,6 +5,13 @@ from ListsCache import GetTokensForW2N
 df = ""
 exceptions = ["патриот"]
 
+def CheckExceptions(word: str):
+    global exceptions
+    for exception in exceptions:
+        if exception.find(word) != -1:
+            return True
+    return False
+
 def levenstein(str_1, str_2):
     n, m = len(str_1), len(str_2)
     if n > m:
@@ -23,7 +30,7 @@ def levenstein(str_1, str_2):
     return current_row[n]
 
 def stringDeviation(str_1, str_2):
-    if str_1[0] != str_2[0] or str_2 in exceptions:
+    if str_1[0] != str_2[0] or CheckExceptions(str_2):
         return 1
     return levenstein(str_1, str_2)/len(str_1)
 
