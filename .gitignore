@@ -3,3 +3,4 @@ Token.py
 *.pyo
 DataBases/*.sqlite
 Backups/*.zip
+error_log.txt

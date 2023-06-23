@@ -9,6 +9,8 @@ from threading import Thread
 import sys
 import time
 import os
+import traceback
+import logging
 
 # Own libraries
 import DBH
@@ -635,10 +637,30 @@ def RegularStats():
         Stats = DBH.GetSetTimeStats()
         time.sleep(86400)
 
+def save_error_to_file(exception_type, exception_value, exception_traceback):
+    with open('error_log.txt', 'a') as file:
+        file.write(f"Exception Type: {exception_type}\n")
+        file.write(f"Exception Value: {exception_value}\n")
+        file.write("Traceback:\n")
+        traceback.print_tb(exception_traceback, file=file)
+
+def exception_handler(exception_type, exception_value, exception_traceback):    
+    logging.error("An error occurred", exc_info=(exception_type, exception_value, exception_traceback))    
+    save_error_to_file(exception_type, exception_value, exception_traceback)
+
 
 if __name__ == '__main__':
-    LoadDataForBot()
+    sys.excepthook = exception_handler
 
+    logging.basicConfig(
+        level=logging.ERROR,  
+        filename='error_log.txt',  
+        filemode='w',  
+        format='\n=================================\n%(asctime)s - %(levelname)s - %(message)s'  
+    )
+
+    LoadDataForBot()    
+    
     if len(sys.argv) == 3:
         if not CheckArgument(sys.argv[1], sys.argv[2]):
             Print("Error arg.", "E")
