@@ -88,7 +88,7 @@ def wordsToNumber(words):
     globalValue = 0
     localValue = 0
     for word in words:
-        if word[0].isdigit():
+        if word[0].isdigit() and word[-1].isdigit():
             localValue += float(word)
             continue
 
