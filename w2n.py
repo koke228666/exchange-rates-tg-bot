@@ -87,8 +87,13 @@ def wordsToNumber(words):
     localLevel = -1
     globalValue = 0
     localValue = 0
+    
     for word in words:
         if word[0].isdigit() and word[-1].isdigit():
+            globalLevel = -1
+            localLevel = -1
+            globalValue = 0
+            localValue = 0
             localValue += float(word)
             continue
 
@@ -99,7 +104,7 @@ def wordsToNumber(words):
             token_dict = df.loc[df['token'] == word].to_dict('records')[0]
         
         if token_dict['isMultiplier']:
-            if globalLevel == -1 or token_dict['level'] <= globalLevel:
+            if globalLevel == -1 or token_dict['level'] < globalLevel:
                 globalLevel = token_dict['level']
                 if localValue == 0:
                     localValue += token_dict['value']
@@ -111,7 +116,7 @@ def wordsToNumber(words):
             else:
                 pass
         else:
-            if localLevel == -1 or token_dict['level'] <= localLevel:
+            if localLevel == -1 or token_dict['level'] < localLevel:
                 localLevel = token_dict['level']
                 localValue += token_dict['value']
             else:
