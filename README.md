@@ -19,7 +19,7 @@
 <hr>
 <b>Releases</b><br>
 Last stable release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.<br>
-Pre-release of ERTB – ver. 3.0.0d3. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0d3">here</a>.<br>
+Pre-release of ERTB – ver. 3.0.0d5. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0d5">here</a>.<br>
 <hr><br>
 <b id='en'>ENGLISH VERSION</b><br>Ukrainian <a href="#ua">here</a><br><br>
 ERTB – exchange rates telegram bot.<br>
