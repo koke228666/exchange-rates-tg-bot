@@ -31,7 +31,7 @@ dp = Dispatcher(bot)
 IsStartedCount = False
 
 # Public commands
-@dp.message_handler(commands=['about'])  # analog about and source
+@dp.message_handler(commands=['about'])
 async def AboutMes(message: types.Message):
     fromUserId = message.from_user.id
     chatID = message.chat.id
@@ -291,7 +291,7 @@ async def BackupVoid(message: types.Message):
     if DBH.IsAdmin(fromUserId):
         nameOfBackup = DBH.CreateAllBackups()
         fileSize = os.path.getsize(nameOfBackup)
-        if fileSize <= 5242880:
+        if fileSize <= 52428800:
             try:
                 backupFile = open(nameOfBackup, 'rb')
                 await bot.send_document(chatID, backupFile)
@@ -433,19 +433,11 @@ async def MainVoid(message: types.Message):
     try:
         await message.reply(result, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
     except:
-        Print("Cannot send message", "E")
-        Print("Username: " +
-              str(message.from_user.username) +
-              " | User ID: " + str(message.from_user.id) +
-              " | First name: " + str(message.from_user.first_name) +
-              " | Last name: " + str(message.from_user.last_name), "E")
-        Print("Chat ID: " +
-              str(message.chat.id) +
+        Print("Cannot send message. Chat ID: " + str(message.chat.id) +
               " | Chat name: " + str(message.chat.title) +
               " | Chat username: " + 
               str(message.chat.username) + 
               " | Chat type: "+str(message.chat.type), "E")
-        Print("Message: " + str(OriginalMessageText), "E")
     DBH.UpdateChatUsage(chatID)
     # for i in NumArray[1]:
     #     DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCur()[i], OriginalMessageText)
@@ -582,9 +574,9 @@ async def CallbackAnswer(call: types.CallbackQuery):
 def CheckArgument(key: str, value: str) -> bool:
     isAllOkArg = True
     if key == "--logs" or key == "-l":
-        if value == "on":
+        if value == "1":
             EnableLogging()
-        elif value == "off":
+        elif value == "0":
             DisableLogging()
         else:
             isAllOkArg = False
@@ -595,9 +587,9 @@ def CheckArgument(key: str, value: str) -> bool:
         else:
             isAllOkArg = False
     elif key == "--updates" or key == "-u":
-        if value == "on":
+        if value == "1":
             EnableUpdates()
-        elif value == "off":
+        elif value == "0":
             DisableUpdates()
         else:
             isAllOkArg = False

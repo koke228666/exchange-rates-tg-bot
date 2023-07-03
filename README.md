@@ -1,7 +1,7 @@
 # exchange-rates-tg-bot
 
 <img alt="GitHub" src="https://img.shields.io/github/license/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
-<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/1.6.2/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0d5/total?style=flat-square"><br>
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/1.6.2/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0b1/total?style=flat-square"><br>
 <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/VirtualSoftKey/exchange-rates-tg-bot/main.yml?style=flat-square"> <img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
 <hr>
 <b>Requirements (versions are specified on which the bot was developed and tested):</b>
@@ -18,8 +18,8 @@
 </ul>
 <hr>
 <b>Releases</b><br>
+Pre-release of ERTB – ver. 3.0.0 (beta 1). You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0b1">here</a>.<br>
 Last stable release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.<br>
-Pre-release of ERTB – ver. 3.0.0d5. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0d5">here</a>.<br>
 <hr><br>
 <b id='en'>ENGLISH VERSION</b><br>Ukrainian <a href="#ua">here</a><br><br>
 ERTB – exchange rates telegram bot.<br>
@@ -30,12 +30,38 @@ Your message:<br>
 Bot answer:
 <pre>🇺🇸5.0 USD<br>
 🇪🇺4.13 EUR
-🇷🇺365.98 RUB
-🇺🇦139.83 UAH</pre><br>
+🇺🇦139.83 UAH</pre>
+Another message:<br>
+<pre>I bought the stock for twenty five dollars, and now it's 43 dollars.</pre>
+Bot answer:
+<pre>🇺🇸25.00 USD<br>
+🇪🇺22.90 EUR
+🇬🇧19.67 GBP<br>
+0.000813843 BTC
+0.012757250 ETH<br>
+======
+🇺🇸43.00 USD<br>
+🇪🇺39.39 EUR
+🇬🇧33.84 GBP<br>
+0.001399810 BTC
+0.021942470 ETH</pre><br>
 <b>Features of the bot</b>
 <table>
   <tr>
     <th>Bot interface languages</th>
+    <td>
+    <ul>
+    <li><b>English</b></li>
+    <li><b>Ukrainian</b></li>
+    <li><b>Russian</b></li>
+    <li><b>Polish</b></li>
+    <li><b>Belarusian</b></li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Languages for the W2N<br>
+    <i>('Twenty-five dollars' is recognized as '$25')</i></th>
     <td>
     <ul>
     <li><b>English</b></li>
@@ -127,9 +153,9 @@ All the arguments for run:
   <tr>
     <td>Logging messages and errors to the terminal</td>
     <td><code>--logs</code> or <code>-l</code></td>
-    <td><code>on</code> or <code>off</code></td>
-    <td><code>python3 ERTB.py --logs on</code></td>
-    <td><code>off</code></td>
+    <td><code>1</code> or <code>0</code></td>
+    <td><code>python3 ERTB.py --logs 1</code></td>
+    <td><code>0</code></td>
   </tr>
   <tr>
     <td>Adding an administrator for the bot</td>
@@ -141,9 +167,9 @@ All the arguments for run:
   <tr>
     <td>Processing received messages on start</td>
     <td><code>--updates</code> or <code>-u</code></td>
-    <td><code>on</code> or <code>off</code></td>
-    <td><code>python3 ERTB.py --updates on</code></td>
-    <td><code>off</code></td>
+    <td><code>1</code> or <code>0</code></td>
+    <td><code>python3 ERTB.py --updates 1</code></td>
+    <td><code>0</code></td>
   </tr>
 </table><br>
 <b>Commands in Telegram for the user</b><br><br>
@@ -240,7 +266,21 @@ ERTB – exchange rates telegram bot.<br>
 <pre>🇺🇸5.0 USD<br>
 🇪🇺4.13 EUR
 🇷🇺365.98 RUB
-🇺🇦139.83 UAH</pre><br>
+🇺🇦139.83 UAH</pre>
+Інакше повідомлення:<br>
+<pre>Я купив акції по двадцять п'ять доларів, тепер вони коштують 43 долари.</pre>
+Відповідь бота
+<pre>🇺🇸25.00 USD<br>
+🇪🇺22.90 EUR
+🇬🇧19.67 GBP<br>
+0.000813843 BTC
+0.012757250 ETH<br>
+======
+🇺🇸43.00 USD<br>
+🇪🇺39.39 EUR
+🇬🇧33.84 GBP<br>
+0.001399810 BTC
+0.021942470 ETH</pre><br>
 <b>Характеристики бота</b>
 <table>
   <tr>
@@ -250,8 +290,21 @@ ERTB – exchange rates telegram bot.<br>
     <li><b>Англійська</b></li>
     <li><b>Українська</b></li>
     <li><b>російська</b></li>
-    <li><b>Польська</b> (скоро)</li>
-    <li><b>Білоруська</b> (скоро)</li>
+    <li><b>Польська</b></li>
+    <li><b>Білоруська</b></li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Мови, які підтримує W2N<br>
+    ("Двадцять п'ять гривень" буде розпізнано як "25 UAH")</th>
+    <td>
+    <ul>
+    <li><b>Англійська</b></li>
+    <li><b>Українська</b></li>
+    <li><b>російська</b></li>
+    <li><b>Польська (скоро)</b></li>
+    <li><b>Білоруська (скоро)</b></li>
     </ul>
     </td>
   </tr>
@@ -336,9 +389,9 @@ ERTB – exchange rates telegram bot.<br>
   <tr>
     <td>Логування у термінал</td>
     <td><code>--logs</code> або <code>-l</code></td>
-    <td><code>on</code> або <code>off</code></td>
+    <td><code>1</code> або <code>0</code></td>
     <td><code>python3 ERTB.py --logs on</code></td>
-    <td><code>on</code></td>
+    <td><code>0</code></td>
   </tr>
   <tr>
     <td>Додати адміністратора для боту</td>
@@ -350,9 +403,9 @@ ERTB – exchange rates telegram bot.<br>
   <tr>
     <td>Опрацювання повідомлень, що надійшли від API Телеграму при старті бота</td>
     <td><code>--updates</code> або <code>-u</code></td>
-    <td><code>on</code> або <code>off</code></td>
-    <td><code>python3 ERTB.py --updates on</code></td>
-    <td><code>off</code></td>
+    <td><code>1</code> або <code>0</code></td>
+    <td><code>python3 ERTB.py --updates 1</code></td>
+    <td><code>0</code></td>
   </tr>
 </table><br>
 <b>Команди в Telegram для користувача</b><br><br>
