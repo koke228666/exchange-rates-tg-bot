@@ -18,7 +18,7 @@ from NewPrint import Print, EnableLogging, DisableLogging, PrintMainInfo
 from SkipUpdates import EnableUpdates, DisableUpdates, IsUpdate
 from GetExchangeRates import SheduleUpdate, SheduleCryptoUpdate
 from BlackList import IsUserInBlackList, LoadBlackList, RemoveFromBlackList, AddToBlackList
-from Processing import AnswerText, LoadCurrencies, LoadCrypto, LoadDictionaries, LoadFlags, SearchValuesAndCurrencies, SpecialSplit, RemoveLinksAndWords
+from Processing import AnswerText, LoadCurrencies, LoadCrypto, LoadDictionaries, LoadFlags, SearchValuesAndCurrencies, SpecialSplit, MessagePreparation
 import TextHelper as CustomMarkup
 from TextHelper import LoadTexts, GetText
 import ListsCache
@@ -399,9 +399,8 @@ async def MainVoid(message: types.Message):
 
     # preparing a message
     OriginalMessageText = MessageText
-    MessageText = MessageText.lower()
-    MessageText = RemoveLinksAndWords(MessageText)
-    Print(MessageText, "L")
+    MessageText = MessagePreparation(MessageText)
+    Print("After MessagePreparation(): " + MessageText, "L")
 
     # Preparing a message for searching currencies
     try:
@@ -624,6 +623,7 @@ def LoadDataForBot():
     LoadDictionaries()
     LoadTexts()
     ListsCache.SetTokensForW2N()
+    ListsCache.SetExceptionsForW2N()
 
 
 def RegularBackup():

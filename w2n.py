@@ -1,14 +1,13 @@
-import pandas as pd
-from ListsCache import GetTokensForW2N
+from ListsCache import GetTokensForW2N, GetExceptionsForW2N
+from NewPrint import Print, IsEnabledLogging
 
 #df = pd.read_excel('tokens.xlsx')
 df = ""
-exceptions = ["патриот"]
 
 def CheckExceptions(word: str):
-    global exceptions
+    exceptions = GetExceptionsForW2N()
     for exception in exceptions:
-        if exception.find(word) != -1:
+        if word.find(exception) != -1:
             return True
     return False
 
@@ -53,8 +52,9 @@ def ConvertWordsToNumber(words):
     arr = []
     for word in words:
         errorValue = wordsMatching(word, df['token'])[1]
-        #tokenWord = wordsMatching(word, df['token'])[0]
-        #print("Word:", word, "| Token:", tokenWord, "| Error:", errorValue, "| Coef:", errorValue / len(word))
+        if IsEnabledLogging():
+            tokenWord = wordsMatching(word, df['token'])[0]
+            Print("Word: " + str(word) + " | Token: " + str(tokenWord) + " | Error: " + str(errorValue) + " | Coef: " + str(errorValue / len(word)), "L")
         if errorValue / len(word) < 0.12 and errorValue < 0.5 or word[0].isdigit():
             arr.append(1)
         else:
@@ -87,8 +87,13 @@ def wordsToNumber(words):
     localLevel = -1
     globalValue = 0
     localValue = 0
+    
     for word in words:
         if word[0].isdigit() and word[-1].isdigit():
+            globalLevel = -1
+            localLevel = -1
+            globalValue = 0
+            localValue = 0
             localValue += float(word)
             continue
 
@@ -99,7 +104,7 @@ def wordsToNumber(words):
             token_dict = df.loc[df['token'] == word].to_dict('records')[0]
         
         if token_dict['isMultiplier']:
-            if globalLevel == -1 or token_dict['level'] <= globalLevel:
+            if globalLevel == -1 or token_dict['level'] < globalLevel:
                 globalLevel = token_dict['level']
                 if localValue == 0:
                     localValue += token_dict['value']
@@ -111,9 +116,10 @@ def wordsToNumber(words):
             else:
                 pass
         else:
-            if localLevel == -1 or token_dict['level'] <= localLevel:
+            if localLevel == -1 or token_dict['level'] < localLevel:
                 localLevel = token_dict['level']
                 localValue += token_dict['value']
             else:
                 pass
+
     return globalValue + localValue
