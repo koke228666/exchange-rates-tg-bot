@@ -63,6 +63,7 @@ def SettingsMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     dictLang = ButtonTexts[lang]
     SettingsMU = InlineKeyboardMarkup()
     SettingsMU.add(InlineKeyboardButton(dictLang['currencies'], callback_data = "cur_menu"))
+    SettingsMU.add(InlineKeyboardButton(dictLang['ignore'], callback_data = "cur_ignore_menu"))
     SettingsMU.add(InlineKeyboardButton(dictLang['lang'], callback_data = "lang_menu"))
     SettingsMU.add(InlineKeyboardButton(dictLang['delete_button'], callback_data = "delbut_menu"))
     SettingsMU.add(InlineKeyboardButton(dictLang['flags'], callback_data = "flags_menu"))
@@ -212,6 +213,79 @@ def CurrenciesSetupMarkup(chatID: str, chatType: str, letter: str) -> InlineKeyb
                     CurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ❌", callback_data = "cur_" + i))
     CurrenciesSetupMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "cur_curmenu"))
     return CurrenciesSetupMU
+
+def IgnoreCurrenciesMainMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
+    lang = DBH.GetSetting(chatID, "lang", chatType)
+    dictLang = ButtonTexts[lang]
+    IgnoreCurrenciesMainMenuMU = InlineKeyboardMarkup()
+    IgnoreCurrenciesMainMenuMU.add(InlineKeyboardButton(dictLang['cur_menu'], callback_data = "cur_ignore_curmenu"))
+    IgnoreCurrenciesMainMenuMU.add(InlineKeyboardButton(dictLang['crypto_menu'], callback_data = "cur_ignore_cryptomenu"))
+    IgnoreCurrenciesMainMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
+    return IgnoreCurrenciesMainMenuMU
+
+def IgnoreCryptoMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
+    lang = DBH.GetSetting(chatID, "lang", chatType)
+    dictLang = ButtonTexts[lang]
+    IgnoreCryptoMenuMU = InlineKeyboardMarkup()
+    AllCrypto = ListsCache.GetListOfCrypto()
+    TurnedOnCrypto = DBH.GetAllCrypto(chatID)
+    for i in AllCrypto:
+        if i in TurnedOnCrypto:
+            IgnoreCryptoMenuMU.add(InlineKeyboardButton(i + " ✅", callback_data = "cur_ignore_" + i))
+        else:
+            IgnoreCryptoMenuMU.add(InlineKeyboardButton(i + " ❌", callback_data = "cur_ignore_" + i))
+    IgnoreCryptoMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "cur_ignore_menu"))
+    return IgnoreCryptoMenuMU
+
+def IgnoreCurrenciesMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
+    lang = DBH.GetSetting(chatID, "lang", chatType)
+    dictLang = ButtonTexts[lang]
+    IgnoreCurrenciesMenuMU = InlineKeyboardMarkup()
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("A", callback_data = "cur_ignore_a"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("B", callback_data = "cur_ignore_b"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("C", callback_data = "cur_ignore_c"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("D-F", callback_data = "cur_ignore_df"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("G-H", callback_data = "cur_ignore_gh"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("I-J", callback_data = "cur_ignore_ij"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("K-L", callback_data = "cur_ignore_kl"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("M", callback_data = "cur_ignore_m"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("N-Q", callback_data = "cur_ignore_nq"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("R-S", callback_data = "cur_ignore_rs"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("T-U", callback_data = "cur_ignore_tu"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("V-Z", callback_data = "cur_ignore_vz"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "cur_ignore_menu"))
+    return IgnoreCurrenciesMenuMU
+
+def IgnoreCurrenciesSetupMarkup(chatID: str, chatType: str, letter: str) -> InlineKeyboardMarkup:
+    lang = DBH.GetSetting(chatID, "lang", chatType)
+    dictLang = ButtonTexts[lang]
+    AllCurrencies = ListsCache.GetListOfCur()
+    TurnedOnCurrencies = DBH.GetAllCurrencies(chatID)
+    AllFlags = ListsCache.GetDictOfFlags()
+    IgnoreCurrenciesSetupMU = InlineKeyboardMarkup()
+    if len(letter) == 1:
+        letter = letter.upper()
+        for i in AllCurrencies:
+            if i[0] == letter:
+                if i in TurnedOnCurrencies:
+                    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ✅", callback_data = "cur_ignore_" + i))
+                else:
+                    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ❌", callback_data = "cur_ignore_" + i))
+    else:
+        firstLetter = ord(letter[0].upper())
+        lastLetter = ord(letter[1].upper())
+        listOfLetters = []
+        while firstLetter <= lastLetter:
+            listOfLetters.append(chr(firstLetter))
+            firstLetter += 1
+        for i in AllCurrencies:
+            if i[0] in listOfLetters:
+                if i in TurnedOnCurrencies:
+                    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ✅", callback_data = "cur_ignore_" + i))
+                else:
+                    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ❌", callback_data = "cur_ignore_" + i))
+    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "cur_curmenu"))
+    return IgnoreCurrenciesSetupMU
 
 def GetText(chatID: str, nameOfText: str, chatType: str) -> str:
     lang = DBH.GetSetting(chatID, "lang", chatType)

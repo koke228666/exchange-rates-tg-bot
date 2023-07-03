@@ -453,6 +453,7 @@ async def CallbackAnswer(call: types.CallbackQuery):
     callData = call.data
     allAdmins = call.message.chat.all_members_are_administrators
     userName = call.from_user.username
+    #Print("Callback data: " + callData, "L")
 
     if IsUserInBlackList(call.message.from_user.id, chatID):
         return
@@ -541,6 +542,31 @@ async def CallbackAnswer(call: types.CallbackQuery):
             elif memberStatus == "creator":
                 DBH.SetSetting(chatID, 'editSettings', Value, chatType)
         await bot.edit_message_text(GetText(chatID, 'edit_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.EditMenuMarkup(chatID, chatType))
+
+    elif str(callData).find("cur_ignore_") == 0:
+        member = await call.message.chat.get_member(fromUserId)
+        memberStatus = member.status
+        if not CanUserEditSettings(chatID, chatType, memberStatus, call.from_user.id, userName, allAdmins):
+            return
+        callData = str(callData).replace("cur_ignore_", "")
+        Value = str(callData)[0:len(str(callData))]
+
+        if Value == "menu":
+            await bot.edit_message_text(GetText(chatID, "ignore_currencies_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesMainMenuMarkup(chatID, chatType))
+        elif Value == "cryptomenu":
+            await bot.edit_message_text(GetText(chatID, "ignore_crypto_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCryptoMenuMarkup(chatID, chatType))
+        elif Value == "curmenu":
+            await bot.edit_message_text(GetText(chatID, "ignore_currencies_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesMenuMarkup(chatID, chatType))
+        elif len(Value) == 1 or len(Value) == 2:
+            await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesSetupMarkup(chatID, chatType, Value))
+        elif len(Value) == 3 or len(Value) == 4:
+            DBH.ReverseCurrencySetting(chatID, Value)
+            if Value in ListsCache.GetListOfCrypto():
+                await bot.edit_message_text(GetText(chatID, "ignore_crypto_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CryptoMenuMarkup(chatID, chatType))
+            else:
+                dictForMU = {'A': 'a', 'B': 'b', 'C': 'c', 'D': 'df', 'E': 'df', 'F': 'df', 'G': 'gh', 'H': 'gh', 'I': 'ij', 'J': 'ij', 'K': 'kl', 'L': 'kl', 'M': 'm',
+                             'N': 'nq', 'O': 'nq', 'P': 'nq', 'Q': 'nq', 'R': 'rs', 'S': 'rs', 'T': 'tu', 'U': 'tu', 'V': 'vz', 'W': 'vz', 'X': 'vz', 'Y': 'vz', 'Z': 'vz'}
+                await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CurrenciesSetupMarkup(chatID, chatType, dictForMU[Value[0]]))
 
     elif str(callData).find("cur_") == 0:
         member = await call.message.chat.get_member(fromUserId)
