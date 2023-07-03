@@ -1,14 +1,13 @@
-import pandas as pd
-from ListsCache import GetTokensForW2N
+from ListsCache import GetTokensForW2N, GetExceptionsForW2N
+from NewPrint import Print, IsEnabledLogging
 
 #df = pd.read_excel('tokens.xlsx')
 df = ""
-exceptions = ["патриот"]
 
 def CheckExceptions(word: str):
-    global exceptions
+    exceptions = GetExceptionsForW2N()
     for exception in exceptions:
-        if exception.find(word) != -1:
+        if word.find(exception) != -1:
             return True
     return False
 
@@ -53,8 +52,9 @@ def ConvertWordsToNumber(words):
     arr = []
     for word in words:
         errorValue = wordsMatching(word, df['token'])[1]
-        #tokenWord = wordsMatching(word, df['token'])[0]
-        #print("Word:", word, "| Token:", tokenWord, "| Error:", errorValue, "| Coef:", errorValue / len(word))
+        if IsEnabledLogging():
+            tokenWord = wordsMatching(word, df['token'])[0]
+            Print("Word: " + str(word) + " | Token: " + str(tokenWord) + " | Error: " + str(errorValue) + " | Coef: " + str(errorValue / len(word)), "L")
         if errorValue / len(word) < 0.12 and errorValue < 0.5 or word[0].isdigit():
             arr.append(1)
         else:
@@ -121,4 +121,5 @@ def wordsToNumber(words):
                 localValue += token_dict['value']
             else:
                 pass
+
     return globalValue + localValue

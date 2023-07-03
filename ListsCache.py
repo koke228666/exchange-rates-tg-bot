@@ -7,6 +7,7 @@ DictOfFlags = {}
 EmptyDictOfFlags = {}
 
 TokensForW2N = ""
+ExceptionsForW2N = []
 
 def SetEmptyDictOfFlags(newEmptyDictOfFlags: dict):
     global EmptyDictOfFlags
@@ -47,3 +48,16 @@ def SetTokensForW2N():
 def GetTokensForW2N() -> pd.DataFrame:
     global TokensForW2N
     return TokensForW2N
+
+def SetExceptionsForW2N():
+    global ExceptionsForW2N
+    newExceptionsForW2N = []
+    with open('Dictionaries/w2n_exceptions.txt', 'r') as file:
+        for line in file:
+            newExceptionsForW2N.append(line.replace("\n", ""))
+    ExceptionsForW2N = newExceptionsForW2N
+    print(ExceptionsForW2N)
+
+def GetExceptionsForW2N() -> list:
+    global ExceptionsForW2N
+    return ExceptionsForW2N

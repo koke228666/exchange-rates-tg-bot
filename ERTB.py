@@ -624,6 +624,7 @@ def LoadDataForBot():
     LoadDictionaries()
     LoadTexts()
     ListsCache.SetTokensForW2N()
+    ListsCache.SetExceptionsForW2N()
 
 
 def RegularBackup():

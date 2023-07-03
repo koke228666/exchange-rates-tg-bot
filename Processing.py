@@ -32,13 +32,17 @@ def RemoveLinksAndWords(MesTxt: str) -> str:
     return MesTxt
 
 def SpecialSplit(MesTxt: str) -> list:
-    MesTxt = MesTxt.replace("\n", " , ") # Replace hyphenation with dot
+    while MesTxt.find("\n") != -1: # Removing line breaks
+        MesTxt = MesTxt.replace("\n", " , ")
 
     while MesTxt.find("  ") != -1: # Removing double spaces
         MesTxt = MesTxt.replace("  ", " ")
 
     while MesTxt.find("'") != -1: # Removing apostrophes
         MesTxt = MesTxt.replace("'", "")
+
+    while MesTxt.find("\xa0") != -1: # Removing non-breaking spaces
+        MesTxt = MesTxt.replace("\xa0", " ")
 
     for i in range(len(MesTxt) - 2):
         if MesTxt[i].isdigit() and MesTxt[i + 2].isdigit() and MesTxt[i + 1] == ",":

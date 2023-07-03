@@ -1,17 +1,17 @@
 from aiogram.types.message import ContentType
 
-consoleLog = True
+consoleLog = False
 import datetime
 
 counterS = 0
 counterL = 0
 counterE = 0
 
-def Print(printingText: str, status: str = ""):
+def Print(printingText: str, status: str = "L"):
     printingText = str(printingText)
     global counterS, counterL, counterE
-    if consoleLog or status == "E" or status == "e" or status == "S" or status == "s":
-        status = status.lower()
+    status = status.lower()
+    if consoleLog or status == "e" or status == "s":
         if status == 's':
             print("\033[36m{} ".format("Service") + "\033[37m{}".format(str(counterS)) + ": "+ printingText)
             counterS += 1
@@ -44,3 +44,7 @@ def PrintMainInfo(mes, mestxt: str):
     Print("Chat ID: " + str(mes.chat.id) + " | Chat name: " + str(mes.chat.title) + " | Chat username: "+str(mes.chat.username) + " | Chat type: "+str(mes.chat.type), "L")
     Print("","")
     Print("Message: " + str(mestxt),    "L")
+
+def IsEnabledLogging():
+    global consoleLog
+    return consoleLog
