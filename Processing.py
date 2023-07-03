@@ -4,13 +4,19 @@ from DBH import GetAllCrypto, GetAllCurrencies, GetExchangeRates, GetListOfCrypt
 import GetExchangeRates
 import ListsCache
 import os
+import unicodedata
+import re
 
 ListEntry = []
 ListEqual = []
 ListCryptoEntry = []
 ListCryptoEqual = []
 
-def RemoveLinksAndWords(MesTxt: str) -> str:
+def RemoveSeparator(match):
+    return match.group(1).replace(" ", "")
+
+def MessagePreparation(MesTxt: str) -> str:
+    MesTxt = MesTxt.lower()
     indexOfAtSign = -1
     indexOfSpace = -1
     while MesTxt.find("@") != -1:
@@ -29,9 +35,6 @@ def RemoveLinksAndWords(MesTxt: str) -> str:
         else:
             MesTxt = MesTxt[0:-1]
 
-    return MesTxt
-
-def SpecialSplit(MesTxt: str) -> list:
     while MesTxt.find("\n") != -1: # Removing line breaks
         MesTxt = MesTxt.replace("\n", " , ")
 
@@ -44,10 +47,18 @@ def SpecialSplit(MesTxt: str) -> list:
     while MesTxt.find("\xa0") != -1: # Removing non-breaking spaces
         MesTxt = MesTxt.replace("\xa0", " ")
 
+    MesTxt = "".join(c for c in MesTxt if unicodedata.category(c) not in ["No", "Lo"])
+
     for i in range(len(MesTxt) - 2):
         if MesTxt[i].isdigit() and MesTxt[i + 2].isdigit() and MesTxt[i + 1] == ",":
             MesTxt = MesTxt[0:i + 1] + "." + MesTxt[i + 2:len(MesTxt)] # comma to dot
 
+    pattern = r"(?<!\d)(\d{1,3}(?: \d{3})*(?:\.\d+)?)(?=(?:\s\d{3})*(?:\.\d+)?|\D|$)"
+    MesTxt = re.sub(pattern, RemoveSeparator, MesTxt) # removing spaces in numbers
+
+    return MesTxt
+
+def SpecialSplit(MesTxt: str) -> list:
     a = [] #The main array to which the result will be written
     start = 0
     end = 0
@@ -84,10 +95,10 @@ def SpecialSplit(MesTxt: str) -> list:
         if i != "":
             b.append(i)
     
-    for i in range(len(b)):
-        if b[i][0].isdigit() and b[i].count(".") >= 2:
-            while b[i].find(".") != -1:
-                b[i] = b[i].replace(".", "")
+    #for i in range(len(b)):
+    #    if b[i][0].isdigit() and b[i].count(".") >= 2:
+    #        while b[i].find(".") != -1:
+    #            b[i] = b[i].replace(".", "")
 
     return b
 

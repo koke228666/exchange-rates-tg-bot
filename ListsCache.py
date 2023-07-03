@@ -56,7 +56,6 @@ def SetExceptionsForW2N():
         for line in file:
             newExceptionsForW2N.append(line.replace("\n", ""))
     ExceptionsForW2N = newExceptionsForW2N
-    print(ExceptionsForW2N)
 
 def GetExceptionsForW2N() -> list:
     global ExceptionsForW2N
