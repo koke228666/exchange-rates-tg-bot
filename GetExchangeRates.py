@@ -38,7 +38,7 @@ def UpdateExchangeRates() -> dict:
         Print("Updating of exchange rates is successfull.", "S")
     except:
         Print("Updating ER failed.", "E")
-        Print("Using exchange rates from DB.", "S")
+        Print("Using exchange rates from DB.", "W")
         exchangeRates = GetExchangeRates()
     return exchangeRates.copy()
 

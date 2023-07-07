@@ -512,7 +512,7 @@ async def CallbackAnswer(call: types.CallbackQuery):
             DBH.SetSetting(chatID, 'lang', Value, chatType)
         await bot.edit_message_text(GetText(chatID, 'lang_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.LanguageMenuMarkup(chatID, chatType))
 
-    elif str(callData).find("flags_") == 0:
+    elif str(callData).find("ui_") == 0:
         member = await call.message.chat.get_member(fromUserId)
         if not CanUserEditSettings(chatID, chatType, member.status, call.from_user.id, userName, allAdmins):
             return
@@ -520,10 +520,10 @@ async def CallbackAnswer(call: types.CallbackQuery):
         Value = str(callData)[Index:len(str(callData))]
         if Value == "menu":
             pass
-        elif Value == "button":
+        elif Value == "flags":
             IsFlag = DBH.GetSetting(chatID, 'flags', chatType)
             DBH.SetSetting(chatID, 'flags', int(not IsFlag), chatType)
-        await bot.edit_message_text(GetText(chatID, 'flags_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.FlagsMarkup(chatID, chatType))
+        await bot.edit_message_text(GetText(chatID, 'mes_view_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.MessageViewMarkup(chatID, chatType))
 
     elif str(callData).find("edit_") == 0:
         member = await call.message.chat.get_member(fromUserId)

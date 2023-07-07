@@ -51,11 +51,13 @@ Bot answer:
     <th>Bot interface languages</th>
     <td>
     <ul>
+    <li><b>Belarusian</b> (coming soon)</li>
+    <li><b>Czech</b> (coming soon)</li>
+    <li><b>Deutch</b> (coming soon)</li>
     <li><b>English</b></li>
-    <li><b>Ukrainian</b></li>
-    <li><b>Russian</b></li>
     <li><b>Polish</b></li>
-    <li><b>Belarusian</b></li>
+    <li><b>Russian</b></li>
+    <li><b>Ukrainian</b></li>
     </ul>
     </td>
   </tr>
@@ -64,11 +66,11 @@ Bot answer:
     <i>('Twenty-five dollars' is recognized as '$25')</i></th>
     <td>
     <ul>
+    <li><b>Deutch</b> (coming soon)</li>
     <li><b>English</b></li>
-    <li><b>Ukrainian</b></li>
-    <li><b>Russian</b></li>
     <li><b>Polish</b> (coming soon)</li>
-    <li><b>Belarusian</b> (coming soon)</li>
+    <li><b>Russian</b></li>
+    <li><b>Ukrainian</b></li>
     </ul>
     </td>
   </tr>
@@ -80,18 +82,17 @@ Bot answer:
     <th>Enhanced recognition of national currencies</th>
     <td>
     <ul>
+    <li><b>Deutch</b> (coming soon)</li>
     <li><b>English</b> – 47 and gold and silver (in ounces)</li>
-    <li><b>Ukrainian</b> – 50 and gold and silver (in ounces)</li>
-    <li><b>Russian</b> <i>(no longer support)</i> – 24 and gold and silver (in ounces)</li>
     <li><b>Polish</b> (coming soon)</li>
-    <li><b>Belarusian</b> (coming soon)</li>
+    <li><b>Russian</b> <i>(no longer support)</i> – 24 and gold and silver (in ounces)</li>
+    <li><b>Ukrainian</b> – 50 and gold and silver (in ounces)</li>
     </ul>
     </td>
   </tr>
   <tr>
     <th>Recognizing and converting cryptocurrencies</th>
-    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP.<br>
-    SOL, MATIC, DOT, SHIB, AVAX, TON are coming soon.</td>
+    <td>ADA, AVAX, BCH, BNB, BTC, DASH, DOGE, DOT, ETC, ETH, LTC, MATIC, RVN, SHIB, SOL, TRX, XLM, XMR, XRP.</td>
   </tr>
   <tr>
     <th>Enhanced cryptocurrency recognition</th>
@@ -288,10 +289,12 @@ ERTB – exchange rates telegram bot.<br>
     <td>
     <ul>
     <li><b>Англійська</b></li>
-    <li><b>Українська</b></li>
-    <li><b>російська</b></li>
+    <li><b>Білоруська</b> (скоро)</li>
+    <li><b>Німецька</b> (скоро)</li>
     <li><b>Польська</b></li>
-    <li><b>Білоруська</b></li>
+    <li><b>російська</b></li>
+    <li><b>Українська</b></li>
+    <li><b>Чеська (скоро)</b></li>
     </ul>
     </td>
   </tr>
@@ -301,10 +304,10 @@ ERTB – exchange rates telegram bot.<br>
     <td>
     <ul>
     <li><b>Англійська</b></li>
-    <li><b>Українська</b></li>
+    <li><b>Німецька</b> (скоро)</li>
+    <li><b>Польська</b> (скоро)</li>
     <li><b>російська</b></li>
-    <li><b>Польська (скоро)</b></li>
-    <li><b>Білоруська (скоро)</b></li>
+    <li><b>Українська</b></li>
     </ul>
     </td>
   </tr>
@@ -317,17 +320,16 @@ ERTB – exchange rates telegram bot.<br>
     <td>
     <ul>
     <li><b>Англійська</b> – 47, а також золото та срібло (в унціях)</li>
-    <li><b>Українська</b> – 50, а також золото та срібло (в унціях)</li>
-    <li><b>російська</b> <i>(підтримку закінчено)</i> – 24, а також золото та срібло (в унціях)</li>
+    <li><b>Німецька</b> (скоро)</li>
     <li><b>Польська</b> (скоро)</li>
-    <li><b>Білоруська</b> (скоро)</li>
+    <li><b>російська</b> <i>(підтримку закінчено)</i> – 24, а також золото та срібло (в унціях)</li>
+    <li><b>Українська</b> – 50, а також золото та срібло (в унціях)</li>
     </ul>
     </td>
   </tr>
   <tr>
     <th>Розпізнавання та конвертація криптовалют</th>
-    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP.<br>
-    SOL, MATIC, DOT, SHIB, AVAX, TON – скоро.</td>
+    <td>ADA, AVAX, BCH, BNB, BTC, DASH, DOGE, DOT, ETC, ETH, LTC, MATIC, RVN, SHIB, SOL, TRX, XLM, XMR, XRP.</td>
   </tr>
   <tr>
     <th>Покращене розпізнавання криптовалют</th>

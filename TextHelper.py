@@ -5,38 +5,62 @@ import ListsCache
 import os
 from NewPrint import Print
 
-from Dictionaries.ButtonTexts import ButtonTexts
-from Dictionaries.MessageTexts import MessageTexts
-
 AllBigTexts = {}
-ListOfNamesOfTextforBigTexts = []
+ButtonTexts = {}
+MessageTexts = {}
+ListOfNamesOfTextForBigTexts = []
 
 def LoadTexts():
     global AllBigTexts
-    global ListOfNamesOfTextforBigTexts
-    UAtexts = {}
-    RUtexts = {}
-    ENtexts = {}
+    global ListOfNamesOfTextForBigTexts
     try:
         listFiles = os.listdir("Texts")
+        langs = []
+        for i in listFiles:
+            if i[0:2] not in langs:
+                langs.append(i[0:2].lower())
+                AllBigTexts[i[0:2].lower()] = {}
         for i in listFiles:
             fileWithText = open("Texts/" + i)
             fileText = fileWithText.read()
             fileWithText.close()
             nameOfText = i[2:-4]
-            if nameOfText not in ListOfNamesOfTextforBigTexts:
-                ListOfNamesOfTextforBigTexts.append(nameOfText)
-            if i.find("UA") == 0:
-                UAtexts[nameOfText] = fileText
-            elif i.find("EN") == 0:
-                ENtexts[nameOfText] = fileText
-            elif i.find("RU") == 0:
-                RUtexts[nameOfText] = fileText
-        AllBigTexts['ua'] = UAtexts
-        AllBigTexts['ru'] = RUtexts
-        AllBigTexts['en'] = ENtexts
+            if nameOfText not in ListOfNamesOfTextForBigTexts:
+                ListOfNamesOfTextForBigTexts.append(nameOfText)
+            if i[0:2].lower() in AllBigTexts:
+                AllBigTexts[i[0:2].lower()][nameOfText] = fileText
     except:
         Print("Problem with Texts. Redownload, pls.", "E")
+
+    global MessageTexts
+    fileWithTextsForButtons = open("Dictionaries/messages_texts.csv")
+    lines = fileWithTextsForButtons.readlines()
+    for i in range(0, len(lines)):
+        lines[i] = lines[i].replace("\n", "")
+    langs = lines[0].split(";")
+    langs.pop(0)
+    for i in langs:
+        MessageTexts[i] = {}
+    for i in lines[1:]:
+        line = i.split(";")
+        for j in range(0, len(langs)):
+            MessageTexts[langs[j]][line[0]] = line[j+1]
+    fileWithTextsForButtons.close()
+
+    global ButtonTexts
+    fileWithTextsForButtons = open("Dictionaries/buttons.csv")
+    lines = fileWithTextsForButtons.readlines()
+    for i in range(0, len(lines)):
+        lines[i] = lines[i].replace("\n", "")
+    langs = lines[0].split(";")
+    langs.pop(0)
+    for i in langs:
+        ButtonTexts[i] = {}
+    for i in lines[1:]:
+        line = i.split(";")
+        for j in range(0, len(langs)):
+            ButtonTexts[langs[j]][line[0]] = line[j+1]
+    fileWithTextsForButtons.close()
 
 def DonateMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     lang = DBH.GetSetting(chatID, "lang", chatType)
@@ -62,11 +86,11 @@ def SettingsMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     isDeleteButton = DBH.GetSetting(chatID, "deleteButton", chatType)
     dictLang = ButtonTexts[lang]
     SettingsMU = InlineKeyboardMarkup()
+    SettingsMU.add(InlineKeyboardButton(dictLang['lang'], callback_data = "lang_menu"))
     SettingsMU.add(InlineKeyboardButton(dictLang['currencies'], callback_data = "cur_menu"))
     SettingsMU.add(InlineKeyboardButton(dictLang['ignore'], callback_data = "cur_ignore_menu"))
-    SettingsMU.add(InlineKeyboardButton(dictLang['lang'], callback_data = "lang_menu"))
     SettingsMU.add(InlineKeyboardButton(dictLang['delete_button'], callback_data = "delbut_menu"))
-    SettingsMU.add(InlineKeyboardButton(dictLang['flags'], callback_data = "flags_menu"))
+    SettingsMU.add(InlineKeyboardButton(dictLang['mes_view'], callback_data = "ui_menu"))
     if chatType != "private":
         SettingsMU.add(InlineKeyboardButton(dictLang['permisssions'], callback_data = "edit_menu"))
     if isDeleteButton:
@@ -109,20 +133,22 @@ def LanguageMenuMarkup(chatID: str, chatType: str):
     LanguageMenuMU.add(InlineKeyboardButton("🇬🇧EN" + RulesMark('en', AllSettings), callback_data = "lang_en"))
     LanguageMenuMU.add(InlineKeyboardButton("💩RU" + RulesMark('ru', AllSettings), callback_data = "lang_ru"))
     LanguageMenuMU.add(InlineKeyboardButton("🇺🇦UA" + RulesMark('ua', AllSettings), callback_data = "lang_ua"))
+    LanguageMenuMU.add(InlineKeyboardButton("🇵🇱PL" + RulesMark('pl', AllSettings), callback_data = "lang_pl"))
     LanguageMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
     return LanguageMenuMU
 
-def FlagsMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
+def MessageViewMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     lang = DBH.GetSetting(chatID, "lang", chatType)
     AllSettings = DBH.GetAllSettings(chatID, chatType)
     dictLang = ButtonTexts[lang]
-    FlagsMU = InlineKeyboardMarkup()
+    MessageViewMU = InlineKeyboardMarkup()
     if AllSettings['flags']:
-        FlagsMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ✅", callback_data = "flags_button"))
+        MessageViewMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ✅", callback_data = "ui_flags"))
     else:
-        FlagsMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ❌", callback_data = "flags_button"))
-    FlagsMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
-    return FlagsMU
+        MessageViewMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ❌", callback_data = "ui_flags"))
+    MessageViewMU.add(InlineKeyboardButton(dictLang['symbols_button'] + " ✅", callback_data = "ui_symbols"))
+    MessageViewMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
+    return MessageViewMU
 
 def EditMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     def RulesMark(role: str, answDict) -> str:
@@ -290,7 +316,7 @@ def IgnoreCurrenciesSetupMarkup(chatID: str, chatType: str, letter: str) -> Inli
 def GetText(chatID: str, nameOfText: str, chatType: str) -> str:
     lang = DBH.GetSetting(chatID, "lang", chatType)
     answerText = ''
-    if nameOfText in ListOfNamesOfTextforBigTexts:
+    if nameOfText in ListOfNamesOfTextForBigTexts:
         dictLang = AllBigTexts[lang]
         answerText = dictLang[nameOfText]
     elif nameOfText in ButtonTexts[lang]:
