@@ -4,11 +4,12 @@ import time
 from Token import apiKey
 from DBH import UpdateExchangeRatesDB, GetExchangeRates, UpdateCryptoRatesDB, GetCryptoRates
 from random import randint
+import json
 
 #Own libraries
 from NewPrint import Print
 
-cryptoList = ["ADA", "BCH", "BNB", "BTC", "DASH", "DOGE", "ETC", "ETH", "LTC", "RVN", "TRX", "XLM", "XMR", "XRP"]
+#cryptoList = ["ADA", "BCH", "BNB", "BTC", "DASH", "DOGE", "ETC", "ETH", "LTC", "RVN", "TRX", "XLM", "XMR", "XRP"]
 exchangeRates = {}
 cryptoRates = []
 
@@ -45,6 +46,13 @@ def UpdateExchangeRates() -> dict:
 
 def UpdateCryptoRates() -> dict:
     global cryptoRates
+    #read cryptolist from crypto.json
+    with open('Dictionaries/crypto.json') as json_file:
+        cryptoData = json.load(json_file)
+    
+    cryptoList = [crypto['code'] for crypto in cryptoData['crypto']]
+    
+
     Print("Updating of crypto rates has started.", "S")
     try:
         url = "https://api.binance.com/api/v3/ticker/price"
