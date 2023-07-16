@@ -1,6 +1,6 @@
 from TextHelper import GetText
 from NewPrint import Print
-from DBH import GetAllCrypto, GetAllCurrencies, GetExchangeRates, GetListOfCrypto, GetListOfCurrencies, GetDictOfFlags, GetSetting
+from DBH import GetAllCrypto, GetAllCurrencies, GetExchangeRates, GetListOfCrypto, GetListOfCurrencies, GetDictOfFlags, GetSetting, GetIgnoredCurrencies
 import GetExchangeRates
 import ListsCache
 import os
@@ -381,6 +381,16 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
 
         ListOfChatCurrencies = GetAllCurrencies(chatID)
         ListOfChatCrypto = GetAllCrypto(chatID)
+        ListOfChatIgnored = GetIgnoredCurrencies(chatID)
+        
+        for j in ListOfChatIgnored:
+            if j in ListOfChatCurrencies:
+                ListOfChatCurrencies.remove(j)
+        
+        for j in ListOfChatIgnored:
+            if j in ListOfChatCrypto:
+                ListOfChatCrypto.remove(j)
+
         for j in ListOfChatCurrencies: #Проходимся по всем классическим валютам
             if CurCurrency == j:
                 pass
