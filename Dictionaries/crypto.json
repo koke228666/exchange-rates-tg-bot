@@ -1,156 +1,417 @@
 {
-    "crypto":[
+    "crypto": [
         {
-            "name":"bitcoin",
-            "code":"BTC",
-            "equal":["btc","бтк"],
-            "enEntry":["bitcoin"],
-            "ruEntry":["биткоин","биткойн","биток","битка"],
-            "uaEntry":["біток","бітк"]
+            "name": "cardano",
+            "code": "ADA",
+            "equal": [
+                "ada"
+            ],
+            "entry": {
+                "en": [
+                    "cardano"
+                ],
+                "ru": [
+                    "кардано"
+                ],
+                "ua": [
+                    "кардано"
+                ]
+            }
         },
         {
-            "name":"ethereum",
-            "code":"ETH",
-            "equal":["eth"],
-            "enEntry":["ethereum"],
-            "ruEntry":["эфириум","эфир","кефир"],
-            "uaEntry":["ефір","этер","кефір"]
+            "name": "avalanche",
+            "code": "AVAX",
+            "equal": [
+                "avax"
+            ],
+            "entry": {
+                "en": [
+                    "avalanche"
+                ],
+                "ru": [
+                    "аваланч"
+                ],
+                "ua": [
+                    "аваланч"
+                ]
+            }
         },
         {
-            "name":"cardano",
-            "code":"ADA",
-            "equal":["ada"],
-            "enEntry":["cardano"],
-            "ruEntry":["кардано"],
-            "uaEntry":["кардано"]
+            "name": "bitcoin cash",
+            "code": "BCH",
+            "equal": [
+                "bch"
+            ],
+            "entry": {
+                "en": [
+                    "bitcoin cash"
+                ],
+                "ru": [
+                    "биткоин кэш",
+                    "биткойн кэш",
+                    "биткоин кеш",
+                    "биткойн кэш",
+                    "биткеш",
+                    "биткэш"
+                ],
+                "ua": [
+                    "біткоін кеш",
+                    "біткоїн кеш",
+                    "біткеш"
+                ]
+            }
         },
         {
-            "name":"bitcoin cash",
-            "code":"BCH",
-            "equal":["bch"],
-            "enEntry":["bitcoin cash"],
-            "ruEntry":["биткоин кэш","биткойн кэш","биткоин кеш","биткойн кэш","биткеш","биткэш"],
-            "uaEntry":["біткоін кеш", "біткоїн кеш", "біткеш"]
+            "name": "binance coin",
+            "code": "BNB",
+            "equal": [
+                "bnb"
+            ],
+            "entry": {
+                "en": [
+                    "binance coin"
+                ],
+                "ru": [
+                    "бинанс коин",
+                    "бинанс койн",
+                    "бинкоин",
+                    "бинкойн"
+                ],
+                "ua": [
+                    "бінанс коїн",
+                    "бінанс койн",
+                    "бінанс коін",
+                    "бінкоїн",
+                    "бінкойн",
+                    "бінкоін"
+                ]
+            }
         },
         {
-            "name":"binance coin",
-            "code":"BNB",
-            "equal":["bnb"],
-            "enEntry":["binance coin"],
-            "ruEntry":["бинанс коин","бинанс койн","бинкоин","бинкойн"],
-            "uaEntry":["бінанс коїн","бінанс койн","бінанс коін","бінкоїн","бінкойн","бінкоін"]
+            "name": "bitcoin",
+            "code": "BTC",
+            "equal": [
+                "btc",
+                "бтк"
+            ],
+            "entry": {
+                "en": [
+                    "bitcoin"
+                ],
+                "ru": [
+                    "биткоин",
+                    "биткойн",
+                    "биток",
+                    "битка"
+                ],
+                "ua": [
+                    "біток",
+                    "бітк"
+                ]
+            }
         },
         {
-            "name":"dash",
-            "code":"DASH",
-            "equal":["dash","деш","дэш","деша","дэша"],
-            "enEntry":["dash"],
-            "ruEntry":["деш","дэш","деша","дэша"],
-            "uaEntry":["деш","деша"]
+            "name": "dash",
+            "code": "DASH",
+            "equal": [
+                "деш",
+                "дэш",
+                "деша",
+                "дэша"
+            ],
+            "entry": {
+                "en": [
+                    "dash"
+                ],
+                "ru": [
+                    "деш",
+                    "дэш",
+                    "деша",
+                    "дэша"
+                ],
+                "ua": [
+                    "деш",
+                    "деша"
+                ]
+            }
         },
         {
-            "name":"dogecoin",
-            "code":"DOGE",
-            "equal":["doge"],
-            "enEntry":["dogecoin","doge coin"],
-            "ruEntry":["догикоин","догикойн","доги","догкойн","догкоин"],
-            "uaEntry":["догікойн","догікойн","догікоін","догкойн","догкоіn","догкоїн","догі","доджі","доджікойn","доджікоіn","доджікоїn"]
+            "name": "dogecoin",
+            "code": "DOGE",
+            "equal": [
+                "doge"
+            ],
+            "entry": {
+                "en": [
+                    "dogecoin",
+                    "doge coin"
+                ],
+                "ru": [
+                    "догикоин",
+                    "догикойн",
+                    "доги",
+                    "догкойн",
+                    "догкоин"
+                ],
+                "ua": [
+                    "догікойн",
+                    "догікойн",
+                    "догікоін",
+                    "догкойн",
+                    "догкоіn",
+                    "догкоїн",
+                    "догі",
+                    "доджі",
+                    "доджікойn",
+                    "доджікоіn",
+                    "доджікоїn"
+                ]
+            }
         },
         {
-            "name":"ethereum classic",
-            "code":"ETC",
-            "equal":["etc"],
-            "enEntry":["ethereum classic"],
-            "ruEntry":["классический эфир","классических эфир","классическими эфирами","классический этер","классических этер","классическими этер"],
-            "uaEntry":["класичний етер","класичний ефір","класичного етер","класичного ефір"]
+            "name": "polkadot",
+            "code": "DOT",
+            "equal": [
+                "dot"
+            ],
+            "entry": {
+                "en": [
+                    "polkadot"
+                ],
+                "ru": [
+                    "полкадот"
+                ],
+                "ua": [
+                    "полкадот"
+                ]
+            }
         },
         {
-            "name":"litecoin",
-            "code":"LTC",
-            "equal":["ltc"],
-            "enEntry":["litecoin"],
-            "ruEntry":["лайткоин","лайткойн"],
-            "uaEntry":["лайткоїн","лайткоіn","лайткойn"]
+            "name": "ethereum classic",
+            "code": "ETC",
+            "equal": [
+                "etc"
+            ],
+            "entry": {
+                "en": [
+                    "ethereum classic"
+                ],
+                "ru": [
+                    "классический эфир",
+                    "классических эфир",
+                    "классическими эфирами",
+                    "классический этер",
+                    "классических этер",
+                    "классическими этер"
+                ],
+                "ua": [
+                    "класичний етер",
+                    "класичний ефір",
+                    "класичного етер",
+                    "класичного ефір"
+                ]
+            }
         },
         {
-            "name":"ravencoin",
-            "code":"RVN",
-            "equal":["rvn"],
-            "enEntry":["ravencoin"],
-            "ruEntry":["ворон"],
-            "uaEntry":["ворон"]
+            "name": "ethereum",
+            "code": "ETH",
+            "equal": [
+                "eth"
+            ],
+            "entry": {
+                "en": [
+                    "ethereum"
+                ],
+                "ru": [
+                    "эфириум",
+                    "эфир",
+                    "кефир"
+                ],
+                "ua": [
+                    "ефір",
+                    "етер",
+                    "кефір"
+                ]
+            }
         },
         {
-            "name":"tron",
-            "code":"TRX",
-            "equal":["trx"],
-            "enEntry":["tron"],
-            "ruEntry":["трон"],
-            "uaEntry":["трон"]
+            "name": "litecoin",
+            "code": "LTC",
+            "equal": [
+                "ltc"
+            ],
+            "entry": {
+                "en": [
+                    "litecoin"
+                ],
+                "ru": [
+                    "лайткоин",
+                    "лайткойн"
+                ],
+                "ua": [
+                    "лайткоїн",
+                    "лайткоіn",
+                    "лайткойn"
+                ]
+            }   
         },
         {
-            "name":"stellar",
-            "code":"XLM",
-            "equal":["xlm"],
-            "enEntry":["stellar"],
-            "ruEntry":["стелар","стеллар"],
-            "uaEntry":["стелар","стеллар"]
+            "name": "polygon",
+            "code": "MATIC",
+            "equal": [
+                "matic",
+                "матик"
+            ],
+            "entry": {
+                "en": [
+                    "polygon"
+                ],
+                "ru": [
+                    "полигон"
+                ],
+                "ua": [
+                    "полігон"
+                ]
+            }
         },
         {
-            "name":"monero",
-            "code":"XMR",
-            "equal":["xmr"],
-            "enEntry":["monero"],
-            "ruEntry":["монеро"],
-            "uaEntry":["монеро"]
+            "name": "ravencoin",
+            "code": "RVN",
+            "equal": [
+                "rvn"
+            ],
+            "entry": {
+                "en": [
+                    "ravencoin"
+                ],
+                "ru": [
+                    "ворон",
+                    "ревенкоин",
+                    "ревенкойн"
+                ],
+                "ua": [
+                    "ворон",
+                    "ревенкоін",
+                    "ревенкойн",
+                    "ревенкоїн"
+                ]
+            }
         },
         {
-            "name":"ripple",
-            "code":"XRP",
-            "equal":["xrp"],
-            "enEntry":["ripple"],
-            "ruEntry":["рипл","риппл"],
-            "uaEntry":["ріпл","ріппл"]
+            "name": "shiba inu",
+            "code": "SHIB",
+            "equal": [
+                "shib",
+                "шиба",
+                "шіба"
+            ],
+            "entry": {
+                "en": [
+                    "shiba inu",
+                    "shiba"
+                ],
+                "ru": [
+                    "сиба ину",
+                    "шиба ину"
+                ],
+                "ua": [
+                    "сиба іну",
+                    "шиба іну"
+                ]
+            }
         },
         {
-            "name":"avalanche",
-            "code":"AVAX",
-            "equal":["avax"],
-            "enEntry":["avalanche"],
-            "ruEntry":["аваланч"],
-            "uaEntry":["аваланч"]
+            "name": "solana",
+            "code": "SOL",
+            "equal": [
+                "sol",
+                "сол"
+            ],
+            "entry": {
+                "en": [
+                    "solana"
+                ],
+                "ru": [
+                    "солана"
+                ],
+                "ua": [
+                    "солана"
+                ]
+            }
         },
         {
-            "name":"polkadot",
-            "code":"DOT",
-            "equal":["dot"],
-            "enEntry":["polkadot"],
-            "ruEntry":["полкадот"],
-            "uaEntry":["полкадот"]
+            "name": "tron",
+            "code": "TRX",
+            "equal": [
+                "trx"
+            ],
+            "entry": {
+                "en": [
+                    "tron"
+                ],
+                "ru": [
+                    "трон"
+                ],
+                "ua": [
+                    "трон"
+                ]
+            }
         },
         {
-            "name":"polygon",
-            "code":"MATIC",
-            "equal":["matic"],
-            "enEntry":["polygon"],
-            "ruEntry":["полигон"],
-            "uaEntry":["полігон"]
+            "name": "stellar",
+            "code": "XLM",
+            "equal": [
+                "xlm"
+            ],
+            "entry": {
+                "en": [
+                    "stellar"
+                ],
+                "ru": [
+                    "стеллар"
+                ],
+                "ua": [
+                    "стеллар"
+                ]
+            }
         },
         {
-            "name":"shiba inu",
-            "code":"SHIB",
-            "equal":["shib"],
-            "enEntry":["shiba inu"],
-            "ruEntry":["сиба ину"],
-            "uaEntry":["сиба іну"]
+            "name": "monero",
+            "code": "XMR",
+            "equal": [
+                "xmr"
+            ],
+            "entry": {
+                "en": [
+                    "monero"
+                ],
+                "ru": [
+                    "монеро"
+                ],
+                "ua": [
+                    "монеро"
+                ]
+            }
         },
         {
-            "name":"solana",
-            "code":"SOL",
-            "equal":["sol"],
-            "enEntry":["solana"],
-            "ruEntry":["солана"],
-            "uaEntry":["солана"]
+            "name": "ripple",
+            "code": "XRP",
+            "equal": [
+                "xrp"
+            ],
+            "entry": {
+                "en": [
+                    "ripple"
+                ],
+                "ru": [
+                    "рипл",
+                    "риппл"
+                ],
+                "ua": [
+                    "ріпл",
+                    "ріппл"
+                ]
+            }
         }
     ]
 }
