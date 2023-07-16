@@ -5,12 +5,13 @@ ERTB - exchange rates telegram bot.
 Больше информации о боте: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/README.md
 
 Курсы классических валют обновляются раз в сутки. API: http://data.fixer.io/api/.
-Курсы криптовалют несколько раз в минуту. API: https://api.binance.com/api/v3/
+Курсы криптовалют обновляются несколько раз в минуту. API: https://api.binance.com/api/v3/
 
 На данный момент поддерживаются все классические валюты мира, а также более десятка криптовалют.
 
 Оригинальный код открыт и распространяется под лицензией MIT. Текст лицензии: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/LICENSE.
 
-Актуальная версия: 3.0 Dev
+Актуальная версия: 3.0 Beta 1.0
+Дата последнего обновления: июль 2023 года
 
-Авторы: @volkovskey и @vladikko
+Обратная связь: @ertb_support_bot
