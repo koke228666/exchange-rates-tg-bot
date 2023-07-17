@@ -30,29 +30,39 @@ bot = Bot(token=botToken)
 dp = Dispatcher(bot)
 IsStartedCount = False
 
+def GetDataFromMessage(message: types.Message):
+    data = {}
+    data['fromUserId'] = message.from_user.id
+    data['chatID'] = message.chat.id
+    data['chatType'] = message.chat.type
+    data['chatName'] = "" if data['chatType'] == "private" else message.chat.title
+    data['userName'] = message.from_user.username
+    return data
+
+def IsFromBot(message: types.Message):
+    try:
+        if message.forward_from.username == botUsername:
+            return True
+    except:
+        return False
+
 # Public commands
 @dp.message_handler(commands=['about'])
 async def AboutMes(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
-
-    if IsUserInBlackList(fromUserId, chatID):
+    messageData = GetDataFromMessage(message)
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    IsChatExist(chatID, chatType)
-    await message.reply(GetText(chatID, "about", chatType), reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+    IsChatExist(messageData["chatID"], messageData["chatType"], messageData["chatName"])
+    await message.reply(GetText(messageData['chatID'], "about", messageData['chatType']), reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['help'])
 async def HelpMes(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
-
-    if IsUserInBlackList(fromUserId, chatID):
+    messageData = GetDataFromMessage(message)
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    IsChatExist(chatID, chatType)
-    await message.reply(GetText(chatID, "help", message.chat.type), reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+    IsChatExist(messageData["chatID"], messageData["chatType"])
+    await message.reply(GetText(messageData["chatID"], "help", messageData["chatType"]), reply_markup=CustomMarkup.DeleteMarkup(messageData["chatID"], messageData["chatType"]))
 
 
 def CanUserEditSettings(chatID: str, chatType: str, memberStatus: str, userID: str, userName: str, AllMembersAreAdministrators: bool = False) -> bool:
@@ -83,58 +93,34 @@ def CanUserEditSettings(chatID: str, chatType: str, memberStatus: str, userID: s
 
 @dp.message_handler(commands=['settings'])
 async def SettingsMes(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
-    userName = message.from_user.username
-    if IsUserInBlackList(fromUserId, chatID):
+    messageData = GetDataFromMessage(message)
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    IsChatExist(chatID, chatType)
+    IsChatExist(messageData["chatID"], messageData["chatType"], messageData["chatName"])
 
-    member = await message.chat.get_member(fromUserId)
-    if CanUserEditSettings(chatID, chatType, member.status, message.from_user.id, userName, message.chat.all_members_are_administrators):
-        await message.reply(GetText(chatID, "main_settings_menu", chatType), reply_markup=CustomMarkup.SettingsMarkup(chatID, chatType))
+    member = await message.chat.get_member(messageData["fromUserId"])
+    if CanUserEditSettings(messageData["chatID"], messageData["chatType"], member.status, message.from_user.id, messageData["userName"], message.chat.all_members_are_administrators):
+        await message.reply(GetText(messageData["chatID"], "main_settings_menu", messageData["chatType"]), reply_markup=CustomMarkup.SettingsMarkup(messageData['chatID'], messageData['chatType']))
     else:
-        await message.reply(GetText(chatID, "error_main_settings_menu", chatType), reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+        await message.reply(GetText(messageData["chatID"], "error_main_settings_menu", messageData["chatType"]), reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['donate'])
 async def DonateMes(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
-    if IsUserInBlackList(fromUserId, chatID):
+    messageData = GetDataFromMessage(message)
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    IsChatExist(chatID, message.chat.type)
-    await message.reply(GetText(chatID, "donate", chatType), reply_markup=CustomMarkup.DonateMarkup(chatID, chatType))
+    IsChatExist(messageData["chatID"], messageData["chatType"], messageData["chatName"])
+    await message.reply(GetText(messageData["chatID"], "donate", messageData["chatType"]), reply_markup=CustomMarkup.DonateMarkup(messageData['chatID'], messageData['chatType']))
 
-
-@dp.message_handler(commands=['wrong'])
-async def WrongMes(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
-
-    if IsUserInBlackList(fromUserId, chatID):
-        return
-    IsChatExist(chatID, chatType)
-    try:
-        MessageText = message.reply_to_message.text
-    except:
-        Print("Wrong mes error", "E")
-        if message.photo or message.video is not None or message.document is not None:
-            MessageText = message.reply_to_message.caption
-    DBH.AddReport(chatID, fromUserId, MessageText)
 
 # Admin`s commands
 @dp.message_handler(commands=['echo'])
 async def EchoVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-
-    if IsUserInBlackList(fromUserId, chatID):
+    messageData = GetDataFromMessage(message)
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         MessageToUsers = (message.text).replace("/echo ", "")
         adminList = DBH.GetAdmins()
         for i in adminList:
@@ -142,14 +128,14 @@ async def EchoVoid(message: types.Message):
         listGC = DBH.GetGroupChatIDs()
         for i in listGC:
             try:
-                await bot.send_message(i, MessageToUsers, reply_markup=CustomMarkup.DonateMarkup(i, "group"))
+                await bot.send_message(i, MessageToUsers, parse_mode="HTML", reply_markup=CustomMarkup.DonateMarkup(i, "group"))
             except:
                 Print("Chat " + str(i) + " is not available.", "W")
             time.sleep(0.035)
         listPC = DBH.GetPrivateChatIDs()
         for i in listPC:
             try:
-                await bot.send_message(i, MessageToUsers, reply_markup=CustomMarkup.DonateMarkup(i, "private"))
+                await bot.send_message(i, MessageToUsers, parse_mode="HTML", reply_markup=CustomMarkup.DonateMarkup(i, "private"))
             except:
                 Print("Chat " + str(i) + " is not available.", "W")
             time.sleep(0.035)
@@ -159,33 +145,30 @@ async def EchoVoid(message: types.Message):
 
 @dp.message_handler(commands=['write'])
 async def EchoVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
+    messageData = GetDataFromMessage(message)
 
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         MessageToUsers = (message.text).replace("/write ", "")
         index = MessageToUsers.find(" ")
         toChatID = MessageToUsers[0:index]
         MessageToUsers = MessageToUsers.replace(str(toChatID) + " ", "")
         try:
-            await bot.send_message(toChatID, MessageToUsers)
-            await bot.send_message(fromUserId, "Message sent.")
+            await bot.send_message(toChatID, MessageToUsers, parse_mode="HTML")
+            await bot.send_message(messageData["fromUserId"], "Message sent.")
         except:
-            await bot.send_message(fromUserId, "Failed to send a message.")
+            await bot.send_message(messageData["fromUserId"], "Failed to send a message.")
 
 
 @dp.message_handler(commands=['count'])
 async def CountVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
+    messageData = GetDataFromMessage(message)
 
     global IsStartedCount
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         if not IsStartedCount:
             isShortVariant = False
             Variant = (message.text).replace("/count", "").replace(" ", "")
@@ -223,18 +206,16 @@ async def CountVoid(message: types.Message):
                 else:
                     await bot.send_message(i, "The number of members of group chats: " + str(CountUsers), reply_markup=CustomMarkup.DeleteMarkup(i, "private"))
         else:
-            await message.reply("The counting has already begun.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+            await message.reply("The counting has already begun.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['newadmin'])
 async def AddAdminVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
+    messageData = GetDataFromMessage(message)
 
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         newAdminID = message.text
         newAdminID = newAdminID.replace("/newadmin ", "")
         if newAdminID.isdigit():
@@ -242,136 +223,126 @@ async def AddAdminVoid(message: types.Message):
                 DBH.AddAdmin(int(newAdminID))
                 ListOfAdmins = DBH.GetAdmins()
                 if newAdminID in ListOfAdmins:
-                    await message.reply("A new administrator has been successfully added.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                    await message.reply("A new administrator has been successfully added.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
                 else:
-                    await message.reply("Failed to add a new administrator.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                    await message.reply("Failed to add a new administrator.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
             else:
-                await message.reply("This ID is already on the list of administrators.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                await message.reply("This ID is already on the list of administrators.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
         else:
-            await message.reply("The ID should only contain numbers and possibly a minus.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+            await message.reply("The ID should only contain numbers and possibly a minus.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['stats'])
 async def StatsVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
+    messageData = GetDataFromMessage(message)
 
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         chatStats = DBH.GetChatsAmount()
         answerMes = "PM: " + str(chatStats['private']) + "\nGroups: " + str(chatStats['groups'])
-        await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+        await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['fullstats'])
 async def FullStatsVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
+    messageData = GetDataFromMessage(message)
 
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         chatStats = DBH.GetTimeStats()
         StatsByOneDay = DBH.GetStatsInPeriod(1)
         answerMes = "For all the time:\nPM: " + str(chatStats['private']) + "\nGroups: " + str(chatStats['groups']) + "\n\nIn 24 hours:\nPM: " + str(StatsByOneDay['activePrivate']) + "\nGroups: " + str(StatsByOneDay['activeGroups']) + "\n\nIn a week:\nPM: " + str(chatStats['activePrivateWeek']) + "\nGroups: " + str(chatStats['activeGroupsWeek']) + "\n\nIn 30 days:\nPM: " + str(chatStats['activePrivateMonth']) + "\nGroups: " + str(chatStats['activeGroupsMonth'])
-        await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+        await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['backup'])
 async def BackupVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
+    messageData = GetDataFromMessage(message)
 
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         nameOfBackup = DBH.CreateAllBackups()
         fileSize = os.path.getsize(nameOfBackup)
         if fileSize <= 52428800:
             try:
                 backupFile = open(nameOfBackup, 'rb')
-                await bot.send_document(chatID, backupFile)
+                await bot.send_document(messageData["chatID"], backupFile)
             except:
-                await message.reply("The file sending failed.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                await message.reply("The file sending failed.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
         else:
-            await message.reply("The file is too big. Its weight is " + str(fileSize) + " bytes.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+            await message.reply("The file is too big. Its weight is " + str(fileSize) + " bytes.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['unban'])
 async def UnbanVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
+    messageData = GetDataFromMessage(message)
 
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         unbanID = message.text
         unbanID = unbanID.replace("/unban ", "")
         if unbanID.isdigit():
             if DBH.IsBlacklisted(int(unbanID)):
                 RemoveFromBlackList(int(unbanID))
                 if not DBH.IsBlacklisted(int(unbanID)):
-                    await message.reply("User/group has been successfully unblocked.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                    await message.reply("User/group has been successfully unblocked.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
                 else:
-                    await message.reply("Failed to unblock user/group.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                    await message.reply("Failed to unblock user/group.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
             else:
-                await message.reply("This user/group is not in a black list.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                await message.reply("This user/group is not in a black list.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
         else:
-            await message.reply("The ID should only contain numbers and minus.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+            await message.reply("The ID should only contain numbers and minus.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['ban'])
 async def UnbanVoid(message: types.Message):
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
+    messageData = GetDataFromMessage(message)
 
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    if DBH.IsAdmin(fromUserId):
+    if DBH.IsAdmin(messageData["fromUserId"]):
         banID = message.text
         banID = banID.replace("/ban ", "")
         if banID.isdigit() or (banID[1:].isdigit() and banID[0] == '-'):
             if not DBH.IsBlacklisted(int(banID)):
-                AddToBlackList(int(banID), chatID, chatID)
+                AddToBlackList(int(banID), messageData["fromUserId"], messageData["chatName"])
                 if DBH.IsBlacklisted(int(banID)):
-                    await message.reply("User/group successfully blocked.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                    await message.reply("User/group successfully blocked.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
                 else:
-                    await message.reply("Failed to block a user/chat.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                    await message.reply("Failed to block a user/chat.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
             else:
-                await message.reply("This user/group is already in the black list.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+                await message.reply("This user/group is already in the black list.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
         else:
-            await message.reply("The ID should only contain numbers and minus.", reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+            await message.reply("The ID should only contain numbers and minus.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 # Technical commands
 @dp.message_handler(commands=['start'])
 async def StartVoid(message: types.Message):
-    chatID = message.chat.id
-    chatType = message.chat.type
-    fromUserId = message.from_user.id
-    if IsUserInBlackList(fromUserId, chatID):
+    messageData = GetDataFromMessage(message)
+
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
 
-    IsChatExist(chatID, chatType)
-    if chatType == "private":
-        await message.reply(GetText(chatID, "main_settings_menu", chatType), reply_markup=CustomMarkup.SettingsMarkup(chatID, chatType))
+    if not IsChatExist(messageData["chatID"], messageData["chatType"], messageData["chatName"]):
+        if messageData["chatType"] == "private":
+            lang = message.from_user.language_code
+            if lang == None:
+                lang = "en"
+            elif lang == "uk":
+                lang = "ua"
+            DBH.SetSetting(messageData["chatID"], "lang", lang, messageData["chatType"])
+            await message.reply(GetText(messageData["chatID"], "main_settings_menu", messageData["chatType"]), reply_markup=CustomMarkup.SettingsMarkup(messageData['chatID'], messageData['chatType']))
 
-
-def IsFromBot(message: types.Message):
-    try:
-        if message.forward_from.username == botUsername:
-            return True
-    except:
-        return False
 
 # Main void
 @dp.message_handler(content_types=ContentType.ANY)
 async def MainVoid(message: types.Message):
+    messageData = GetDataFromMessage(message)
+
     fromUserId = message.from_user.id
     chatID = message.chat.id
     chatType = message.chat.type
@@ -381,7 +352,7 @@ async def MainVoid(message: types.Message):
         return
 
     # Checking if a user is on the blacklist
-    if IsUserInBlackList(fromUserId, chatID):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
 
     # Get message text
@@ -395,7 +366,7 @@ async def MainVoid(message: types.Message):
     PrintMainInfo(message, MessageText)
 
     # Checking the chat in the database
-    IsChatExist(chatID, chatType)
+    IsChatExist(messageData["chatID"], messageData["chatType"], messageData["chatName"])
 
     # preparing a message
     OriginalMessageText = MessageText
@@ -406,16 +377,24 @@ async def MainVoid(message: types.Message):
     try:
         TextArray = SpecialSplit(MessageText)
     except:
-        Print("Error split.", "E")
+        Print("Error SpecialSplit(). Message: " + MessageText, "E")
         return
     Print("After SpecialSplit(): " + str(TextArray), "L")
 
     # Word to number
-    TextArray = ConvertWordsToNumber(TextArray)
+    try:
+        TextArray = ConvertWordsToNumber(TextArray)
+    except:
+        Print("Error ConvertWordsToNumber(). Message: " + MessageText, "E")
+        return
     Print("After ConvertWordsToNumber(): " + str(TextArray), "L")
 
     # Searching Currencies
-    NumArray = SearchValuesAndCurrencies(TextArray)
+    try:
+        NumArray = SearchValuesAndCurrencies(TextArray)
+    except:
+        Print("Error SearchValuesAndCurrencies(). Message: " + MessageText, "E")
+        return
     Print("After SearchValuesAndCurrencies(): " + str(NumArray), "L")
 
     # If there are no currencies, then work is interrupted
@@ -431,7 +410,7 @@ async def MainVoid(message: types.Message):
 
     result = AnswerText(NumArray, chatID, chatType)
     try:
-        await message.reply(result, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DeleteMarkup(chatID, chatType))
+        await message.reply(result, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
     except:
         Print("Cannot send message. Chat ID: " + str(message.chat.id) +
               " | Chat name: " + str(message.chat.title) +
@@ -439,10 +418,10 @@ async def MainVoid(message: types.Message):
               str(message.chat.username) + 
               " | Chat type: "+str(message.chat.type), "E")
     DBH.UpdateChatUsage(chatID)
-    # for i in NumArray[1]:
-    #     DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCur()[i], OriginalMessageText)
-    # for i in NumArray[3]:
-    #     DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCrypto()[i], OriginalMessageText)
+    for i in NumArray[1]:
+        DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCur()[i], OriginalMessageText)
+    for i in NumArray[3]:
+        DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCrypto()[i], OriginalMessageText)
 
 # Callbacks
 @dp.callback_query_handler(lambda call: True)
@@ -624,13 +603,14 @@ def CheckArgument(key: str, value: str) -> bool:
     return isAllOkArg
 
 
-def IsChatExist(chatID: str, chatType: str):
+def IsChatExist(chatID: str, chatType: str, chatName: str):
     if DBH.ChatExists(chatID):
-        pass
+        return True
     else:
         DBH.AddID(chatID, chatType)
-        DBH.AddIDStats(chatID, chatType)
+        DBH.AddIDStats(chatID, chatType, chatName)
         DBH.AddIgnoredCurrency(chatID)
+        return False
 
 
 def LoadDataForBot():

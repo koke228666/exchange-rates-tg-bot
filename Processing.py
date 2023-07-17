@@ -1,5 +1,4 @@
 from TextHelper import GetText
-from NewPrint import Print
 from DBH import GetAllCrypto, GetAllCurrencies, GetExchangeRates, GetListOfCrypto, GetListOfCurrencies, GetDictOfFlags, GetSetting, GetIgnoredCurrencies
 import GetExchangeRates
 import ListsCache
@@ -378,7 +377,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         CurCurrency = Arr[1][i]
         answer += "\n" + "======" + "\n"
         PartOfAnswer = DictOfFlagsForChat[CurCurrency] + str(f'{CurVault:,.2f}'.replace(","," ")) + " " + CurCurrency + "\n"
-
+        
         ListOfChatCurrencies = GetAllCurrencies(chatID)
         ListOfChatCrypto = GetAllCrypto(chatID)
         ListOfChatIgnored = GetIgnoredCurrencies(chatID)

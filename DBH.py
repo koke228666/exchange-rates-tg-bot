@@ -731,7 +731,7 @@ def GetAllCurrencies(chatID: str) -> list:
         cursor.execute(
             "SELECT * FROM SettingsExchangeRates WHERE chatID = "+str(chatID))
         res = dict(cursor.fetchone())
-        return [k[1:] for k, v in res.items() if v == 1]
+        return sorted([k[1:] for k, v in res.items() if v == 1])
     except:
         Print("No such column. Cannot find '" + str(chatID) + "'. Error in 'GetAllCurrencies'.", "E")
         return None
@@ -746,7 +746,7 @@ def GetAllCrypto(chatID: str) -> list:
         cursor.execute(
             "SELECT * FROM SettingsCryptoRates WHERE chatID = "+str(chatID))
         res = dict(cursor.fetchone())
-        return [k for k, v in res.items() if v == 1]
+        return sorted([k[1:] for k, v in res.items() if v == 1])
     except:
         Print("No such column. Cannot find '" + str(chatID) + "'. Error in 'GetAllCrypto'.", "E")
         return None
@@ -860,7 +860,7 @@ def GetListOfCurrencies() -> list:
     cursor = con.execute("SELECT * FROM SettingsExchangeRates")
     names = [description[0] for description in cursor.description]
     names.pop(0)
-    return [i[1:] for i in names]
+    return sorted([i[1:] for i in names])
 
 
 def GetListOfCrypto() -> list:
@@ -895,11 +895,10 @@ def UpdateCryptoRatesDB(cryptoRates: dict):
     con.commit()
 
 
-def AddIDStats(chatID: str, chatType: str, chatName: str = ""):
+def AddIDStats(chatID: str, chatType: str, chatName: str):
     con = sql.connect('DataBases/StatsData.sqlite')
     cursor = con.cursor()
-    cursor.execute("INSERT OR IGNORE INTO ChatsUsage (chatID, chatType, timeAdded, lastTimeUse, chatName) values (" +
-                   str(chatID)+",'"+chatType+"',DATETIME(),DATETIME())+,'"+chatName+"')")
+    cursor.execute("INSERT OR IGNORE INTO ChatsUsage (chatID, chatType, timeAdded, lastTimeUse, chatName) values ("+str(chatID)+",'"+chatType+"',DATETIME(),DATETIME(),'"+chatName+"')")
     con.commit()
 
 
