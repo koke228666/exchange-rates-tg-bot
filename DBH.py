@@ -84,6 +84,15 @@ def DBIntegrityCheck():
                 if column_name not in existing_columns:
                     Print(f"Column {column_name} does not exist in SettingsCryptoRates table. Adding it now.", "S")
                     cursor.execute(f'ALTER TABLE SettingsCryptoRates ADD COLUMN {column_name} INTEGER DEFAULT 0;')
+            
+            # Iterate over the existing columns
+            for column in existing_columns:
+                # If the column is not present in the JSON file, delete it
+                if column == "chatID":
+                    continue
+                if column not in [crypto['code'] for crypto in cryptoData['crypto']]:
+                    Print(f"Column {column} does not exist in JSON file. Deleting it now from SettingsCryptoRates.", "S")
+                    cursor.execute(f'ALTER TABLE SettingsCryptoRates DROP COLUMN {column};')
         else:
             # Table does not exist, create it with all required columns
             columns = ', '.join([f"{crypto['code']} INTEGER DEFAULT 0" for crypto in cryptoData['crypto']])
@@ -111,6 +120,16 @@ def DBIntegrityCheck():
                 if column_name not in existing_columns:
                     Print(f"Column {column_name} does not exist in SettingsExchangeRates table. Adding it now.", "S")
                     cursor.execute(f'ALTER TABLE SettingsExchangeRates ADD COLUMN {column_name} INTEGER DEFAULT 0;')
+            # Iterate over the existing columns
+            for column in existing_columns:
+                # Skip the "chatID" column
+                if column == "chatID":
+                    continue
+
+                # If the column is not present in the JSON file, delete it
+                if column not in ['_' + currency['code'] for currency in currenciesData['currencies']]:
+                    Print(f"Column {column} does not exist in JSON file. Deleting it now from SettingsExchangeRates.", "S")
+                    cursor.execute(f'ALTER TABLE SettingsExchangeRates DROP COLUMN {column};')
         else:
             # Table does not exist, create it with all required columns
             columns = ', '.join([f"{'_'+currency['code']} INTEGER DEFAULT 0" for currency in currenciesData['currencies']])
@@ -146,7 +165,14 @@ def DBIntegrityCheck():
                 if column_name not in existing_columns:
                     Print(f"Column {column_name} does not exist in IgnoredCurrencies table. Adding it now.", "S")
                     cursor.execute(f'ALTER TABLE IgnoredCurrencies ADD COLUMN {column_name} INTEGER DEFAULT 0;')
-            
+             # Get the columns to remove
+            columns_to_remove = [column for column in existing_columns if column not in ['_' + currency['code'] for currency in currenciesData['currencies']] and column not in ['_' + crypto['code'] for crypto in cryptoData['crypto']] and column != 'chatID']
+
+            # Iterate over the columns to remove
+            for column in columns_to_remove:
+                Print(f"Column {column} does not exist in JSON file. Deleting it now from IgnoredCurrencies.", "S")
+                cursor.execute(f'ALTER TABLE IgnoredCurrencies DROP COLUMN {column};')
+
             # insert or ignore every row from SettingsExchangeRates with default values
             cursor.execute("SELECT * FROM SettingsExchangeRates;")
             rows = cursor.fetchall()
@@ -602,6 +628,14 @@ def SetCryptoSetting(chatID: str, crypto: str, val: str):
         con.commit()
     except:
         Print("No such column. Cannot find '" + str(crypto) + "'. Error in 'SetCryptoSetting'.", "E")
+
+def AddIgnoredCurrency(chatID: str):
+    chatID = int(chatID)
+    con = sql.connect('DataBases/DataForBot.sqlite')
+    cursor = con.cursor()
+    cursor.execute(
+        "INSERT OR IGNORE INTO IgnoredCurrencies (chatID) values (?)", tuple([chatID]))
+    con.commit()
 
 def SetIgnoredCurrency(chatID: str, currency: str, val: str):
     chatID = int(chatID)

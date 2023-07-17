@@ -630,6 +630,7 @@ def IsChatExist(chatID: str, chatType: str):
     else:
         DBH.AddID(chatID, chatType)
         DBH.AddIDStats(chatID, chatType)
+        DBH.AddIgnoredCurrency(chatID)
 
 
 def LoadDataForBot():
