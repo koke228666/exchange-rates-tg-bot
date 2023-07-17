@@ -10,7 +10,7 @@ import json
 from NewPrint import Print
 
 listOfTables = ["SettingsGroups", "SettingsPrivateChats", "ExchangeRates", "SettingsExchangeRates", "CryptoRates", "SettingsCryptoRates", "IgnoredCurrencies"]
-listOfServiceTables = ["AdminsList", "BlackList", "Reports"]
+listOfServiceTables = ["AdminsList", "BlackList"]
 listOfStatsTables = ["ChatsTimeStats", "ChatsUsage", "ProcessedCurrencies"]
 
 with open('Dictionaries/crypto.json') as json_file:
@@ -267,6 +267,16 @@ def DBIntegrityCheck():
 
                 CreateDataBaseTemplate()
                 break
+        
+        # Get a list of all tables in the database
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        for table in tables:
+            table_name = table[0]
+            if table_name not in listOfTables:
+                cursor.execute("DROP TABLE IF EXISTS " + table_name + ";")
+                Print("Table " + table_name + " removed.", "W")
+
 
         # Commit the changes and close the connection
         con.commit()
@@ -299,6 +309,20 @@ def DBIntegrityCheck():
 
                 CreateServiceDataBase()
                 break
+        # Get a list of all tables in the database
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        for table in tables:
+            table_name = table[0]
+            if table_name not in listOfServiceTables:
+                cursor.execute("DROP TABLE IF EXISTS " + table_name + ";")
+                Print("Table " + table_name + " removed.", "W")
+        
+        # Commit the changes and close the connection
+        con.commit()
+        con.close() 
+
+        
         Print("Service DB is OK.", "S")
     else:
         Print("Connected to service DB unsuccessfully.", "E")
@@ -371,6 +395,16 @@ def DBIntegrityCheck():
                     timeAdded TEXT,
                     lastTimeUse TEXT""")
             
+        # Get a list of all tables in the database
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        for table in tables:
+            table_name = table[0]
+            if table_name not in listOfStatsTables:
+                cursor.execute("DROP TABLE IF EXISTS " + table_name + ";")
+                Print("Table " + table_name + " removed.", "W")
+        
+        # Commit the changes and close the connection
         con.commit()
         con.close() 
         Print("Stats DB is OK.", "S")
@@ -460,16 +494,16 @@ def CreateServiceDataBase():
             );
         """)
 
-    with con:
-        con.execute("""
-            CREATE TABLE Reports (
-                date TEXT,
-                chatID INTEGER DEFAULT 0,
-                userID INTEGER DEFAULT 0,
-                message TEXT,
-                reply TEXT
-            );
-        """)
+    # with con:
+    #     con.execute("""
+    #         CREATE TABLE Reports (
+    #             date TEXT,
+    #             chatID INTEGER DEFAULT 0,
+    #             userID INTEGER DEFAULT 0,
+    #             message TEXT,
+    #             reply TEXT
+    #         );
+    #     """)
 
     con.close()
     Print("Service DB is created.", "S")
@@ -543,7 +577,7 @@ def CreateDataBaseTemplate():
         con.execute(f"""
             CREATE TABLE SettingsExchangeRates (
                 chatID INTEGER NOT NULL PRIMARY KEY ,
-                {', '.join([f"{'_'+code} INTEGER DEFAULT 1" for code in currencyCodes])}
+                {', '.join([f"{'_'+code} INTEGER DEFAULT {int(code in ['USD','EUR','UAH','GBP','PLN'])}" for code in currencyCodes])}
             );
         """)
 
@@ -637,7 +671,7 @@ def AddIgnoredCurrency(chatID: str):
         "INSERT OR IGNORE INTO IgnoredCurrencies (chatID) values (?)", tuple([chatID]))
     con.commit()
 
-def SetIgnoredCurrency(chatID: str, currency: str, val: str):
+def SetIgnoredCurrency(chatID: str, currency: str, val: int):
     chatID = int(chatID)
     con = sql.connect('DataBases/DataForBot.sqlite')
     cursor = con.cursor()
@@ -659,17 +693,22 @@ def GetIgnoredCurrency(chatID: str, currency: str) -> bool:
         Print("No such column. Cannot find '" + str(currency) + "'. Error in 'GetIgnoredCurrency'.", "E")
         return False
 
-def GetIgnoredCurrencies(chatID: str) -> dict:
+def GetIgnoredCurrencies(chatID: str) -> list:
     chatID = int(chatID)
     con = sql.connect('DataBases/DataForBot.sqlite')
     cursor = con.cursor()
     try:
-        cursor.execute("SELECT * from IgnoredCurrencies WHERE chatID = "+str(chatID))
+        cursor.execute("SELECT * from IgnoredCurrencies WHERE chatID = ?", (chatID,))
         res = cursor.fetchone()
-        return dict(res)
-    except:
-        Print("No such column. Cannot find '" + str(chatID) + "'. Error in 'GetIgnoredCurrencies'.", "E")
-        return None
+        if res is not None:
+            column_names = [column[0].replace('_', '') for column, value in zip(cursor.description, res) if value == 1]
+            return column_names
+        else:
+            Print("No such column. Cannot find '" + str(chatID) + "'. Error in 'GetIgnoredCurrencies'.","E")
+            return []
+    except Exception as e:
+        Print("Error:"+e, "E")
+        return []
     
 def ReverseIgnoredCurrency(chatID: str, currency: str):
     chatID = int(chatID)
