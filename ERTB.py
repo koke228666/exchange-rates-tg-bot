@@ -370,14 +370,19 @@ async def MainVoid(message: types.Message):
 
     # preparing a message
     OriginalMessageText = MessageText
-    MessageText = MessagePreparation(MessageText)
+    try:
+        MessageText = MessagePreparation(MessageText)
+    except:
+        Print("Error SpecialSplit(). Message: " + OriginalMessageText, "E")
+        return
+    
     Print("After MessagePreparation(): " + MessageText, "L")
 
     # Preparing a message for searching currencies
     try:
         TextArray = SpecialSplit(MessageText)
     except:
-        Print("Error SpecialSplit(). Message: " + MessageText, "E")
+        Print("Error SpecialSplit(). Message: " + OriginalMessageText, "E")
         return
     Print("After SpecialSplit(): " + str(TextArray), "L")
 
@@ -385,7 +390,7 @@ async def MainVoid(message: types.Message):
     try:
         TextArray = ConvertWordsToNumber(TextArray)
     except:
-        Print("Error ConvertWordsToNumber(). Message: " + MessageText, "E")
+        Print("Error ConvertWordsToNumber(). Message: " + OriginalMessageText, "E")
         return
     Print("After ConvertWordsToNumber(): " + str(TextArray), "L")
 
@@ -393,7 +398,7 @@ async def MainVoid(message: types.Message):
     try:
         NumArray = SearchValuesAndCurrencies(TextArray)
     except:
-        Print("Error SearchValuesAndCurrencies(). Message: " + MessageText, "E")
+        Print("Error SearchValuesAndCurrencies(). Message: " + OriginalMessageText, "E")
         return
     Print("After SearchValuesAndCurrencies(): " + str(NumArray), "L")
 

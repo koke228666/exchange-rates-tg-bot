@@ -6,38 +6,37 @@ import os
 import unicodedata
 import re
 import json
-import sys
 
 ListEntry = {}
 ListEqual = {}
 ListCryptoEntry = {}
 ListCryptoEqual = {}
 
+
 def RemoveSeparator(match):
     return match.group(1).replace(" ", "")
+
 
 def MessagePreparation(MesTxt: str) -> str:
     MesTxt = MesTxt.lower()
     indexOfAtSign = -1
     indexOfSpace = -1
-    while MesTxt.find("@") != -1:
-        if MesTxt.find("@") != len(MesTxt) - 1:
-            indexOfAtSign = MesTxt.find("@")
-            indexOfSpace = MesTxt.find(" ", indexOfAtSign)
-            MesTxt = MesTxt[0:indexOfAtSign] + MesTxt[indexOfSpace:]
-        else:
-            MesTxt = MesTxt[0:-1]
-
-    while MesTxt.find("http") != -1:
-        if MesTxt.find("@") != len(MesTxt) - 1:
-            indexOfAtSign = MesTxt.find("http")
-            indexOfSpace = MesTxt.find(" ", indexOfAtSign)
-            MesTxt = MesTxt[0:indexOfAtSign] + MesTxt[indexOfSpace:]
-        else:
-            MesTxt = MesTxt[0:-1]
 
     while MesTxt.find("\n") != -1: # Removing line breaks
         MesTxt = MesTxt.replace("\n", " , ")
+
+    while MesTxt.find("@") != -1:
+        indexOfAtSign = MesTxt.find("@")
+        indexOfSpace = MesTxt.find(" ", indexOfAtSign)
+        if indexOfSpace == -1:
+            indexOfSpace = len(MesTxt)
+        if indexOfSpace > indexOfAtSign:
+            MesTxt = MesTxt[0:indexOfAtSign] + MesTxt[indexOfSpace:]
+        else: 
+            break
+
+    pattern = r"\b(?:https?:\/\/|www\.)\S+\b|\b\S+\.com\S*\b"
+    MesTxt = re.sub(pattern, "", MesTxt) # Removing links       
 
     while MesTxt.find("  ") != -1: # Removing double spaces
         MesTxt = MesTxt.replace("  ", " ")
@@ -96,12 +95,14 @@ def SpecialSplit(MesTxt: str) -> list:
         if i != "":
             b.append(i)
     
-    #for i in range(len(b)):
-    #    if b[i][0].isdigit() and b[i].count(".") >= 2:
-    #        while b[i].find(".") != -1:
-    #            b[i] = b[i].replace(".", "")
+    c = []
+    for i in b:
+        if i[0].isdigit() and i.count(".") >= 2:
+            pass
+        else:
+            c.append(i)
 
-    return b
+    return c
 
 def LoadCurrencies():
     ListsCache.SetListOfCur(GetListOfCurrencies())
