@@ -1098,8 +1098,9 @@ def GetStatsForChart() -> dict:
     cursor.execute("DELETE FROM ChatsTimeStats WHERE (DATE(date), TIME(date)) NOT IN (SELECT DATE(date), MAX(TIME(date)) FROM ChatsTimeStats GROUP BY DATE(date))")
     con.commit()
     
-    cursor.execute("SELECT * FROM ChatsTimeStats")
+    cursor.execute("SELECT DATE(date), privateChatsAmount, groupChatsAmount, activeWeekPrivateChats, activeWeekGroupChats, activeMonthPrivateChats, activeMonthGroupChats FROM ChatsTimeStats")
     data = cursor.fetchall()
+    res['dates'] = [k[0] for k in data]
     res['privateChatsAmount'] = [k[1] for k in data]
     res['groupChatsAmount'] = [k[2] for k in data]
     res['activeWeekPrivateChats'] = [k[3] for k in data]

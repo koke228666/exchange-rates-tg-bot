@@ -12,6 +12,8 @@ import os
 import traceback
 import logging
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import datetime
 
 # Own libraries
 import DBH
@@ -258,15 +260,15 @@ async def FullStatsVoid(message: types.Message):
         chartData = DBH.GetStatsForChart()
         chartsNames = ["generalAmount", "activeWeek", "activeMonth"]
 
-        BuildChart(chartData['privateChatsAmount'], chartData['groupChatsAmount'], "privateChatsAmount", "groupChatsAmount", chartsNames[0])
-        BuildChart(chartData['activeWeekPrivateChats'], chartData['activeWeekGroupChats'], "activeWeekPrivateChats", "activeWeekGroupChats", chartsNames[1])
-        BuildChart(chartData['activeMonthPrivateChats'], chartData['activeMonthGroupChats'], "activeMonthPrivateChats", "activeMonthGroupChats", chartsNames[2])
-
+        BuildChart(chartData['privateChatsAmount'], chartData['groupChatsAmount'], chartData['dates'], "privateChatsAmount", "groupChatsAmount", chartsNames[0])
+        BuildChart(chartData['activeWeekPrivateChats'], chartData['activeWeekGroupChats'], chartData['dates'], "activeWeekPrivateChats", "activeWeekGroupChats", chartsNames[1])
+        BuildChart(chartData['activeMonthPrivateChats'], chartData['activeMonthGroupChats'], chartData['dates'], "activeMonthPrivateChats", "activeMonthGroupChats", chartsNames[2])
+        media = types.MediaGroup()
+        media.attach_document(types.InputFile('generalAmount.png'))
+        media.attach_document(types.InputFile('activeWeek.png'))
+        media.attach_document(types.InputFile('activeMonth.png'))
         await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
-        await bot.send_photo(messageData["chatID"], open('generalAmount.png', 'rb'))
-        await bot.send_photo(messageData["chatID"], open('activeWeek.png', 'rb'))
-        await bot.send_photo(messageData["chatID"], open('activeMonth.png', 'rb'))
-
+        await message.reply_media_group(media=media)
         DeleteCharts(chartsNames)
         
 
@@ -621,11 +623,16 @@ def CheckArgument(key: str, value: str) -> bool:
         print("Error. Unknow argument '{}'".format(key))
     return isAllOkArg
 
-def BuildChart(firstArr: list[int], secondArr: list[int], firstLabel: str, secondLabel: str, chartName: str):
-    plt.plot(firstArr, label=firstLabel)
-    plt.plot(secondArr, label=secondLabel)
+def BuildChart(firstArr: list[int], secondArr: list[int], dates: list[str], firstLabel: str, secondLabel: str, chartName: str):
+    dates = [datetime.datetime.strptime(date_str, "%Y-%m-%d") for date_str in dates]
+    plt.figure(figsize=(16,9))
+    plt.plot(dates, firstArr, label=firstLabel)
+    plt.plot(dates, secondArr, label=secondLabel)
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    date_interval = 100
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=date_interval))
     plt.grid()
-    plt.legend()
+    plt.legend()        
     plt.savefig(chartName + '.png')
     plt.clf()
 
