@@ -1,4 +1,5 @@
 ERTB is an exchange rates telegram bot.
+©VirtualSoftKey
 
 The bot is designed to recognize pairs of numbers and currencies in the text, with automatic subsequent conversion to other currencies at current rates.
 

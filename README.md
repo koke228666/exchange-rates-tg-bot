@@ -205,54 +205,78 @@ All the arguments for run:
   <tr>
     <th>Command</th>
     <th>Command description</th>
+    <th>Example</th>
+    <th>Result</th>
   </tr>
   <tr>
     <td>
     <code>/echo</code>
     </td>
     <td>
-    Sending messages to all chats.<br>
-    Example of use: <code>/echo Test messaging</code><br>
-    Users will receive: <code>Test messaging</code>
+      Sending messages to all chats. Supporting HTML.
+    </td>
+    <td>
+    <code><xmp>/echo Test messaging with <a href="google.com">link</a>.</xmp></code>
+    </td>
+    <td>
+    <code>Test messaging with <a href="google.com">link</a>.</code>
     </td>
   </tr>
   <tr>
-  <td>
-  <code>/write</code>
-  </td>
-  <td>
-  Write to a specific chat.<br>
-  Example of use: <code>/write 12345789 Test message</code><br>
-  The chat user(s) will receive: <code>Test message</code>
-  </td>
+    <td>
+    <code>/write</code>
+    </td>
+    <td>
+      Write to a specific chat. Supporting HTML.
+    </td>
+    <td>
+      <code><xmp>/echo Test messaging with <a href="google.com">link</a>.</xmp></code>
+    </td>
+    <td>
+    <code>Test messaging with <a href="google.com">link</a>.</code>
+    </td>
   </tr>
   <tr>
     <td><code>/count</code></td>
-    <td>Counting the number of active users of the bot. You can write <code>/count short</code> and the count will be kept only for group chats.</td>
+    <td>Counting the number of active users of the bot. The <code>short</code> parameter means that the count will be made only for group chats.</td>
+    <td><code>/count</code> or <code>/count short</code></td>
+    <td><code>The number of members of group chats: 396306</code></td>
   </tr>
   <tr>
     <td><code>/newadmin</code></td>
-    <td>Add an administrator. Example: <code>/newadmin 123456789</code></td>
+    <td>Add an administrator.</td>
+    <td><code>/newadmin 123456789</code></td>
+    <td>A new admin will be added.</td>
   </tr>
   <tr>
     <td><code>/amount</code></td>
-    <td>The number of chats and groups in which the bot was used at least once for the all time, 24 hours, week, and month.</td>
+    <td>The number of chats and groups in which the bot was used at least once for the full time, day, week, and month.</td>
+    <td><code>/amount</code></td>
+    <td><code>For all the time:<br>PM: 32235<br>Groups: 11938<br><br>In 24 hours:<br>PM: 549<br>Groups: 998<br><br>In a week:<br><br>PM: 1662<br>Groups: 1928<br>In 30 days:<br>PM: 3522<br>Groups: 2859</code></td>
   </tr>
   <tr>
     <td><code>/plotamount</code></td>
-    <td>The plot with number of chats and groups in which the bot was used at least once for the all time, 24 hours, week, and month by every day.</td>
+    <td>A graph of the number of chats and groups in which the bot was used at least once for the entire time, day, week, and month, by day.</td>
+    <td><code>/plotamount</code></td>
+    <td>Charts</td>
   </tr>
   <tr>
     <td><code>/backup</code></td>
     <td>Sends an archive with copies of databases.</td>
+    <td><code>/backup</code></td>
+    <td>Archive with database backups.</td>
   </tr>
   <tr>
     <td><code>/ban</code></td>
-    <td>Block a user/group chat by ID. <code>/ban 123456789</code></td>
+    <td>Block a user/group chat by ID.</td>
+    <td><code>/ban 123456789</code></td>
+    <td><code>User/group successfully blocked.</code></td>
   </tr>
   <tr>
     <td><code>/unban</code></td>
-    <td>Unblock user/group chat by ID. <code>/unban 123456789</code></td>
+    <td>Unblock a user/group chat by ID.</td>
+    <td><code>/unban 123456789</code></td>
+    <td><code>User/group has been successfully unblocked.</code></td>
   </tr>
 </table>
 <br>
@@ -442,53 +466,77 @@ ERTB – exchange rates telegram bot.<br>
   <tr>
     <th>Команда</th>
     <th>Опис команди</th>
+    <th>Приклад використання</th>
+    <th>Результат</th>
   </tr>
   <tr>
     <td>
     <code>/echo</code>
     </td>
     <td>
-    Розсилка повідомлень по всіх чатах.<br>
-    Приклад використання: <code>/echo Тестова розсилка</code><br>
-    Користувачі отримають: <code>Тестова розсилка</code>
+      Розсилка повідомлень по всіх чатах. Підтримує HTML-розмітку.
+    </td>
+    <td>
+    <code><xmp>/echo Тестова розсилка з <a href="google.com">посиланням</a>.</xmp></code>
+    </td>
+    <td>
+    <code>Тестова розсилка з <a href="google.com">посиланням</a>.</code>
     </td>
   </tr>
   <tr>
-  <td>
-  <code>/write</code>
-  </td>
-  <td>
-  Написати у конкретний чат.<br>
-  Приклад використання: <code>/write 12345789 Тестове повідомлення</code><br>
-  Користувач(і) чату отримають: <code>Тестове повідомлення</code>
-  </td>
+    <td>
+    <code>/write</code>
+    </td>
+    <td>
+      Написати у конкретний чат. Підтримує HTML-розмітку.
+    </td>
+    <td>
+    <code><xmp>/write 12345789 Тестова розсилка з <a href="google.com">посиланням</a>.</xmp></code>
+    </td>
+    <td>
+    <code>Тестова розсилка з <a href="google.com">посиланням</a>.</code>
+    </td>
   </tr>
   <tr>
     <td><code>/count</code></td>
-    <td>Підрахунок кількості активних користувачів бота. Можна написати <code>/count short</code> і підрахунок буде вестись лише по групових чатах.</td>
+    <td>Підрахунок кількості активних користувачів бота. Параметр <code>short</code> означає, що підрахунок буде вестись лише по групових чатах.</td>
+    <td><code>/count</code> or <code>/count short</code></td>
+    <td><code>The number of members of group chats: 396306</code></td>
   </tr>
   <tr>
     <td><code>/newadmin</code></td>
-    <td>Додати адміністратора. Приклад: <code>/newadmin 123456789</code></td>
+    <td>Додати адміністратора.</td>
+    <td><code>/newadmin 123456789</code></td>
+    <td>Буде доданий новий адмін.</td>
   </tr>
   <tr>
     <td><code>/amount</code></td>
     <td>Кількість чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць.</td>
+    <td><code>/amount</code></td>
+    <td><code>For all the time:<br>PM: 32235<br>Groups: 11938<br><br>In 24 hours:<br>PM: 549<br>Groups: 998<br><br>In a week:<br><br>PM: 1662<br>Groups: 1928<br>In 30 days:<br>PM: 3522<br>Groups: 2859</code></td>
   </tr>
   <tr>
     <td><code>/plotamount</code></td>
-    <td>графік кількості чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць з розбивкою по днях.</td>
+    <td>Графік кількості чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць з розбивкою по днях.</td>
+    <td><code>/plotamount</code></td>
+    <td>Графіки</td>
   </tr>
   <tr>
     <td><code>/backup</code></td>
     <td>Надсилає архів з копіями баз даних.</td>
+    <td><code>/backup</code></td>
+    <td>Архів з бекапами баз данних.</td>
   </tr>
   <tr>
     <td><code>/ban</code></td>
-    <td>Заблокувати користувача/груповий чат по ID. <code>/ban 123456789</code></td>
+    <td>Заблокувати користувача/груповий чат по ID.</td>
+    <td><code>/ban 123456789</code></td>
+    <td><code>User/group successfully blocked.</code></td>
   </tr>
   <tr>
     <td><code>/unban</code></td>
-    <td>Розблокувати користувача/груповий чат по ID. <code>/unban 123456789</code></td>
+    <td>Розблокувати користувача/груповий чат по ID.</td>
+    <td><code>/unban 123456789</code></td>
+    <td><code>User/group has been successfully unblocked.</code></td>
   </tr>
 </table>
