@@ -242,8 +242,9 @@ async def StatsVoid(message: types.Message):
     if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
     if DBH.IsAdmin(messageData["fromUserId"]):
-        chatStats = DBH.GetChatsAmount()
-        answerMes = "PM: " + str(chatStats['private']) + "\nGroups: " + str(chatStats['groups'])
+        chatStats = DBH.GetTimeStats()
+        StatsByOneDay = DBH.GetStatsInPeriod(1)
+        answerMes = "For all the time:\nPM: " + str(chatStats['private']) + "\nGroups: " + str(chatStats['groups']) + "\n\nIn 24 hours:\nPM: " + str(StatsByOneDay['activePrivate']) + "\nGroups: " + str(StatsByOneDay['activeGroups']) + "\n\nIn a week:\nPM: " + str(chatStats['activePrivateWeek']) + "\nGroups: " + str(chatStats['activeGroupsWeek']) + "\n\nIn 30 days:\nPM: " + str(chatStats['activePrivateMonth']) + "\nGroups: " + str(chatStats['activeGroupsMonth'])
         await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
@@ -254,12 +255,8 @@ async def FullStatsVoid(message: types.Message):
     if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
     if DBH.IsAdmin(messageData["fromUserId"]):
-        chatStats = DBH.GetTimeStats()
-        StatsByOneDay = DBH.GetStatsInPeriod(1)
-        answerMes = "For all the time:\nPM: " + str(chatStats['private']) + "\nGroups: " + str(chatStats['groups']) + "\n\nIn 24 hours:\nPM: " + str(StatsByOneDay['activePrivate']) + "\nGroups: " + str(StatsByOneDay['activeGroups']) + "\n\nIn a week:\nPM: " + str(chatStats['activePrivateWeek']) + "\nGroups: " + str(chatStats['activeGroupsWeek']) + "\n\nIn 30 days:\nPM: " + str(chatStats['activePrivateMonth']) + "\nGroups: " + str(chatStats['activeGroupsMonth'])
         chartData = DBH.GetStatsForChart()
         chartsNames = ["generalAmount", "activeWeek", "activeMonth"]
-
         BuildChart(chartData['privateChatsAmount'], chartData['groupChatsAmount'], chartData['dates'], "privateChatsAmount", "groupChatsAmount", chartsNames[0])
         BuildChart(chartData['activeWeekPrivateChats'], chartData['activeWeekGroupChats'], chartData['dates'], "activeWeekPrivateChats", "activeWeekGroupChats", chartsNames[1])
         BuildChart(chartData['activeMonthPrivateChats'], chartData['activeMonthGroupChats'], chartData['dates'], "activeMonthPrivateChats", "activeMonthGroupChats", chartsNames[2])
@@ -267,7 +264,6 @@ async def FullStatsVoid(message: types.Message):
         media.attach_document(types.InputFile('generalAmount.png'))
         media.attach_document(types.InputFile('activeWeek.png'))
         media.attach_document(types.InputFile('activeMonth.png'))
-        await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
         await message.reply_media_group(media=media)
         DeleteCharts(chartsNames)
         

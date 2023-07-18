@@ -235,12 +235,12 @@ All the arguments for run:
     <td>Add an administrator. Example: <code>/newadmin 123456789</code></td>
   </tr>
   <tr>
-    <td><code>/stats</code></td>
-    <td>Number of chats and groups where the bot has been used at least once.</td>
+    <td><code>/amount</code></td>
+    <td>The number of chats and groups in which the bot was used at least once for the all time, 24 hours, week, and month.</td>
   </tr>
   <tr>
-    <td><code>/fullstats</code></td>
-    <td>The number of chats and groups in which the bot was used at least once for the all time, 24 hours, week, and month.</td>
+    <td><code>/plotamount</code></td>
+    <td>The plot with number of chats and groups in which the bot was used at least once for the all time, 24 hours, week, and month by every day.</td>
   </tr>
   <tr>
     <td><code>/backup</code></td>
@@ -472,12 +472,12 @@ ERTB – exchange rates telegram bot.<br>
     <td>Додати адміністратора. Приклад: <code>/newadmin 123456789</code></td>
   </tr>
   <tr>
-    <td><code>/stats</code></td>
+    <td><code>/amount</code></td>
     <td>Кількість чатів та груп у яких хоча би раз користувались ботом.</td>
   </tr>
   <tr>
-    <td><code>/fullstats</code></td>
-    <td>Кількість чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць.</td>
+    <td><code>/plotamount</code></td>
+    <td>графік кількості чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць з розбивкою по днях.</td>
   </tr>
   <tr>
     <td><code>/backup</code></td>
