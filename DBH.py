@@ -1090,6 +1090,23 @@ def GetStatsInPeriod(days: int) -> dict:
     res['activeGroups'] = cursor.fetchone()[0]
     return res
 
+def GetStatsForChart() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    res = {}
+
+    cursor.execute("DELETE FROM ChatsTimeStats WHERE (DATE(date), TIME(date)) NOT IN (SELECT DATE(date), MAX(TIME(date)) FROM ChatsTimeStats GROUP BY DATE(date))")
+    con.commit()
+    
+    cursor.execute("SELECT * FROM ChatsTimeStats")
+    data = cursor.fetchall()
+    res['privateChatsAmount'] = [k[1] for k in data]
+    res['groupChatsAmount'] = [k[2] for k in data]
+    res['activeWeekPrivateChats'] = [k[3] for k in data]
+    res['activeWeekGroupChats'] = [k[4] for k in data]
+    res['activeMonthPrivateChats'] = [k[5] for k in data]
+    res['activeMonthGroupChats'] = [k[6] for k in data]
+    return res
 
 def AddReport(chatID: str, userID: str, message: str, reply: str = ""):
     con = sql.connect('DataBases/ServiceData.sqlite')

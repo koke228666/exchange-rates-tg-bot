@@ -11,6 +11,7 @@ import time
 import os
 import traceback
 import logging
+import matplotlib.pyplot as plt
 
 # Own libraries
 import DBH
@@ -254,7 +255,20 @@ async def FullStatsVoid(message: types.Message):
         chatStats = DBH.GetTimeStats()
         StatsByOneDay = DBH.GetStatsInPeriod(1)
         answerMes = "For all the time:\nPM: " + str(chatStats['private']) + "\nGroups: " + str(chatStats['groups']) + "\n\nIn 24 hours:\nPM: " + str(StatsByOneDay['activePrivate']) + "\nGroups: " + str(StatsByOneDay['activeGroups']) + "\n\nIn a week:\nPM: " + str(chatStats['activePrivateWeek']) + "\nGroups: " + str(chatStats['activeGroupsWeek']) + "\n\nIn 30 days:\nPM: " + str(chatStats['activePrivateMonth']) + "\nGroups: " + str(chatStats['activeGroupsMonth'])
+        chartData = DBH.GetStatsForChart()
+        chartsNames = ["generalAmount", "activeWeek", "activeMonth"]
+
+        BuildChart(chartData['privateChatsAmount'], chartData['groupChatsAmount'], "privateChatsAmount", "groupChatsAmount", chartsNames[0])
+        BuildChart(chartData['activeWeekPrivateChats'], chartData['activeWeekGroupChats'], "activeWeekPrivateChats", "activeWeekGroupChats", chartsNames[1])
+        BuildChart(chartData['activeMonthPrivateChats'], chartData['activeMonthGroupChats'], "activeMonthPrivateChats", "activeMonthGroupChats", chartsNames[2])
+
         await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
+        await bot.send_photo(messageData["chatID"], open('generalAmount.png', 'rb'))
+        await bot.send_photo(messageData["chatID"], open('activeWeek.png', 'rb'))
+        await bot.send_photo(messageData["chatID"], open('activeMonth.png', 'rb'))
+
+        DeleteCharts(chartsNames)
+        
 
 
 @dp.message_handler(commands=['backup'])
@@ -607,6 +621,17 @@ def CheckArgument(key: str, value: str) -> bool:
         print("Error. Unknow argument '{}'".format(key))
     return isAllOkArg
 
+def BuildChart(firstArr: list[int], secondArr: list[int], firstLabel: str, secondLabel: str, chartName: str):
+    plt.plot(firstArr, label=firstLabel)
+    plt.plot(secondArr, label=secondLabel)
+    plt.grid()
+    plt.legend()
+    plt.savefig(chartName + '.png')
+    plt.clf()
+
+def DeleteCharts(names: list[str]):
+    for name in names:
+        os.remove(name + '.png')
 
 def IsChatExist(chatID: str, chatType: str, chatName: str):
     if DBH.ChatExists(chatID):

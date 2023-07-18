@@ -6,3 +6,4 @@ aiohttp[speedups]==3.8.4
 requests==2.29.0
 uvloop==0.17.0
 pandas==2.0.1
+matplotlib==3.7.2
