@@ -3449,6 +3449,9 @@
       }
     },
     {
+      "symbol": "",
+      "name": "Silver",
+      "symbol_native": "",
       "code": "XAG",
       "emoji": "🥈",
       "equal": [
@@ -3474,6 +3477,9 @@
       }
     },
     {
+      "symbol": "",
+      "name": "Gold",
+      "symbol_native": "",
       "code": "XAU",
       "emoji": "🥇",
       "equal": [

@@ -200,7 +200,7 @@ def DBIntegrityCheck():
             "deleteButton": {"type": "INTEGER", "default": "1"},
             "editSettings": {"type": "TEXT", "default": "'admins'"},
             "flags": {"type": "INTEGER", "default": "1"},
-            "currencySymbol": {"type": "INTEGER", "default": "0"},
+            "currencySymbol": {"type": "INTEGER", "default": "1"},
             "lang": {"type": "TEXT", "default": "'en'"}
         }
         if table_exists:
@@ -230,7 +230,7 @@ def DBIntegrityCheck():
             "chatID": {"type": "INTEGER", "default": "NULL PRIMARY KEY"},
             "deleteButton": {"type": "INTEGER", "default": "1"},
             "flags": {"type": "INTEGER", "default": "1"},
-            "currencySymbol": {"type": "INTEGER", "default": "0"},
+            "currencySymbol": {"type": "INTEGER", "default": "1"},
             "lang": {"type": "TEXT", "default": "'en'"}
         }
         if table_exists:
@@ -529,7 +529,7 @@ def CreateDataBaseTemplate():
                 deleteButton INTEGER DEFAULT 1,
                 editSettings TEXT DEFAULT admins,
                 flags INTEGER DEFAULT 1,
-                currencySymbol INTEGER DEFAULT 0,
+                currencySymbol INTEGER DEFAULT 1,
                 lang TEXT DEFAULT en
             );
         """)
@@ -539,7 +539,7 @@ def CreateDataBaseTemplate():
                 chatID INTEGER NOT NULL PRIMARY KEY ,
                 deleteButton INTEGER DEFAULT 1,
                 flags INTEGER DEFAULT 1,
-                currencySymbol INTEGER DEFAULT 0,
+                currencySymbol INTEGER DEFAULT 1,
                 lang TEXT DEFAULT en
             );
         """)
@@ -785,7 +785,7 @@ def GetAllCrypto(chatID: str) -> list:
         cursor.execute(
             "SELECT * FROM SettingsCryptoRates WHERE chatID = "+str(chatID))
         res = dict(cursor.fetchone())
-        return sorted([k[1:] for k, v in res.items() if v == 1])
+        return sorted([k[0:] for k, v in res.items() if v == 1])
     except:
         Print("No such column. Cannot find '" + str(chatID) + "'. Error in 'GetAllCrypto'.", "E")
         return None

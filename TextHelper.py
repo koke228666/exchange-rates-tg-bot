@@ -147,7 +147,10 @@ def MessageViewMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
         MessageViewMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ✅", callback_data = "ui_flags"))
     else:
         MessageViewMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ❌", callback_data = "ui_flags"))
-    MessageViewMU.add(InlineKeyboardButton(dictLang['symbols_button'] + " ✅", callback_data = "ui_symbols"))
+    if AllSettings['currencySymbol']:
+        MessageViewMU.add(InlineKeyboardButton(dictLang['symbols_button'] + " ✅", callback_data = "ui_symbols"))
+    else:
+        MessageViewMU.add(InlineKeyboardButton(dictLang['symbols_button'] + " ❌", callback_data = "ui_symbols"))
     MessageViewMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
     return MessageViewMU
 
@@ -255,9 +258,9 @@ def IgnoreCryptoMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     dictLang = ButtonTexts[lang]
     IgnoreCryptoMenuMU = InlineKeyboardMarkup()
     AllCrypto = ListsCache.GetListOfCrypto()
-    TurnedOnCrypto = DBH.GetAllCrypto(chatID)
+    IgnoredCrypto = DBH.GetIgnoredCurrencies(chatID)
     for i in AllCrypto:
-        if i in TurnedOnCrypto:
+        if i in IgnoredCrypto:
             IgnoreCryptoMenuMU.add(InlineKeyboardButton(i + " ✅", callback_data = "cur_ignore_" + i))
         else:
             IgnoreCryptoMenuMU.add(InlineKeyboardButton(i + " ❌", callback_data = "cur_ignore_" + i))
@@ -287,14 +290,14 @@ def IgnoreCurrenciesSetupMarkup(chatID: str, chatType: str, letter: str) -> Inli
     lang = DBH.GetSetting(chatID, "lang", chatType)
     dictLang = ButtonTexts[lang]
     AllCurrencies = ListsCache.GetListOfCur()
-    TurnedOnCurrencies = DBH.GetAllCurrencies(chatID)
+    IgnoredCurrencies = DBH.GetIgnoredCurrencies(chatID)
     AllFlags = ListsCache.GetDictOfFlags()
     IgnoreCurrenciesSetupMU = InlineKeyboardMarkup()
     if len(letter) == 1:
         letter = letter.upper()
         for i in AllCurrencies:
             if i[0] == letter:
-                if i in TurnedOnCurrencies:
+                if i in IgnoredCurrencies:
                     IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ✅", callback_data = "cur_ignore_" + i))
                 else:
                     IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ❌", callback_data = "cur_ignore_" + i))
@@ -307,7 +310,7 @@ def IgnoreCurrenciesSetupMarkup(chatID: str, chatType: str, letter: str) -> Inli
             firstLetter += 1
         for i in AllCurrencies:
             if i[0] in listOfLetters:
-                if i in TurnedOnCurrencies:
+                if i in IgnoredCurrencies:
                     IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ✅", callback_data = "cur_ignore_" + i))
                 else:
                     IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ❌", callback_data = "cur_ignore_" + i))

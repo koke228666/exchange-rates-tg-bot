@@ -21,7 +21,7 @@ from NewPrint import Print, EnableLogging, DisableLogging, PrintMainInfo
 from SkipUpdates import EnableUpdates, DisableUpdates, IsUpdate
 from GetExchangeRates import SheduleUpdate, SheduleCryptoUpdate
 from BlackList import IsUserInBlackList, LoadBlackList, RemoveFromBlackList, AddToBlackList
-from Processing import AnswerText, LoadCurrencies, LoadCrypto, LoadDictionaries, LoadFlags, SearchValuesAndCurrencies, SpecialSplit, MessagePreparation
+from Processing import AnswerText, LoadCurrencies, LoadCrypto, LoadDictionaries, LoadFlags, LoadSymbols, SearchValuesAndCurrencies, RemoveIgnored, SpecialSplit, MessagePreparation
 import TextHelper as CustomMarkup
 from TextHelper import LoadTexts, GetText
 import ListsCache
@@ -407,8 +407,11 @@ async def MainVoid(message: types.Message):
     Print("After ConvertWordsToNumber(): " + str(TextArray), "L")
 
     # Searching Currencies
+    NumArray = SearchValuesAndCurrencies(TextArray)
+    NumArray = RemoveIgnored(NumArray, chatID)
     try:
         NumArray = SearchValuesAndCurrencies(TextArray)
+        NumArray = RemoveIgnored(NumArray, chatID)
     except:
         Print("Error SearchValuesAndCurrencies(). Message: " + OriginalMessageText, "E")
         return
@@ -519,6 +522,9 @@ async def CallbackAnswer(call: types.CallbackQuery):
         elif Value == "flags":
             IsFlag = DBH.GetSetting(chatID, 'flags', chatType)
             DBH.SetSetting(chatID, 'flags', int(not IsFlag), chatType)
+        elif Value == "symbols":
+            IsSymbol = DBH.GetSetting(chatID, 'currencySymbol', chatType)
+            DBH.SetSetting(chatID, 'currencySymbol', int(not IsSymbol), chatType)
         await bot.edit_message_text(GetText(chatID, 'mes_view_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.MessageViewMarkup(chatID, chatType))
 
     elif str(callData).find("edit_") == 0:
@@ -556,13 +562,14 @@ async def CallbackAnswer(call: types.CallbackQuery):
         elif len(Value) == 1 or len(Value) == 2:
             await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesSetupMarkup(chatID, chatType, Value))
         elif len(Value) == 3 or len(Value) == 4:
+            DBH.SetIgnoredCurrency(chatID, Value, not DBH.GetIgnoredCurrency(chatID, Value))
             DBH.ReverseCurrencySetting(chatID, Value)
             if Value in ListsCache.GetListOfCrypto():
-                await bot.edit_message_text(GetText(chatID, "ignore_crypto_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CryptoMenuMarkup(chatID, chatType))
+                await bot.edit_message_text(GetText(chatID, "ignore_crypto_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCryptoMenuMarkup(chatID, chatType))
             else:
                 dictForMU = {'A': 'a', 'B': 'b', 'C': 'c', 'D': 'df', 'E': 'df', 'F': 'df', 'G': 'gh', 'H': 'gh', 'I': 'ij', 'J': 'ij', 'K': 'kl', 'L': 'kl', 'M': 'm',
                              'N': 'nq', 'O': 'nq', 'P': 'nq', 'Q': 'nq', 'R': 'rs', 'S': 'rs', 'T': 'tu', 'U': 'tu', 'V': 'vz', 'W': 'vz', 'X': 'vz', 'Y': 'vz', 'Z': 'vz'}
-                await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CurrenciesSetupMarkup(chatID, chatType, dictForMU[Value[0]]))
+                await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesSetupMarkup(chatID, chatType, dictForMU[Value[0]]))
 
     elif str(callData).find("cur_") == 0:
         member = await call.message.chat.get_member(fromUserId)
@@ -652,6 +659,7 @@ def LoadDataForBot():
     LoadCurrencies()
     LoadCrypto()
     LoadFlags()
+    LoadSymbols()
     LoadDictionaries()
     LoadTexts()
     ListsCache.SetTokensForW2N()

@@ -118,6 +118,19 @@ def LoadFlags():
         EmptyDictOfFlags[i] = ""
     ListsCache.SetEmptyDictOfFlags(EmptyDictOfFlags)
 
+def LoadSymbols():
+    File = open("Dictionaries/currencies.json", "r")
+    Dic = json.load(File)
+    Dic = Dic["currencies"]
+    DictOfSymbols = {}
+    for i in Dic:
+        DictOfSymbols[i["code"]] = i["symbol_native"]
+    ListsCache.SetDictOfSymbols(DictOfSymbols)
+    EmptyDictOfSymbols = {}
+    for i in DictOfSymbols:
+        EmptyDictOfSymbols[i] = ""
+    ListsCache.SetEmptyDictOfSymbols(EmptyDictOfSymbols)
+
 def LoadDictionaries():
     global ListEntry, ListEqual, ListCryptoEntry, ListCryptoEqual
 
@@ -354,8 +367,30 @@ def SearchValuesAndCurrencies(arr: list) -> list:
             answ_ar[3].pop(i)
             n -= 1
             i -= 1
-        i += 1
+        i += 1    
+
+    for i in range(len(answ_ar[0])):
+        answ_ar[0][i] = float(answ_ar[0][i])
+    for i in range(len(answ_ar[2])):
+        answ_ar[2][i] = float(answ_ar[2][i])
     return answ_ar
+
+def RemoveIgnored(arr: list, chatID: str) -> list:
+    IgnoredCurrencies = GetIgnoredCurrencies(chatID)
+    newarr = [[], [], [], []]
+    for i in range(len(arr[1])):
+        if arr[1][i] in IgnoredCurrencies:
+            pass
+        else:
+            newarr[0].append(arr[0][i])
+            newarr[1].append(arr[1][i])
+    for i in range(len(arr[3])):
+        if arr[3][i] in IgnoredCurrencies:
+            pass
+        else:
+            newarr[2].append(arr[2][i])
+            newarr[3].append(arr[3][i])
+    return newarr
     
 def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
     def TwoZeroesToOne(s: str):
@@ -364,11 +399,17 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         return s
 
     DictOfFlagsForChat = {}
+    DictofSymbolsForChat = {}
 
     if GetSetting(chatID, "flags", chatType):
         DictOfFlagsForChat = ListsCache.GetDictOfFlags()
     else:
         DictOfFlagsForChat = ListsCache.GetEmptyDictOfFlags()
+
+    if GetSetting(chatID, "currencySymbol", chatType):
+        DictofSymbolsForChat = ListsCache.GetDictOfSymbols()
+    else:
+        DictofSymbolsForChat = ListsCache.GetEmptyDictOfSymbols()
 
     isCryptoLink = False
 
@@ -377,19 +418,10 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         CurVault = float(Arr[0][i])
         CurCurrency = Arr[1][i]
         answer += "\n" + "======" + "\n"
-        PartOfAnswer = DictOfFlagsForChat[CurCurrency] + str(f'{CurVault:,.2f}'.replace(","," ")) + " " + CurCurrency + "\n"
+        PartOfAnswer = DictOfFlagsForChat[CurCurrency] + str(f'{CurVault:,.2f}'.replace(","," ")) + DictofSymbolsForChat[CurCurrency] + " " + CurCurrency + "\n"
         
         ListOfChatCurrencies = GetAllCurrencies(chatID)
         ListOfChatCrypto = GetAllCrypto(chatID)
-        ListOfChatIgnored = GetIgnoredCurrencies(chatID)
-        
-        for j in ListOfChatIgnored:
-            if j in ListOfChatCurrencies:
-                ListOfChatCurrencies.remove(j)
-        
-        for j in ListOfChatIgnored:
-            if j in ListOfChatCrypto:
-                ListOfChatCrypto.remove(j)
 
         for j in ListOfChatCurrencies: #Проходимся по всем классическим валютам
             if CurCurrency == j:
@@ -397,11 +429,11 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
             elif j == 'EUR':
                 Vault = round(CurVault / GetExchangeRates.exchangeRates[CurCurrency], 2)
                 Vault = f'{Vault:,.2f}'.replace(","," ")
-                PartOfAnswer += "\n" + DictOfFlagsForChat[j] + str(Vault) + " " + j
+                PartOfAnswer += "\n" + DictOfFlagsForChat[j] + str(Vault) + DictofSymbolsForChat[j] + " " + j
             elif j != 'EUR':
                 Vault = round(CurVault * (GetExchangeRates.exchangeRates[j] / GetExchangeRates.exchangeRates[CurCurrency]), 2)
                 Vault = f'{Vault:,.2f}'.replace(","," ")
-                PartOfAnswer += "\n" + DictOfFlagsForChat[j] + str(Vault) + " " + j
+                PartOfAnswer += "\n" + DictOfFlagsForChat[j] + str(Vault) + DictofSymbolsForChat[j] + " " + j
         if CurCurrency == 'UAH' and CurVault == 40.0:
             PartOfAnswer += "\n👖1 штани"
         elif CurCurrency == 'USD' and CurVault == 300.0:
@@ -431,6 +463,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
 
         ListOfChatCurrencies = GetAllCurrencies(chatID)
         ListOfChatCrypto = GetAllCrypto(chatID)
+                
         for j in ListOfChatCurrencies: #Проходимся по всем классическим валютам
             if j == 'EUR':
                 Vault = round(CurVault * 1 / GetExchangeRates.exchangeRates['USD'] * GetExchangeRates.cryptoRates[CurCurrency], 2)

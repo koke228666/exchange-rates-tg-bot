@@ -5,6 +5,8 @@ ListOfCrypto = []
 
 DictOfFlags = {}
 EmptyDictOfFlags = {}
+DictOfSymbols = {}
+EmptyDictOfSymbols = {}
 
 TokensForW2N = ""
 ExceptionsForW2N = []
@@ -24,6 +26,22 @@ def SetDictOfFlags(newDictOfFlags: dict):
 def GetDictOfFlags() -> dict:
     global DictOfFlags
     return DictOfFlags
+
+def SetDictOfSymbols(newDictOfSymbols: dict):
+    global DictOfSymbols
+    DictOfSymbols = newDictOfSymbols
+
+def GetDictOfSymbols() -> dict:
+    global DictOfSymbols
+    return DictOfSymbols
+
+def SetEmptyDictOfSymbols(newEmptyDictOfSymbols: dict):
+    global EmptyDictOfSymbols
+    EmptyDictOfSymbols = newEmptyDictOfSymbols
+
+def GetEmptyDictOfSymbols() -> dict:
+    global EmptyDictOfSymbols
+    return EmptyDictOfSymbols
 
 def SetListOfCrypto(newListOfCrypto: list):
     global ListOfCrypto
