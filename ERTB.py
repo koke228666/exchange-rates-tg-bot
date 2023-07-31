@@ -355,10 +355,6 @@ async def StartVoid(message: types.Message):
 async def MainVoid(message: types.Message):
     messageData = GetDataFromMessage(message)
 
-    fromUserId = message.from_user.id
-    chatID = message.chat.id
-    chatType = message.chat.type
-
     # Checking if the message is from the bot
     if IsFromBot(message):
         return
@@ -408,10 +404,10 @@ async def MainVoid(message: types.Message):
 
     # Searching Currencies
     NumArray = SearchValuesAndCurrencies(TextArray)
-    NumArray = RemoveIgnored(NumArray, chatID)
+    NumArray = RemoveIgnored(NumArray, messageData["chatID"])
     try:
         NumArray = SearchValuesAndCurrencies(TextArray)
-        NumArray = RemoveIgnored(NumArray, chatID)
+        NumArray = RemoveIgnored(NumArray, messageData["chatID"])
     except:
         Print("Error SearchValuesAndCurrencies(). Message: " + OriginalMessageText, "E")
         return
@@ -421,14 +417,14 @@ async def MainVoid(message: types.Message):
     if NumArray == [[], [], [], []]:
         return
 
-    if StopDDoS.updateData(fromUserId, chatID, len(NumArray[1]) + len(NumArray[3]), message.chat.title):
-        await message.reply(GetText(chatID, 'added_to_bl', chatType))
+    if StopDDoS.updateData(messageData["fromUserId"], messageData["chatID"], len(NumArray[1]) + len(NumArray[3]), message.chat.title):
+        await message.reply(GetText(messageData["chatID"], 'added_to_bl', messageData["chatType"]))
         ListAdmins = DBH.GetAdmins()
         for i in ListAdmins:
-            await bot.send_message(i, "User @" + str(message.from_user.username) + " id: " + str(fromUserId) + " is blocked.", reply_markup=CustomMarkup.DeleteMarkup(i, "private"))
+            await bot.send_message(i, "User @" + str(message.from_user.username) + " id: " + str(messageData["fromUserId"]) + " is blocked.", reply_markup=CustomMarkup.DeleteMarkup(i, "private"))
         return
 
-    result = AnswerText(NumArray, chatID, chatType)
+    result = AnswerText(NumArray, messageData["chatID"], messageData["chatType"])
     try:
         reply_message = await message.reply(result, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
     except:
@@ -437,14 +433,8 @@ async def MainVoid(message: types.Message):
               " | Chat username: " + 
               str(message.chat.username) + 
               " | Chat type: "+str(message.chat.type), "E")
-    DBH.UpdateChatUsage(chatID)
-    # for i in NumArray[1]:
-    #     DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCur()[i], OriginalMessageText)
-    # for i in NumArray[3]:
-    #     DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCrypto()[i], OriginalMessageText)
-    # 0 - numbers for currencies, 1 - codes of currencies, 2 - numbers for crypto, 3 - codes of crypto
-    # get user lang from telegram
-    DBH.NewProcessedCurrency(chatID, fromUserId, message.from_user.language_code, ','.join(NumArray[1]+NumArray[3]),','.join(DBH.GetAllCurrencies(chatID) + DBH.GetAllCrypto(chatID)), reply_message.message_id)
+    DBH.UpdateChatUsage(messageData["chatID"])
+    DBH.NewProcessedCurrency(messageData["chatID"], messageData["fromUserId"], message.from_user.language_code, ','.join(NumArray[1]+NumArray[3]), ','.join(DBH.GetAllCurrencies(messageData["chatID"]) + DBH.GetAllCrypto(messageData["chatID"])), reply_message.message_id)
     
 
 # Callbacks

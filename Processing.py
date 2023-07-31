@@ -49,12 +49,15 @@ def MessagePreparation(MesTxt: str) -> str:
 
     MesTxt = "".join(c for c in MesTxt if unicodedata.category(c) not in ["No", "Lo"])
 
+    pattern = r"(?<=\d),(?=\d{3})"
+    MesTxt = re.sub(pattern, "", MesTxt) # 1,000,000 to 1000000
+
     for i in range(len(MesTxt) - 2):
         if MesTxt[i].isdigit() and MesTxt[i + 2].isdigit() and MesTxt[i + 1] == ",":
             MesTxt = MesTxt[0:i + 1] + "." + MesTxt[i + 2:len(MesTxt)] # comma to dot
 
     pattern = r"(?<!\d)(\d{1,3}(?: \d{3})*(?:\.\d+)?)(?=(?:\s\d{3})*(?:\.\d+)?|\D|$)"
-    MesTxt = re.sub(pattern, RemoveSeparator, MesTxt) # removing spaces in numbers
+    MesTxt = re.sub(pattern, RemoveSeparator, MesTxt) # 1 000 000 to 1000000
 
     return MesTxt
 
