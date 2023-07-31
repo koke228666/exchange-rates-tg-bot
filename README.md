@@ -1,7 +1,7 @@
 # exchange-rates-tg-bot
 
 <img alt="GitHub" src="https://img.shields.io/github/license/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
-<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/1.6.2/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0b1/total?style=flat-square"><br>
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0b2/total?style=flat-square"><br>
 <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/VirtualSoftKey/exchange-rates-tg-bot/main.yml?style=flat-square"> <img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
 <hr>
 <h3>Project information and manuals:</h3>
@@ -26,6 +26,6 @@
 <hr>
 <h3>Releases:</h3>
 <ul>
-<li>Pre-release of ERTB – ver. 3.0.0 (beta 1). You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0b1">here</a>.</li>
+<li>Pre-release of ERTB – ver. 3.0.0 (beta 2). You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0b2">here</a>.</li>
 <li>Last stable release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.</li>
 </ul>
