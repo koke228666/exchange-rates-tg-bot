@@ -1,1 +1,9 @@
-!!!PLACEHOLDER!!!
+Ten bot rozpoznaje liczby i waluty w tekście, a następnie automatycznie wysyła wiadomość, w której kwota jest przeliczana na inne waluty.
+
+Spróbuj napisać: „5 złotych” lub „dwieście czterdzieści cztery dolary”.
+
+Jeśli chcesz wiedzieć o autorach, wersji, oryginalnym kodzie i/lub licencji, użyj polecenia /about.
+
+Jeśli chcesz zmienić waluty wyjściowe lub uprawnienia do usunięcia wiadomości, użyj polecenia /settings.
+
+Jeśli zauważysz błąd rozpoznawania, inne usterki lub masz sugestie dotyczące ulepszeń, napisz do nas w bocie do informacji zwrotnej @ertb_support_bot

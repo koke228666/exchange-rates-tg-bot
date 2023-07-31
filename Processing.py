@@ -414,7 +414,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
     isCryptoLink = False
 
     answer = ''
-    for i in range(len(Arr[1])): #Проходимся по всем распознаным классическим валютам
+    for i in range(len(Arr[1])): #National currencies
         CurVault = float(Arr[0][i])
         CurCurrency = Arr[1][i]
         answer += "\n" + "======" + "\n"
@@ -423,7 +423,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         ListOfChatCurrencies = GetAllCurrencies(chatID)
         ListOfChatCrypto = GetAllCrypto(chatID)
 
-        for j in ListOfChatCurrencies: #Проходимся по всем классическим валютам
+        for j in ListOfChatCurrencies: #National currencies
             if CurCurrency == j:
                 pass
             elif j == 'EUR':
@@ -442,7 +442,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         if len(ListOfChatCurrencies) != 0:
             PartOfAnswer += "\n"
         
-        for j in ListOfChatCrypto: #Проходимся по всем криптовалютам
+        for j in ListOfChatCrypto: #Crypto
             isCryptoLink = True
             if CurCurrency == 'EUR':
                 Vault = round(CurVault / GetExchangeRates.exchangeRates[CurCurrency] / GetExchangeRates.cryptoRates[j], 9)
@@ -454,7 +454,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
                 PartOfAnswer += "\n" + TwoZeroesToOne(str(Vault)) + " " + j
         answer += PartOfAnswer + "\n"
 
-    for i in range(len(Arr[3])): #Проходимся по всем распознаным криптовалютам
+    for i in range(len(Arr[3])): #Crypto
         isCryptoLink = True
         answer += "\n" + "======" + "\n"
         CurVault = float(Arr[2][i])
@@ -464,7 +464,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         ListOfChatCurrencies = GetAllCurrencies(chatID)
         ListOfChatCrypto = GetAllCrypto(chatID)
                 
-        for j in ListOfChatCurrencies: #Проходимся по всем классическим валютам
+        for j in ListOfChatCurrencies: #National currencies
             if j == 'EUR':
                 Vault = round(CurVault * 1 / GetExchangeRates.exchangeRates['USD'] * GetExchangeRates.cryptoRates[CurCurrency], 2)
                 Vault = f'{Vault:,.2f}'.replace(","," ")
@@ -477,7 +477,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         if len(ListOfChatCurrencies) != 0:
             PartOfAnswer += "\n"
         
-        for j in ListOfChatCrypto: #Проходимся по всем криптовалютам
+        for j in ListOfChatCrypto: #Crypto
             if CurCurrency == j:
                 pass
             else:

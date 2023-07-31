@@ -658,10 +658,8 @@ def IsChatExist(chatID: str, chatType: str, chatName: str):
         DBH.AddIgnoredCurrency(chatID)
         return False
 
-
 def LoadDataForBot():
     DBH.DBIntegrityCheck()
-    LoadBlackList()
     LoadCurrencies()
     LoadCrypto()
     LoadFlags()
@@ -740,4 +738,6 @@ if __name__ == '__main__':
     ThreadRegularBackup.start()
     ThreadRegularStats = Thread(target=RegularStats)
     ThreadRegularStats.start()
+    ThreadBlackList = Thread(target=LoadBlackList)
+    ThreadBlackList.start()
     executor.start_polling(dp, skip_updates=IsUpdate())

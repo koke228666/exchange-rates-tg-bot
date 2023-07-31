@@ -1,1 +1,19 @@
-!!!PLACEHOLDER!!!
+ERTB – exchange rates telegram bot.
+©VirtualSoftKey
+
+Bot został stworzony w celu rozpoznawania par liczb i walut w tekście, z automatycznym przeliczaniem na inne waluty według aktualnych kursów.
+
+Więcej informacji o bocie: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/README.md
+
+Kursy walut klasycznych są aktualizowane raz dziennie.  
+API: http://data.fixer.io/api/.
+Kursy kryptowalut są aktualizowane kilka razy na minutę.  API: https://api.binance.com/api/v3/
+
+W tej chwili obsługiwane są wszystkie klasyczne waluty świata, a także kilkanaście kryptowalut.
+
+Oryginalny kod jest open source i rozpowszechniany na licencji MIT. Tekst licencji: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/LICENSE.
+
+Aktualna wersja: 3.0 Beta 2
+Data ostatniej aktualizacji: sierpień 2023 r
+
+Informacja zwrotna: @ertb_support_bot
