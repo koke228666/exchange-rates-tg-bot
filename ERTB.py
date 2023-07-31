@@ -62,7 +62,7 @@ async def AboutMes(message: types.Message):
 @dp.message_handler(commands=['help'])
 async def HelpMes(message: types.Message):
     messageData = GetDataFromMessage(message)
-    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"], messageData["chatName"]):
         return
     IsChatExist(messageData["chatID"], messageData["chatType"])
     await message.reply(GetText(messageData["chatID"], "help", messageData["chatType"]), reply_markup=CustomMarkup.DeleteMarkup(messageData["chatID"], messageData["chatType"]))
