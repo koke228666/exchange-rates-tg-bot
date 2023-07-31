@@ -245,22 +245,7 @@ ERTB – exchange rates telegram bot.<br>
     <td><code>/amount</code></td>
     <td>Кількість чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць.</td>
     <td><code>/amount</code></td>
-    <td><code><pre>
-For all the time:
-PM: 32235
-Groups: 11938
-
-In 24 hours:
-PM: 549
-Groups: 998
-
-In a week:
-PM: 1662
-Groups: 1928
-
-In 30 days:
-PM: 3522
-Groups: 2859</pre></code></td>
+    <td><code>For all the time:<br style="display:block">PM: 32235<br style="display:block">Groups: 11938<br style="display:block"><br style="display:block">In 24 hours:<br style="display:block">PM: 549<br style="display:block">Groups: 998<br style="display:block"><br style="display:block">In a week:<br style="display:block"><br style="display:block">PM: 1662<br style="display:block">Groups: 1928<br style="display:block">In 30 days:<br style="display:block">PM: 3522<br style="display:block">Groups: 2859</code></td>
   </tr>
   <tr>
     <td><code>/plotamount</code></td>
