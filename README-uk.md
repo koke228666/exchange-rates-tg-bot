@@ -209,7 +209,7 @@ ERTB – exchange rates telegram bot.<br>
       Розсилка повідомлень по всіх чатах. Підтримує HTML-розмітку.
     </td>
     <td>
-    <code><xmp>/echo Тестова розсилка з <a href="google.com">посиланням</a>.</xmp></code>
+    <code>/echo Тестова розсилка з &lt;a href="google.com"&gt;посиланням&lt;/a&gt;.</code>
     </td>
     <td>
     <code>Тестова розсилка з <a href="google.com">посиланням</a>.</code>
@@ -223,7 +223,7 @@ ERTB – exchange rates telegram bot.<br>
       Написати у конкретний чат. Підтримує HTML-розмітку.
     </td>
     <td>
-    <code><xmp>/write 12345789 Тестова розсилка з <a href="google.com">посиланням</a>.</xmp></code>
+    <code>/write 12345789 Тестова розсилка з &lt;a href="google.com"&gt;посиланням&lt;/a&gt;.</code>
     </td>
     <td>
     <code>Тестова розсилка з <a href="google.com">посиланням</a>.</code>
@@ -245,12 +245,39 @@ ERTB – exchange rates telegram bot.<br>
     <td><code>/amount</code></td>
     <td>Кількість чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць.</td>
     <td><code>/amount</code></td>
-    <td><code>For all the time:<br>PM: 32235<br>Groups: 11938<br><br>In 24 hours:<br>PM: 549<br>Groups: 998<br><br>In a week:<br><br>PM: 1662<br>Groups: 1928<br>In 30 days:<br>PM: 3522<br>Groups: 2859</code></td>
+    <td><code><pre>
+For all the time:
+PM: 32235
+Groups: 11938
+
+In 24 hours:
+PM: 549
+Groups: 998
+
+In a week:
+PM: 1662
+Groups: 1928
+
+In 30 days:
+PM: 3522
+Groups: 2859</pre></code></td>
   </tr>
   <tr>
     <td><code>/plotamount</code></td>
     <td>Графік кількості чатів та груп у яких хоча би раз користувались ботом за весь час, добу, тиждень та місяць з розбивкою по днях.</td>
     <td><code>/plotamount</code></td>
+    <td>Графіки</td>
+  </tr>
+    <tr>
+    <td><code>/stats</code></td>
+    <td>Статистика по використанню бота користувачами за день, тиждень та місяць.</td>
+    <td><code>/amount</code></td>
+    <td><pre>Bot activity:<br>In the last 24 hours: 100<br>In the last week: 700<br><br>In the last month: 3000</p></td>
+  </tr>
+  <tr>
+    <td><code>/plotstats</code></td>
+    <td>Графіки по статистиці використання бота за різні проміжки часу.</td>
+    <td><code>/plotstats</code></td>
     <td>Графіки</td>
   </tr>
   <tr>
