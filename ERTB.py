@@ -430,7 +430,7 @@ async def MainVoid(message: types.Message):
 
     result = AnswerText(NumArray, chatID, chatType)
     try:
-        await message.reply(result, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
+        reply_message = await message.reply(result, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
     except:
         Print("Cannot send message. Chat ID: " + str(message.chat.id) +
               " | Chat name: " + str(message.chat.title) +
@@ -438,10 +438,14 @@ async def MainVoid(message: types.Message):
               str(message.chat.username) + 
               " | Chat type: "+str(message.chat.type), "E")
     DBH.UpdateChatUsage(chatID)
-    for i in NumArray[1]:
-        DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCur()[i], OriginalMessageText)
-    for i in NumArray[3]:
-        DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCrypto()[i], OriginalMessageText)
+    # for i in NumArray[1]:
+    #     DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCur()[i], OriginalMessageText)
+    # for i in NumArray[3]:
+    #     DBH.ProcessedCurrency(chatID, fromUserId, ListsCache.GetListOfCrypto()[i], OriginalMessageText)
+    # 0 - numbers for currencies, 1 - codes of currencies, 2 - numbers for crypto, 3 - codes of crypto
+    # get user lang from telegram
+    DBH.NewProcessedCurrency(chatID, fromUserId, message.from_user.language_code, ','.join(NumArray[1]+NumArray[3]),','.join(DBH.GetAllCurrencies(chatID) + DBH.GetAllCrypto(chatID)), reply_message.message_id)
+    
 
 # Callbacks
 @dp.callback_query_handler(lambda call: True)
@@ -479,9 +483,11 @@ async def CallbackAnswer(call: types.CallbackQuery):
                 if whoCanDeleteMes == 'admins' and (member.status == "administrator" or member.status == "creator") or whoCanDeleteMes == 'creator' and member.status == "creator":
                     CanUserDeleteMes = True
         if CanUserDeleteMes:
-            try:
+            try: 
                 await bot.edit_message_text(call.message.text + "\n\n@" + str(call.from_user.username) + " (id: " + str(fromUserId) + ")" + " delete it.", chatID, call.message.message_id)
                 await call.message.delete()
+                DBH.DeleteProcessedCurrency(chatID, call.message.message_id)
+
             except:
                 Print("Cannot delete message.", "E")
     elif str(callData).find("delbut_") == 0:

@@ -11,7 +11,7 @@ from NewPrint import Print
 
 listOfTables = ["SettingsGroups", "SettingsPrivateChats", "ExchangeRates", "SettingsExchangeRates", "CryptoRates", "SettingsCryptoRates", "IgnoredCurrencies"]
 listOfServiceTables = ["AdminsList", "BlackList"]
-listOfStatsTables = ["ChatsTimeStats", "ChatsUsage", "ProcessedCurrencies"]
+listOfStatsTables = ["ChatsTimeStats", "ChatsUsage", "ProcessedCurrencies", "NewProcessedCurrencies"]
 
 with open('Dictionaries/crypto.json') as json_file:
     cryptoData = json.load(json_file)
@@ -333,18 +333,7 @@ def DBIntegrityCheck():
         cursor = con.cursor()
         Print("Connected to stats DB successfully.", "S")
 
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        listNames = cursor.fetchall()
-        for i in range(len(listNames)):
-            listNames[i] = listNames[i][0]
-
-        for i in listOfStatsTables:
-            if not i in listNames:
-                CreateFileBackup("DataBases/StatsData.sqlite")
-                os.remove("DataBases/StatsData.sqlite")
-                Print("Error. Stats database is corrupted. 'StatsData.sqlite' was backuped and deleted. New database will be create automatically.", "E")
-                CreateStatsDataBase()
-                break
+        
         # check ProcessedCurrencies columns
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='ProcessedCurrencies';")
         table_exists = cursor.fetchone()
@@ -393,7 +382,38 @@ def DBIntegrityCheck():
                     chatType TEXT,
                     chatName TEXT,
                     timeAdded TEXT,
-                    lastTimeUse TEXT""")
+                    lastTimeUse TEXT
+                           );""")
+            
+        # check NewProcessedCurrencies columns
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='NewProcessedCurrencies';")
+        table_exists = cursor.fetchone()
+
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(NewProcessedCurrencies);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+            expected_columns = ["date", "chatID", "userID", "lang", "convertedFrom", "convertedTo", "deleted", "deletedDate", "messageID"]
+
+            for column in expected_columns:
+                if column not in existing_columns:
+                    Print(f"Adding column {column} to NewProcessedCurrencies table", "S")
+                    cursor.execute(f'ALTER TABLE NewProcessedCurrencies ADD COLUMN {column} TEXT;')
+        else:
+            Print("Creating NewProcessedCurrencies table", "S")
+            cursor.execute("""
+                CREATE TABLE NewProcessedCurrencies (
+                    date TEXT,
+                    chatID INTEGER NOT NULL,
+                    userID INTEGER DEFAULT 0,
+                    lang TEXT,
+                    convertedFrom TEXT,
+                    convertedTo TEXT,
+                    deleted INTEGER DEFAULT 0,
+                    deletedDate TEXT,
+                    messageID INTEGER NOT NULL
+                           );""")
+            
             
         # Get a list of all tables in the database
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -406,6 +426,20 @@ def DBIntegrityCheck():
         
         # Commit the changes and close the connection
         con.commit()
+
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        listNames = cursor.fetchall()
+        for i in range(len(listNames)):
+            listNames[i] = listNames[i][0]
+
+        for i in listOfStatsTables:
+            if not i in listNames:
+                CreateFileBackup("DataBases/StatsData.sqlite")
+                os.remove("DataBases/StatsData.sqlite")
+                Print("Error. Stats database is corrupted. 'StatsData.sqlite' was backuped and deleted. New database will be create automatically.", "E")
+                CreateStatsDataBase()
+                break
+
         con.close() 
         Print("Stats DB is OK.", "S")
     else:
@@ -439,6 +473,21 @@ def CreateStatsDataBase():
                 activeWeekGroupChats INTEGER DEFAULT 0,
                 activeMonthPrivateChats INTEGER DEFAULT 0,
                 activeMonthGroupChats INTEGER DEFAULT 0
+            );
+        """)
+
+    with con:
+        con.execute("""
+            CREATE TABLE NewProcessedCurrencies (
+                date TEXT,
+                chatID INTEGER NOT NULL,
+                userID INTEGER DEFAULT 0,
+                lang TEXT,
+                convertedFrom TEXT,
+                convertedTo TEXT,
+                deleted INTEGER DEFAULT 0,
+                deletedDate TEXT,
+                messageID INTEGER NOT NULL
             );
         """)
 
@@ -1042,6 +1091,21 @@ def ProcessedCurrency(chatID: str, userID: str, processedCurrency: str, message:
         query = query + ",?"
     query = query+")"
     cursor.execute(query, tuple(values_q))
+    con.commit()
+
+def NewProcessedCurrency(chatID: str, userID: str, lang: str, convertedFrom: str, convertedTo: str, messageID: str):
+    values_q = [chatID, userID, lang, convertedFrom, convertedTo, messageID]
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    query = "INSERT INTO NewProcessedCurrencies (date, chatID, userID, lang, convertedFrom, convertedTo, messageID) values (DATETIME(), ?,?,?,?,?,?)"
+    cursor.execute(query, tuple(values_q))
+    con.commit()
+
+def DeleteProcessedCurrency(chatID: str, messageID: str):
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    # change deleted to true and add deleted date
+    cursor.execute("UPDATE NewProcessedCurrencies SET deleted = 1, deletedDate = DATETIME() WHERE chatID = ? AND messageID = ?", (chatID, messageID))
     con.commit()
 
 
