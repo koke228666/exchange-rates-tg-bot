@@ -173,12 +173,6 @@ def DBIntegrityCheck():
                 Print(f"Column {column} does not exist in JSON file. Deleting it now from IgnoredCurrencies.", "S")
                 cursor.execute(f'ALTER TABLE IgnoredCurrencies DROP COLUMN {column};')
 
-            # insert or ignore every row from SettingsExchangeRates with default values
-            cursor.execute("SELECT * FROM SettingsExchangeRates;")
-            rows = cursor.fetchall()
-            for row in rows:
-                chatID = row[0]
-                cursor.execute(f"INSERT OR IGNORE INTO IgnoredCurrencies (chatID) VALUES ({chatID});")
         else:
             # Table does not exist, create it with all required columns
             Print("Table IgnoredCurrencies does not exist. Creating it now.", "S")
@@ -190,6 +184,13 @@ def DBIntegrityCheck():
                     {columns}
                 );
             """)
+        
+        # insert or ignore every row from SettingsExchangeRates with default values
+        cursor.execute("SELECT * FROM SettingsExchangeRates;")
+        rows = cursor.fetchall()
+        for row in rows:
+            chatID = row[0]
+            cursor.execute(f"INSERT OR IGNORE INTO IgnoredCurrencies (chatID) VALUES ({chatID});")
 
         # check SettingsGroups integrity
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='SettingsGroups';")
