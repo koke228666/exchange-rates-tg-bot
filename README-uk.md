@@ -47,7 +47,7 @@ ERTB – exchange rates telegram bot.<br>
     <ul>
     <li><b>Англійська</b></li>
     <li><b>Білоруська</b> (скоро)</li>
-    <li><b>Німецька</b> (скоро)</li>
+    <li><b>Німецька</b></li>
     <li><b>Польська</b></li>
     <li><b>російська</b></li>
     <li><b>Українська</b></li>
@@ -90,7 +90,7 @@ ERTB – exchange rates telegram bot.<br>
   </tr>
   <tr>
     <th>Покращене розпізнавання криптовалют</th>
-    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP</td>
+    <td>ADA, AVAX, BCH, BNB, BTC, DASH, DOGE, DOT, ETC, ETH, LTC, MATIC, RVN, SHIB, SOL, TRX, XLM, XMR, XRP.</td>
   </tr>
   <tr>
     <th>API національних валют валют</th>
@@ -253,11 +253,11 @@ ERTB – exchange rates telegram bot.<br>
     <td><code>/plotamount</code></td>
     <td>Графіки</td>
   </tr>
-    <tr>
+  <tr>
     <td><code>/stats</code></td>
     <td>Статистика по використанню бота користувачами за день, тиждень та місяць.</td>
     <td><code>/amount</code></td>
-    <td><pre>Bot activity:<br>In the last 24 hours: 100<br>In the last week: 700<br><br>In the last month: 3000</p></td>
+    <td><code>Bot activity:<br style="display:block">In the last 24 hours: 100<br style="display:block">In the last week: 700<br style="display:block">In the last month: 3000</code></td>
   </tr>
   <tr>
     <td><code>/plotstats</code></td>

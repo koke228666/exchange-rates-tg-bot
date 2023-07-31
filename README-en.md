@@ -47,7 +47,7 @@ Bot answer:
     <li><b>Belarusian</b> (coming soon)</li>
     <li><b>Czech</b> (coming soon)</li>
     <li><b>English</b></li>
-    <li><b>German</b> (coming soon)</li>
+    <li><b>German</b></li>
     <li><b>Polish</b></li>
     <li><b>Russian</b></li>
     <li><b>Ukrainian</b></li>
@@ -89,7 +89,7 @@ Bot answer:
   </tr>
   <tr>
     <th>Enhanced cryptocurrency recognition</th>
-    <td>ADA, BCH, BNB, BTC, DASH, DOGE, ETC, ETH, LTC, RVN, TRX, XLM, XMR, XRP</td>
+    <td>ADA, AVAX, BCH, BNB, BTC, DASH, DOGE, DOT, ETC, ETH, LTC, MATIC, RVN, SHIB, SOL, TRX, XLM, XMR, XRP.</td>
   </tr>
   <tr>
     <th>API for national currencies</th>
@@ -208,7 +208,7 @@ All the arguments for run:
       Sending messages to all chats. Supporting HTML.
     </td>
     <td>
-    <code><xmp>/echo Test messaging with <a href="google.com">link</a>.</xmp></code>
+    <code>/echo Test messaging with  &lt;a href="google.com"&gt;link &lt;/a&gt;.</code>
     </td>
     <td>
     <code>Test messaging with <a href="google.com">link</a>.</code>
@@ -222,7 +222,7 @@ All the arguments for run:
       Write to a specific chat. Supporting HTML.
     </td>
     <td>
-      <code><xmp>/echo Test messaging with <a href="google.com">link</a>.</xmp></code>
+      <code><xmp>/write 12345789 Test messaging with  &lt;a href="google.com"&gt;link &lt;/a&gt;.</xmp></code>
     </td>
     <td>
     <code>Test messaging with <a href="google.com">link</a>.</code>
@@ -244,13 +244,25 @@ All the arguments for run:
     <td><code>/amount</code></td>
     <td>The number of chats and groups in which the bot was used at least once for the full time, day, week, and month.</td>
     <td><code>/amount</code></td>
-    <td><code>For all the time:<br>PM: 32235<br>Groups: 11938<br><br>In 24 hours:<br>PM: 549<br>Groups: 998<br><br>In a week:<br><br>PM: 1662<br>Groups: 1928<br>In 30 days:<br>PM: 3522<br>Groups: 2859</code></td>
+    <td><code>For all the time:<br style="display:block">PM: 32235<br style="display:block">Groups: 11938<br style="display:block"><br style="display:block">In 24 hours:<br style="display:block">PM: 549<br style="display:block">Groups: 998<br style="display:block"><br style="display:block">In a week:<br style="display:block"><br style="display:block">PM: 1662<br style="display:block">Groups: 1928<br style="display:block">In 30 days:<br style="display:block">PM: 3522<br style="display:block">Groups: 2859</code></td>
   </tr>
   <tr>
     <td><code>/plotamount</code></td>
     <td>A graph of the number of chats and groups in which the bot was used at least once for the entire time, day, week, and month, by day.</td>
     <td><code>/plotamount</code></td>
     <td>Charts</td>
+  </tr>
+  <tr>
+    <td><code>/stats</code></td>
+    <td>Statistics on bot usage by users per day, week, and month.</td>
+    <td><code>/amount</code></td>
+    <td><code>Bot activity:<br style="display:block">In the last 24 hours: 100<br style="display:block">In the last week: 700<br style="display:block">In the last month: 3000</code></td>
+  </tr>
+  <tr>
+    <td><code>/plotstats</code></td>
+    <td>Graphs of bot usage statistics for different periods of time.</td>
+    <td><code>/plotstats</code></td>
+    <td>Графіки</td>
   </tr>
   <tr>
     <td><code>/backup</code></td>
