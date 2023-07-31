@@ -235,8 +235,8 @@ async def AddAdminVoid(message: types.Message):
             await message.reply("The ID should only contain numbers and possibly a minus.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
-@dp.message_handler(commands=['stats'])
-async def StatsVoid(message: types.Message):
+@dp.message_handler(commands=['amount'])
+async def AmountVoid(message: types.Message):
     messageData = GetDataFromMessage(message)
 
     if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
@@ -248,8 +248,8 @@ async def StatsVoid(message: types.Message):
         await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
-@dp.message_handler(commands=['fullstats'])
-async def FullStatsVoid(message: types.Message):
+@dp.message_handler(commands=['plotamount'])
+async def PlotAmountVoid(message: types.Message):
     messageData = GetDataFromMessage(message)
 
     if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
@@ -257,17 +257,129 @@ async def FullStatsVoid(message: types.Message):
     if DBH.IsAdmin(messageData["fromUserId"]):
         chartData = DBH.GetStatsForChart()
         chartsNames = ["generalAmount", "activeWeek", "activeMonth"]
-        BuildChart(chartData['privateChatsAmount'], chartData['groupChatsAmount'], chartData['dates'], "privateChatsAmount", "groupChatsAmount", chartsNames[0])
-        BuildChart(chartData['activeWeekPrivateChats'], chartData['activeWeekGroupChats'], chartData['dates'], "activeWeekPrivateChats", "activeWeekGroupChats", chartsNames[1])
-        BuildChart(chartData['activeMonthPrivateChats'], chartData['activeMonthGroupChats'], chartData['dates'], "activeMonthPrivateChats", "activeMonthGroupChats", chartsNames[2])
+        BuildChartAmount(chartData['privateChatsAmount'], chartData['groupChatsAmount'], chartData['dates'], "privateChatsAmount", "groupChatsAmount", chartsNames[0])
+        BuildChartAmount(chartData['activeWeekPrivateChats'], chartData['activeWeekGroupChats'], chartData['dates'], "activeWeekPrivateChats", "activeWeekGroupChats", chartsNames[1])
+        BuildChartAmount(chartData['activeMonthPrivateChats'], chartData['activeMonthGroupChats'], chartData['dates'], "activeMonthPrivateChats", "activeMonthGroupChats", chartsNames[2])
         media = types.MediaGroup()
         media.attach_document(types.InputFile('generalAmount.png'))
         media.attach_document(types.InputFile('activeWeek.png'))
         media.attach_document(types.InputFile('activeMonth.png'))
         await message.reply_media_group(media=media)
         DeleteCharts(chartsNames)
+
+@dp.message_handler(commands=['stats'])
+async def StatsVoid(message: types.Message):
+    messageData = GetDataFromMessage(message)
+
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
+        return
+    if DBH.IsAdmin(messageData["fromUserId"]):
+        allRecords = DBH.GetProcessedCurrencies()
+        botUsageLastDayByMinute = {}
+        botUsageLastWeekByMinute = {}
+        botUsageLastMonthByDay = {}
+        for i in allRecords:
+            #date = yyyy-MM-dd hh:mm:ss
+            date = i["date"]
+            date = date.split(" ")
+            date = date[0]
+            if date == datetime.datetime.now().strftime("%Y-%m-%d"):
+                date = i["date"]
+                date = date.split(" ")
+                date = date[1]
+                date = date.split(":")
+                date = date[0] + ":" + date[1]
+                if date in botUsageLastDayByMinute:
+                    botUsageLastDayByMinute[date] += 1
+                else:
+                    botUsageLastDayByMinute[date] = 1
+            if date >= (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"):
+                date = i["date"]
+                date = date.split(" ")
+                date = date[1]
+                date = date.split(":")
+                date = date[0] + ":" + date[1]
+                if date in botUsageLastWeekByMinute:
+                    botUsageLastWeekByMinute[date] += 1
+                else:
+                    botUsageLastWeekByMinute[date] = 1
+            if date >= (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"):
+                date = i["date"]
+                date = date.split(" ")
+                date = date[0]
+                if date in botUsageLastMonthByDay:
+                    botUsageLastMonthByDay[date] += 1
+                else:
+                    botUsageLastMonthByDay[date] = 1
+        usageByDay = sum(list(botUsageLastDayByMinute.values()))
+        usageByWeek = sum(list(botUsageLastWeekByMinute.values()))
+        usageByMonth = sum(list(botUsageLastMonthByDay.values()))
+        answerMes = "Bot activity:\n\nIn the last 24 hours: " + str(usageByDay) + "\nIn the last week: " + str(usageByWeek) + "\nIn the last month: " + str(usageByMonth)
+        await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
         
 
+@dp.message_handler(commands=['plotstats'])
+async def PlotStatsVoid(message: types.Message):
+    messageData = GetDataFromMessage(message)
+
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
+        return
+    if DBH.IsAdmin(messageData["fromUserId"]):
+        allRecords = DBH.GetProcessedCurrencies()
+        botUsageAllTimeByDay = {}
+        botUsageLastDayByMinute = {}
+        botUsageLastWeekByMinute = {}
+        botUsageLastMonthByDay = {}
+        botUsage24HoursAvgPerWeekByMinute = {}
+        for i in allRecords:
+            #date = yyyy-MM-dd hh:mm:ss
+            date = i["date"]
+            date = date.split(" ")
+            date = date[0]
+            if date in botUsageAllTimeByDay:
+                botUsageAllTimeByDay[date] += 1
+            else:
+                botUsageAllTimeByDay[date] = 1
+            if date == datetime.datetime.now().strftime("%Y-%m-%d"):
+                date = i["date"]
+                lastIndex = date.rfind(":")
+                date = date[:lastIndex]
+                if date in botUsageLastDayByMinute:
+                    botUsageLastDayByMinute[date] += 1
+                else:
+                    botUsageLastDayByMinute[date] = 1
+            if date >= (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"):
+                date = i["date"]
+                lastIndex = date.rfind(":")
+                date = date[:lastIndex]
+                if date in botUsageLastWeekByMinute:
+                    botUsageLastWeekByMinute[date] += 1
+                else:
+                    botUsageLastWeekByMinute[date] = 1
+            if date >= (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"):
+                date = i["date"]
+                date = date.split(" ")
+                date = date[0]
+                if date in botUsageLastMonthByDay:
+                    botUsageLastMonthByDay[date] += 1
+                else:
+                    botUsageLastMonthByDay[date] = 1
+        for i in botUsageLastWeekByMinute:
+            botUsage24HoursAvgPerWeekByMinute[i] = botUsageLastWeekByMinute[i] / 7
+        chartsNames = ["botUsageAllTimeByDay", "botUsageLastDayByMinute", "botUsageLastWeekByMinute", "botUsageLastMonthByDay", "botUsage24HoursAvgPerWeekByMinute"]
+        BuildChart(list(botUsageAllTimeByDay.values()), list(botUsageAllTimeByDay.keys()), "botUsageAllTimeByDay", chartsNames[0])
+        BuildChart(list(botUsageLastDayByMinute.values()), list(botUsageLastDayByMinute.keys()), "botUsageLastDayByMinute", chartsNames[1])
+        BuildChart(list(botUsageLastWeekByMinute.values()), list(botUsageLastWeekByMinute.keys()), "botUsageLastWeekByMinute", chartsNames[2])
+        BuildChart(list(botUsageLastMonthByDay.values()), list(botUsageLastMonthByDay.keys()), "botUsageLastMonthByDay", chartsNames[3])
+        BuildChart(list(botUsage24HoursAvgPerWeekByMinute.values()), list(botUsage24HoursAvgPerWeekByMinute.keys()), "botUsage24HoursAvgPerWeekByMinute", chartsNames[4])
+        media = types.MediaGroup()
+        media.attach_document(types.InputFile('botUsageAllTimeByDay.png'))
+        media.attach_document(types.InputFile('botUsageLastDayByMinute.png'))
+        media.attach_document(types.InputFile('botUsageLastWeekByMinute.png'))
+        media.attach_document(types.InputFile('botUsageLastMonthByDay.png'))
+        media.attach_document(types.InputFile('botUsage24HoursAvgPerWeekByMinute.png'))
+        await message.reply_media_group(media=media)
+        DeleteCharts(chartsNames)
 
 @dp.message_handler(commands=['backup'])
 async def BackupVoid(message: types.Message):
@@ -622,14 +734,44 @@ def CheckArgument(key: str, value: str) -> bool:
         print("Error. Unknow argument '{}'".format(key))
     return isAllOkArg
 
-def BuildChart(firstArr: list[int], secondArr: list[int], dates: list[str], firstLabel: str, secondLabel: str, chartName: str):
+def BuildChartAmount(firstArr: list[int], secondArr: list[int], dates: list[str], firstLabel: str, secondLabel: str, chartName: str):
+    date_interval = int((datetime.datetime.strptime(dates[-1], '%Y-%m-%d') - datetime.datetime.strptime(dates[0], '%Y-%m-%d')).days / 10)
+    if date_interval < 1:
+        date_interval = 1
     dates = [datetime.datetime.strptime(date_str, "%Y-%m-%d") for date_str in dates]
     plt.figure(figsize=(16,9))
     plt.plot(dates, firstArr, label=firstLabel)
     plt.plot(dates, secondArr, label=secondLabel)
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    date_interval = 100
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=date_interval))
+    plt.grid()
+    plt.legend()        
+    plt.savefig(chartName + '.png')
+    plt.clf()
+
+def BuildChart(arr: list[int], dates: list[str], label: str, chartName: str):
+    plt.figure(figsize=(16,9))
+    if label.find("ByDay") != -1:
+        try:
+            date_interval = int((datetime.datetime.strptime(dates[-1], '%Y-%m-%d') - datetime.datetime.strptime(dates[0], '%Y-%m-%d')).days / 10)
+            if date_interval < 1:
+                date_interval = 1
+        except:
+            date_interval = 1
+        plt.plot(dates, arr, label=label)
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=date_interval))
+    elif label.find("ByMinute") != -1:
+        dates = [datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M") for date_str in dates]
+        #dates = [datetime.datetime.combine(datetime.datetime.now(), date.time()) for date in dates]
+        plt.plot(dates, arr, label=label)
+        if label.find("Week") != -1:
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M'))
+            date_interval = 720
+        else:
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+            date_interval = 60
+        plt.gca().xaxis.set_major_locator(mdates.MinuteLocator(interval=date_interval))
     plt.grid()
     plt.legend()        
     plt.savefig(chartName + '.png')

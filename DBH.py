@@ -1108,6 +1108,30 @@ def DeleteProcessedCurrency(chatID: str, messageID: str):
     cursor.execute("UPDATE NewProcessedCurrencies SET deleted = 1, deletedDate = DATETIME() WHERE chatID = ? AND messageID = ?", (chatID, messageID))
     con.commit()
 
+def GetProcessedCurrencies():
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+
+    cursor.execute("SELECT * FROM NewProcessedCurrencies")
+    rows = cursor.fetchall()
+
+    records_list = []
+
+    for row in rows:
+        record_dict = {
+            'date': row[0],
+            'chatID': row[1],
+            'userID': row[2],
+            'lang': row[3],
+            'convertedFrom': row[4],
+            'convertedTo': row[5],
+            'deleted': row[6],
+            'deletedDate': row[7],
+            'messageID': row[8]
+        }
+        records_list.append(record_dict)
+
+    return records_list
 
 def GetDictOfFlags() -> dict:
     con = sql.connect('DataBases/DataForBot.sqlite')
