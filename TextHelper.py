@@ -68,8 +68,8 @@ def DonateMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     dictLang = ButtonTexts[lang]
     DonateMU = InlineKeyboardMarkup()
     DonateMU.add(InlineKeyboardButton(dictLang['donate'], url="https://secure.wayforpay.com/donate/d92c340414735", callback_data="donate"))
-    if isDeleteButton:
-        DonateMU.add(InlineKeyboardButton(dictLang['delete'], callback_data = "delete"))
+    # if isDeleteButton:
+    #     DonateMU.add(InlineKeyboardButton(dictLang['delete'], callback_data = "delete"))
     return DonateMU
 
 def DeleteMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:

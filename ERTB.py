@@ -131,14 +131,14 @@ async def EchoVoid(message: types.Message):
         listGC = DBH.GetGroupChatIDs()
         for i in listGC:
             try:
-                await bot.send_message(i, MessageToUsers, parse_mode="HTML", reply_markup=CustomMarkup.DonateMarkup(i, "group"))
+                await bot.send_message(i, MessageToUsers, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DonateMarkup(i, "group"))
             except:
                 Print("Chat " + str(i) + " is not available.", "W")
             time.sleep(0.035)
         listPC = DBH.GetPrivateChatIDs()
         for i in listPC:
             try:
-                await bot.send_message(i, MessageToUsers, parse_mode="HTML", reply_markup=CustomMarkup.DonateMarkup(i, "private"))
+                await bot.send_message(i, MessageToUsers, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DonateMarkup(i, "private"))
             except:
                 Print("Chat " + str(i) + " is not available.", "W")
             time.sleep(0.035)
