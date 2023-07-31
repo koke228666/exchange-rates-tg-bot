@@ -1,3 +1,4 @@
+import time
 import DBH
 
 BlackList = []
@@ -11,7 +12,9 @@ def IsUserInBlackList(userID: str, chatID: str) -> bool:
 
 def LoadBlackList():
     global BlackList
-    BlackList = DBH.GetBlacklist()
+    while True:
+        BlackList = DBH.GetBlacklist()
+        time.sleep(60)
 
 def AddToBlackList(userID: str, chatID: str, chatName: str):
     if userID not in BlackList:

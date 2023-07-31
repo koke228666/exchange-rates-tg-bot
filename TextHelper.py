@@ -5,38 +5,62 @@ import ListsCache
 import os
 from NewPrint import Print
 
-from Dictionaries.ButtonTexts import ButtonTexts
-from Dictionaries.MessageTexts import MessageTexts
-
 AllBigTexts = {}
-ListOfNamesOfTextforBigTexts = []
+ButtonTexts = {}
+MessageTexts = {}
+ListOfNamesOfTextForBigTexts = []
 
 def LoadTexts():
     global AllBigTexts
-    global ListOfNamesOfTextforBigTexts
-    UAtexts = {}
-    RUtexts = {}
-    ENtexts = {}
+    global ListOfNamesOfTextForBigTexts
     try:
         listFiles = os.listdir("Texts")
+        langs = []
+        for i in listFiles:
+            if i[0:2] not in langs:
+                langs.append(i[0:2].lower())
+                AllBigTexts[i[0:2].lower()] = {}
         for i in listFiles:
             fileWithText = open("Texts/" + i)
             fileText = fileWithText.read()
             fileWithText.close()
             nameOfText = i[2:-4]
-            if nameOfText not in ListOfNamesOfTextforBigTexts:
-                ListOfNamesOfTextforBigTexts.append(nameOfText)
-            if i.find("UA") == 0:
-                UAtexts[nameOfText] = fileText
-            elif i.find("EN") == 0:
-                ENtexts[nameOfText] = fileText
-            elif i.find("RU") == 0:
-                RUtexts[nameOfText] = fileText
-        AllBigTexts['ua'] = UAtexts
-        AllBigTexts['ru'] = RUtexts
-        AllBigTexts['en'] = ENtexts
+            if nameOfText not in ListOfNamesOfTextForBigTexts:
+                ListOfNamesOfTextForBigTexts.append(nameOfText)
+            if i[0:2].lower() in AllBigTexts:
+                AllBigTexts[i[0:2].lower()][nameOfText] = fileText
     except:
         Print("Problem with Texts. Redownload, pls.", "E")
+
+    global MessageTexts
+    fileWithTextsForButtons = open("Dictionaries/messages_texts.csv")
+    lines = fileWithTextsForButtons.readlines()
+    for i in range(0, len(lines)):
+        lines[i] = lines[i].replace("\n", "")
+    langs = lines[0].split(";")
+    langs.pop(0)
+    for i in langs:
+        MessageTexts[i] = {}
+    for i in lines[1:]:
+        line = i.split(";")
+        for j in range(0, len(langs)):
+            MessageTexts[langs[j]][line[0]] = line[j+1]
+    fileWithTextsForButtons.close()
+
+    global ButtonTexts
+    fileWithTextsForButtons = open("Dictionaries/buttons.csv")
+    lines = fileWithTextsForButtons.readlines()
+    for i in range(0, len(lines)):
+        lines[i] = lines[i].replace("\n", "")
+    langs = lines[0].split(";")
+    langs.pop(0)
+    for i in langs:
+        ButtonTexts[i] = {}
+    for i in lines[1:]:
+        line = i.split(";")
+        for j in range(0, len(langs)):
+            ButtonTexts[langs[j]][line[0]] = line[j+1]
+    fileWithTextsForButtons.close()
 
 def DonateMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     lang = DBH.GetSetting(chatID, "lang", chatType)
@@ -62,10 +86,11 @@ def SettingsMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     isDeleteButton = DBH.GetSetting(chatID, "deleteButton", chatType)
     dictLang = ButtonTexts[lang]
     SettingsMU = InlineKeyboardMarkup()
-    SettingsMU.add(InlineKeyboardButton(dictLang['currencies'], callback_data = "cur_menu"))
     SettingsMU.add(InlineKeyboardButton(dictLang['lang'], callback_data = "lang_menu"))
+    SettingsMU.add(InlineKeyboardButton(dictLang['currencies'], callback_data = "cur_menu"))
+    SettingsMU.add(InlineKeyboardButton(dictLang['ignore'], callback_data = "cur_ignore_menu"))
     SettingsMU.add(InlineKeyboardButton(dictLang['delete_button'], callback_data = "delbut_menu"))
-    SettingsMU.add(InlineKeyboardButton(dictLang['flags'], callback_data = "flags_menu"))
+    SettingsMU.add(InlineKeyboardButton(dictLang['mes_view'], callback_data = "ui_menu"))
     if chatType != "private":
         SettingsMU.add(InlineKeyboardButton(dictLang['permisssions'], callback_data = "edit_menu"))
     if isDeleteButton:
@@ -105,23 +130,29 @@ def LanguageMenuMarkup(chatID: str, chatType: str):
     AllSettings = DBH.GetAllSettings(chatID, chatType)
     dictLang = ButtonTexts[lang]
     LanguageMenuMU = InlineKeyboardMarkup()
+    LanguageMenuMU.add(InlineKeyboardButton("🇩🇪DE" + RulesMark('de', AllSettings), callback_data = "lang_de"))
     LanguageMenuMU.add(InlineKeyboardButton("🇬🇧EN" + RulesMark('en', AllSettings), callback_data = "lang_en"))
+    LanguageMenuMU.add(InlineKeyboardButton("🇵🇱PL" + RulesMark('pl', AllSettings), callback_data = "lang_pl"))
     LanguageMenuMU.add(InlineKeyboardButton("💩RU" + RulesMark('ru', AllSettings), callback_data = "lang_ru"))
     LanguageMenuMU.add(InlineKeyboardButton("🇺🇦UA" + RulesMark('ua', AllSettings), callback_data = "lang_ua"))
     LanguageMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
     return LanguageMenuMU
 
-def FlagsMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
+def MessageViewMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     lang = DBH.GetSetting(chatID, "lang", chatType)
     AllSettings = DBH.GetAllSettings(chatID, chatType)
     dictLang = ButtonTexts[lang]
-    FlagsMU = InlineKeyboardMarkup()
+    MessageViewMU = InlineKeyboardMarkup()
     if AllSettings['flags']:
-        FlagsMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ✅", callback_data = "flags_button"))
+        MessageViewMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ✅", callback_data = "ui_flags"))
     else:
-        FlagsMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ❌", callback_data = "flags_button"))
-    FlagsMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
-    return FlagsMU
+        MessageViewMU.add(InlineKeyboardButton(dictLang['flags_button'] + " ❌", callback_data = "ui_flags"))
+    if AllSettings['currencySymbol']:
+        MessageViewMU.add(InlineKeyboardButton(dictLang['symbols_button'] + " ✅", callback_data = "ui_symbols"))
+    else:
+        MessageViewMU.add(InlineKeyboardButton(dictLang['symbols_button'] + " ❌", callback_data = "ui_symbols"))
+    MessageViewMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
+    return MessageViewMU
 
 def EditMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
     def RulesMark(role: str, answDict) -> str:
@@ -213,10 +244,83 @@ def CurrenciesSetupMarkup(chatID: str, chatType: str, letter: str) -> InlineKeyb
     CurrenciesSetupMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "cur_curmenu"))
     return CurrenciesSetupMU
 
+def IgnoreCurrenciesMainMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
+    lang = DBH.GetSetting(chatID, "lang", chatType)
+    dictLang = ButtonTexts[lang]
+    IgnoreCurrenciesMainMenuMU = InlineKeyboardMarkup()
+    IgnoreCurrenciesMainMenuMU.add(InlineKeyboardButton(dictLang['cur_menu'], callback_data = "cur_ignore_curmenu"))
+    IgnoreCurrenciesMainMenuMU.add(InlineKeyboardButton(dictLang['crypto_menu'], callback_data = "cur_ignore_cryptomenu"))
+    IgnoreCurrenciesMainMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
+    return IgnoreCurrenciesMainMenuMU
+
+def IgnoreCryptoMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
+    lang = DBH.GetSetting(chatID, "lang", chatType)
+    dictLang = ButtonTexts[lang]
+    IgnoreCryptoMenuMU = InlineKeyboardMarkup()
+    AllCrypto = ListsCache.GetListOfCrypto()
+    IgnoredCrypto = DBH.GetIgnoredCurrencies(chatID)
+    for i in AllCrypto:
+        if i in IgnoredCrypto:
+            IgnoreCryptoMenuMU.add(InlineKeyboardButton(i + " ✅", callback_data = "cur_ignore_" + i))
+        else:
+            IgnoreCryptoMenuMU.add(InlineKeyboardButton(i + " ❌", callback_data = "cur_ignore_" + i))
+    IgnoreCryptoMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "cur_ignore_menu"))
+    return IgnoreCryptoMenuMU
+
+def IgnoreCurrenciesMenuMarkup(chatID: str, chatType: str) -> InlineKeyboardMarkup:
+    lang = DBH.GetSetting(chatID, "lang", chatType)
+    dictLang = ButtonTexts[lang]
+    IgnoreCurrenciesMenuMU = InlineKeyboardMarkup()
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("A", callback_data = "cur_ignore_a"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("B", callback_data = "cur_ignore_b"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("C", callback_data = "cur_ignore_c"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("D-F", callback_data = "cur_ignore_df"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("G-H", callback_data = "cur_ignore_gh"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("I-J", callback_data = "cur_ignore_ij"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("K-L", callback_data = "cur_ignore_kl"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("M", callback_data = "cur_ignore_m"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("N-Q", callback_data = "cur_ignore_nq"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("R-S", callback_data = "cur_ignore_rs"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("T-U", callback_data = "cur_ignore_tu"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton("V-Z", callback_data = "cur_ignore_vz"))
+    IgnoreCurrenciesMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "cur_ignore_menu"))
+    return IgnoreCurrenciesMenuMU
+
+def IgnoreCurrenciesSetupMarkup(chatID: str, chatType: str, letter: str) -> InlineKeyboardMarkup:
+    lang = DBH.GetSetting(chatID, "lang", chatType)
+    dictLang = ButtonTexts[lang]
+    AllCurrencies = ListsCache.GetListOfCur()
+    IgnoredCurrencies = DBH.GetIgnoredCurrencies(chatID)
+    AllFlags = ListsCache.GetDictOfFlags()
+    IgnoreCurrenciesSetupMU = InlineKeyboardMarkup()
+    if len(letter) == 1:
+        letter = letter.upper()
+        for i in AllCurrencies:
+            if i[0] == letter:
+                if i in IgnoredCurrencies:
+                    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ✅", callback_data = "cur_ignore_" + i))
+                else:
+                    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ❌", callback_data = "cur_ignore_" + i))
+    else:
+        firstLetter = ord(letter[0].upper())
+        lastLetter = ord(letter[1].upper())
+        listOfLetters = []
+        while firstLetter <= lastLetter:
+            listOfLetters.append(chr(firstLetter))
+            firstLetter += 1
+        for i in AllCurrencies:
+            if i[0] in listOfLetters:
+                if i in IgnoredCurrencies:
+                    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ✅", callback_data = "cur_ignore_" + i))
+                else:
+                    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(AllFlags[i] + i + " ❌", callback_data = "cur_ignore_" + i))
+    IgnoreCurrenciesSetupMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "cur_curmenu"))
+    return IgnoreCurrenciesSetupMU
+
 def GetText(chatID: str, nameOfText: str, chatType: str) -> str:
     lang = DBH.GetSetting(chatID, "lang", chatType)
     answerText = ''
-    if nameOfText in ListOfNamesOfTextforBigTexts:
+    if nameOfText in ListOfNamesOfTextForBigTexts:
         dictLang = AllBigTexts[lang]
         answerText = dictLang[nameOfText]
     elif nameOfText in ButtonTexts[lang]:

@@ -1,0 +1,9 @@
+Dieser Bot erkennt Zahlen und Währungen im Text und sendet dann automatisch eine Nachricht, in der der Betrag in andere Währungen umgerechnet wird.
+
+Versuchen Sie zu schreiben: "5 Euro" oder "two hundred and forty four dollars".
+
+Wenn Sie etwas über die Autoren, die Version, den Quellcode und/oder die Lizenz erfahren möchten, verwenden Sie den Befehl /about.
+
+Wenn Sie die Ausgabewährungen oder die Rechte zum Löschen von Nachrichten ändern wollen, verwenden Sie den Befehl /settings.
+
+Wenn Sie einen Erkennungsfehler oder andere Fehlfunktionen feststellen oder einen Verbesserungsvorschlag haben, schreiben Sie uns bitte an den Rückmeldungsbot: @ertb_support_bot

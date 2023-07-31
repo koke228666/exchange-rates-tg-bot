@@ -5,12 +5,19 @@ from typing import Set
 import json
 import zipfile
 import datetime
+import json
 
 from NewPrint import Print
 
-listOfTables = ["SettingsGroups", "SettingsPrivateChats", "ExchangeRates", "SettingsExchangeRates", "CryptoRates", "SettingsCryptoRates"]
-listOfServiceTables = ["AdminsList", "BlackList", "Reports"]
-listOfStatsTables = ["ChatsTimeStats", "ChatsUsage", "ProcessedCurrencies"]
+listOfTables = ["SettingsGroups", "SettingsPrivateChats", "ExchangeRates", "SettingsExchangeRates", "CryptoRates", "SettingsCryptoRates", "IgnoredCurrencies"]
+listOfServiceTables = ["AdminsList", "BlackList"]
+listOfStatsTables = ["ChatsTimeStats", "ChatsUsage", "ProcessedCurrencies", "NewProcessedCurrencies"]
+
+with open('Dictionaries/crypto.json') as json_file:
+    cryptoData = json.load(json_file)
+    
+with open('Dictionaries/currencies.json') as json_file:
+    currenciesData = json.load(json_file)
 
 def CreateFileBackup(filePath: str):
     if os.path.exists("Backups"):
@@ -60,6 +67,192 @@ def DBIntegrityCheck():
         cursor = con.cursor()
         Print("Connected to main DB successfully.", 'S')
 
+        # Check SettingsCryptoRates integrity
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='SettingsCryptoRates';")
+        table_exists = cursor.fetchone()
+
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(SettingsCryptoRates);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+
+            # Iterate over the data in the JSON file
+            for crypto in cryptoData['crypto']:
+                column_name = crypto['code']
+
+                # If the column does not exist in the table, add it
+                if column_name not in existing_columns:
+                    Print(f"Column {column_name} does not exist in SettingsCryptoRates table. Adding it now.", "S")
+                    cursor.execute(f'ALTER TABLE SettingsCryptoRates ADD COLUMN {column_name} INTEGER DEFAULT 0;')
+            
+            # Iterate over the existing columns
+            for column in existing_columns:
+                # If the column is not present in the JSON file, delete it
+                if column == "chatID":
+                    continue
+                if column not in [crypto['code'] for crypto in cryptoData['crypto']]:
+                    Print(f"Column {column} does not exist in JSON file. Deleting it now from SettingsCryptoRates.", "S")
+                    cursor.execute(f'ALTER TABLE SettingsCryptoRates DROP COLUMN {column};')
+        else:
+            # Table does not exist, create it with all required columns
+            columns = ', '.join([f"{crypto['code']} INTEGER DEFAULT 0" for crypto in cryptoData['crypto']])
+            cursor.execute(f"""
+                CREATE TABLE SettingsCryptoRates (
+                    chatID INTEGER NOT NULL PRIMARY KEY,
+                    {columns}
+                );
+            """)
+        
+        # check currencies
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='SettingsExchangeRates';")
+        table_exists = cursor.fetchone()
+
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(SettingsExchangeRates);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+
+            # Iterate over the data in the JSON file
+            for currency in currenciesData['currencies']:
+                column_name = '_'+currency['code']
+
+                # If the column does not exist in the table, add it
+                if column_name not in existing_columns:
+                    Print(f"Column {column_name} does not exist in SettingsExchangeRates table. Adding it now.", "S")
+                    cursor.execute(f'ALTER TABLE SettingsExchangeRates ADD COLUMN {column_name} INTEGER DEFAULT 0;')
+            # Iterate over the existing columns
+            for column in existing_columns:
+                # Skip the "chatID" column
+                if column == "chatID":
+                    continue
+
+                # If the column is not present in the JSON file, delete it
+                if column not in ['_' + currency['code'] for currency in currenciesData['currencies']]:
+                    Print(f"Column {column} does not exist in JSON file. Deleting it now from SettingsExchangeRates.", "S")
+                    cursor.execute(f'ALTER TABLE SettingsExchangeRates DROP COLUMN {column};')
+        else:
+            # Table does not exist, create it with all required columns
+            columns = ', '.join([f"{'_'+currency['code']} INTEGER DEFAULT 0" for currency in currenciesData['currencies']])
+            cursor.execute(f"""
+                CREATE TABLE SettingsExchangeRates (
+                    chatID INTEGER NOT NULL PRIMARY KEY,
+                    {columns}
+                );
+            """)
+        
+        # check IgnoredCurrencies integrity
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='IgnoredCurrencies';")
+        table_exists = cursor.fetchone()
+
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(IgnoredCurrencies);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+
+            # Iterate over the data in the JSON file
+            for currency in currenciesData['currencies']:
+                column_name = '_'+currency['code']
+
+                # If the column does not exist in the table, add it
+                if column_name not in existing_columns:
+                    Print(f"Column {column_name} does not exist in IgnoredCurrencies table. Adding it now.", "S")
+                    cursor.execute(f'ALTER TABLE IgnoredCurrencies ADD COLUMN {column_name} INTEGER DEFAULT 0;')
+
+            for currency in cryptoData['crypto']:
+                column_name = '_'+currency['code']
+
+                # If the column does not exist in the table, add it
+                if column_name not in existing_columns:
+                    Print(f"Column {column_name} does not exist in IgnoredCurrencies table. Adding it now.", "S")
+                    cursor.execute(f'ALTER TABLE IgnoredCurrencies ADD COLUMN {column_name} INTEGER DEFAULT 0;')
+             # Get the columns to remove
+            columns_to_remove = [column for column in existing_columns if column not in ['_' + currency['code'] for currency in currenciesData['currencies']] and column not in ['_' + crypto['code'] for crypto in cryptoData['crypto']] and column != 'chatID']
+
+            # Iterate over the columns to remove
+            for column in columns_to_remove:
+                Print(f"Column {column} does not exist in JSON file. Deleting it now from IgnoredCurrencies.", "S")
+                cursor.execute(f'ALTER TABLE IgnoredCurrencies DROP COLUMN {column};')
+
+            # insert or ignore every row from SettingsExchangeRates with default values
+            cursor.execute("SELECT * FROM SettingsExchangeRates;")
+            rows = cursor.fetchall()
+            for row in rows:
+                chatID = row[0]
+                cursor.execute(f"INSERT OR IGNORE INTO IgnoredCurrencies (chatID) VALUES ({chatID});")
+        else:
+            # Table does not exist, create it with all required columns
+            Print("Table IgnoredCurrencies does not exist. Creating it now.", "S")
+            columns = ', '.join([f"{'_'+currency['code']} INTEGER DEFAULT 0" for currency in currenciesData['currencies']])
+            columns += ', ' + ', '.join([f"{'_'+crypto['code']} INTEGER DEFAULT 0" for crypto in cryptoData['crypto']])
+            cursor.execute(f"""
+                CREATE TABLE IgnoredCurrencies (
+                    chatID INTEGER NOT NULL PRIMARY KEY,
+                    {columns}
+                );
+            """)
+
+        # check SettingsGroups integrity
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='SettingsGroups';")
+        table_exists = cursor.fetchone()
+        expected_columns = {
+            "chatID": {"type": "INTEGER", "default": "NULL PRIMARY KEY"},
+            "deleteRules": {"type": "TEXT", "default": "'admins'"},
+            "deleteButton": {"type": "INTEGER", "default": "1"},
+            "editSettings": {"type": "TEXT", "default": "'admins'"},
+            "flags": {"type": "INTEGER", "default": "1"},
+            "currencySymbol": {"type": "INTEGER", "default": "1"},
+            "lang": {"type": "TEXT", "default": "'en'"}
+        }
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(SettingsGroups);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+
+            # iterate over expected columns
+            for column_name, column_properties in expected_columns.items():
+                # If the column does not exist in the table, add it
+                if column_name not in existing_columns:
+                    Print(f"Column {column_name} does not exist in SettingsGroups table. Adding it now.", "S")
+                    cursor.execute(f'''ALTER TABLE SettingsGroups ADD COLUMN {column_name} {column_properties["type"]} DEFAULT {column_properties["default"]};''')
+        else:
+            # Table does not exist, create it with all required columns
+            columns = ', '.join([f"{column_name} {column_properties['type']} DEFAULT {column_properties['default']}" for column_name, column_properties in expected_columns.items()])
+            cursor.execute(f"""
+                CREATE TABLE SettingsGroups (
+                    {columns}
+                );
+            """)
+        
+        # Check SettingsPrivateChats integrity
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='SettingsPrivateChats';")
+        table_exists = cursor.fetchone()
+        expected_columns = {
+            "chatID": {"type": "INTEGER", "default": "NULL PRIMARY KEY"},
+            "deleteButton": {"type": "INTEGER", "default": "1"},
+            "flags": {"type": "INTEGER", "default": "1"},
+            "currencySymbol": {"type": "INTEGER", "default": "1"},
+            "lang": {"type": "TEXT", "default": "'en'"}
+        }
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(SettingsPrivateChats);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+
+            # iterate over expected columns
+            for column_name, column_properties in expected_columns.items():
+                # If the column does not exist in the table, add it
+                if column_name not in existing_columns:
+                    print(f"Column {column_name} does not exist in SettingsPrivateChats table. Adding it now.", "S")
+                    cursor.execute(f'''ALTER TABLE SettingsPrivateChats ADD COLUMN {column_name} {column_properties["type"]} DEFAULT {column_properties["default"]};''')
+        else:
+            # Table does not exist, create it with all required columns
+            columns = ', '.join([f"{column_name} {column_properties['type']} DEFAULT {column_properties['default']}" for column_name, column_properties in expected_columns.items()])
+            cursor.execute(f"""
+                CREATE TABLE SettingsPrivateChats (
+                    {columns}
+                );
+            """)
+            
         # Getting all names of tables
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         listNames = cursor.fetchall()
@@ -74,6 +267,23 @@ def DBIntegrityCheck():
 
                 CreateDataBaseTemplate()
                 break
+        
+        # Get a list of all tables in the database
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        for table in tables:
+            table_name = table[0]
+            if table_name not in listOfTables:
+                cursor.execute("DROP TABLE IF EXISTS " + table_name + ";")
+                Print("Table " + table_name + " removed.", "W")
+
+
+        # Commit the changes and close the connection
+        con.commit()
+        con.close() 
+
+        
+        
         Print("Main DB is OK.", "S")
     else:
         Print("Connected to main DB unsuccessfully.", "E")
@@ -99,6 +309,20 @@ def DBIntegrityCheck():
 
                 CreateServiceDataBase()
                 break
+        # Get a list of all tables in the database
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        for table in tables:
+            table_name = table[0]
+            if table_name not in listOfServiceTables:
+                cursor.execute("DROP TABLE IF EXISTS " + table_name + ";")
+                Print("Table " + table_name + " removed.", "W")
+        
+        # Commit the changes and close the connection
+        con.commit()
+        con.close() 
+
+        
         Print("Service DB is OK.", "S")
     else:
         Print("Connected to service DB unsuccessfully.", "E")
@@ -108,6 +332,100 @@ def DBIntegrityCheck():
         con = sql.connect("DataBases/StatsData.sqlite")
         cursor = con.cursor()
         Print("Connected to stats DB successfully.", "S")
+
+        
+        # check ProcessedCurrencies columns
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='ProcessedCurrencies';")
+        table_exists = cursor.fetchone()
+
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(ProcessedCurrencies);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+
+            # Iterate over the data in the JSON file
+            for crypto in cryptoData['crypto']:
+                column_name = "_"+crypto['code']
+
+                # If the column does not exist in the table, add it
+                if column_name not in existing_columns:
+                    Print(f"Adding column {column_name} to ProcessedCurrencies table", "S")
+                    cursor.execute(f'ALTER TABLE ProcessedCurrencies ADD COLUMN {column_name} INTEGER DEFAULT 0;')
+            
+            for currency in currenciesData['currencies']:
+                column_name = "_"+currency['code']
+
+                # If the column does not exist in the table, add it
+                if column_name not in existing_columns:
+                    Print(f"Adding column {column_name} to ProcessedCurrencies table", "S")
+                    cursor.execute(f'ALTER TABLE ProcessedCurrencies ADD COLUMN {column_name} INTEGER DEFAULT 0;')
+
+        # check ChatsUsage columns
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='ChatsUsage';")
+        table_exists = cursor.fetchone()
+
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(ChatsUsage);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+            expected_columns = ["chatID", "chatType", "chatName", "timeAdded", "lastTimeUse"]
+
+            for column in expected_columns:
+                if column not in existing_columns:
+                    Print(f"Adding column {column} to ChatsUsage table", "S")
+                    cursor.execute(f'ALTER TABLE ChatsUsage ADD COLUMN {column} TEXT;')
+        else:
+            Print("Creating ChatsUsage table", "S")
+            cursor.execute("""
+                CREATE TABLE ChatsUsage (
+                    chatID INTEGER NOT NULL PRIMARY KEY,
+                    chatType TEXT,
+                    chatName TEXT,
+                    timeAdded TEXT,
+                    lastTimeUse TEXT
+                           );""")
+            
+        # check NewProcessedCurrencies columns
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='NewProcessedCurrencies';")
+        table_exists = cursor.fetchone()
+
+        if table_exists:
+            # Fetch existing columns
+            cursor.execute('PRAGMA table_info(NewProcessedCurrencies);')
+            existing_columns = [column[1] for column in cursor.fetchall()]
+            expected_columns = ["date", "chatID", "userID", "lang", "convertedFrom", "convertedTo", "deleted", "deletedDate", "messageID"]
+
+            for column in expected_columns:
+                if column not in existing_columns:
+                    Print(f"Adding column {column} to NewProcessedCurrencies table", "S")
+                    cursor.execute(f'ALTER TABLE NewProcessedCurrencies ADD COLUMN {column} TEXT;')
+        else:
+            Print("Creating NewProcessedCurrencies table", "S")
+            cursor.execute("""
+                CREATE TABLE NewProcessedCurrencies (
+                    date TEXT,
+                    chatID INTEGER NOT NULL,
+                    userID INTEGER DEFAULT 0,
+                    lang TEXT,
+                    convertedFrom TEXT,
+                    convertedTo TEXT,
+                    deleted INTEGER DEFAULT 0,
+                    deletedDate TEXT,
+                    messageID INTEGER NOT NULL
+                           );""")
+            
+            
+        # Get a list of all tables in the database
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        for table in tables:
+            table_name = table[0]
+            if table_name not in listOfStatsTables:
+                cursor.execute("DROP TABLE IF EXISTS " + table_name + ";")
+                Print("Table " + table_name + " removed.", "W")
+        
+        # Commit the changes and close the connection
+        con.commit()
 
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         listNames = cursor.fetchall()
@@ -121,6 +439,8 @@ def DBIntegrityCheck():
                 Print("Error. Stats database is corrupted. 'StatsData.sqlite' was backuped and deleted. New database will be create automatically.", "E")
                 CreateStatsDataBase()
                 break
+
+        con.close() 
         Print("Stats DB is OK.", "S")
     else:
         Print("Connected to stats DB unsuccessfully.", "E")
@@ -132,12 +452,12 @@ def CreateStatsDataBase():
     # Connect to DB
     con = sql.connect('DataBases/StatsData.sqlite')
     cursor = con.cursor()
-
     with con:
         con.execute("""
             CREATE TABLE ChatsUsage (
                 chatID INTEGER NOT NULL PRIMARY KEY,
                 chatType TEXT,
+                chatName TEXT,
                 timeAdded TEXT,
                 lastTimeUse TEXT
             );
@@ -158,189 +478,36 @@ def CreateStatsDataBase():
 
     with con:
         con.execute("""
+            CREATE TABLE NewProcessedCurrencies (
+                date TEXT,
+                chatID INTEGER NOT NULL,
+                userID INTEGER DEFAULT 0,
+                lang TEXT,
+                convertedFrom TEXT,
+                convertedTo TEXT,
+                deleted INTEGER DEFAULT 0,
+                deletedDate TEXT,
+                messageID INTEGER NOT NULL
+            );
+        """)
+
+
+    currencyCodes = [currency['code'] for currency in currenciesData['currencies']]
+    currencyCodes = ', '.join([f"_{currency} INTEGER DEFAULT 0" for currency in currencyCodes])
+
+
+    cryptoCodes = [crypto['code'] for crypto in cryptoData['crypto']]
+    cryptoCodes = ', '.join([f"_{crypto} INTEGER DEFAULT 0" for crypto in cryptoCodes])
+    with con:
+        con.execute(f"""
             CREATE TABLE ProcessedCurrencies (
                 date TEXT,
                 chatID INTEGER,
                 userID INTEGER,
                 proccesedCurrency TEXT,
                 message TEXT,
-                _AED INTEGER DEFAULT 0,
-                _AFN INTEGER DEFAULT 0,
-                _ALL INTEGER DEFAULT 0,
-                _AMD INTEGER DEFAULT 0,
-                _ANG INTEGER DEFAULT 0,
-                _AOA INTEGER DEFAULT 0,
-                _ARS INTEGER DEFAULT 0,
-                _AUD INTEGER DEFAULT 0,
-                _AWG INTEGER DEFAULT 0,
-                _AZN INTEGER DEFAULT 0,
-                _BAM INTEGER DEFAULT 0,
-                _BBD INTEGER DEFAULT 0,
-                _BDT INTEGER DEFAULT 0,
-                _BGN INTEGER DEFAULT 0,
-                _BHD INTEGER DEFAULT 0,
-                _BIF INTEGER DEFAULT 0,
-                _BMD INTEGER DEFAULT 0,
-                _BND INTEGER DEFAULT 0,
-                _BOB INTEGER DEFAULT 0,
-                _BRL INTEGER DEFAULT 0,
-                _BSD INTEGER DEFAULT 0,
-                _BTN INTEGER DEFAULT 0,
-                _BWP INTEGER DEFAULT 0,
-                _BYN INTEGER DEFAULT 0,
-                _BZD INTEGER DEFAULT 0,
-                _CAD INTEGER DEFAULT 0,
-                _CDF INTEGER DEFAULT 0,
-                _CHF INTEGER DEFAULT 0,
-                _CLF INTEGER DEFAULT 0,
-                _CLP INTEGER DEFAULT 0,
-                _CNY INTEGER DEFAULT 0,
-                _COP INTEGER DEFAULT 0,
-                _CRC INTEGER DEFAULT 0,
-                _CUC INTEGER DEFAULT 0,
-                _CUP INTEGER DEFAULT 0,
-                _CVE INTEGER DEFAULT 0,
-                _CZK INTEGER DEFAULT 0,
-                _DJF INTEGER DEFAULT 0,
-                _DKK INTEGER DEFAULT 0,
-                _DOP INTEGER DEFAULT 0,
-                _DZD INTEGER DEFAULT 0,
-                _EGP INTEGER DEFAULT 0,
-                _ERN INTEGER DEFAULT 0,
-                _ETB INTEGER DEFAULT 0,
-                _EUR INTEGER DEFAULT 0,
-                _FJD INTEGER DEFAULT 0,
-                _FKP INTEGER DEFAULT 0,
-                _GBP INTEGER DEFAULT 0,
-                _GEL INTEGER DEFAULT 0,
-                _GGP INTEGER DEFAULT 0,
-                _GHS INTEGER DEFAULT 0,
-                _GIP INTEGER DEFAULT 0,
-                _GMD INTEGER DEFAULT 0,
-                _GNF INTEGER DEFAULT 0,
-                _GTQ INTEGER DEFAULT 0,
-                _GYD INTEGER DEFAULT 0,
-                _HKD INTEGER DEFAULT 0,
-                _HNL INTEGER DEFAULT 0,
-                _HRK INTEGER DEFAULT 0,
-                _HTG INTEGER DEFAULT 0,
-                _HUF INTEGER DEFAULT 0,
-                _IDR INTEGER DEFAULT 0,
-                _ILS INTEGER DEFAULT 0,
-                _IMP INTEGER DEFAULT 0,
-                _INR INTEGER DEFAULT 0,
-                _IQD INTEGER DEFAULT 0,
-                _IRR INTEGER DEFAULT 0,
-                _ISK INTEGER DEFAULT 0,
-                _JEP INTEGER DEFAULT 0,
-                _JMD INTEGER DEFAULT 0,
-                _JOD INTEGER DEFAULT 0,
-                _JPY INTEGER DEFAULT 0,
-                _KES INTEGER DEFAULT 0,
-                _KGS INTEGER DEFAULT 0,
-                _KHR INTEGER DEFAULT 0,
-                _KMF INTEGER DEFAULT 0,
-                _KPW INTEGER DEFAULT 0,
-                _KRW INTEGER DEFAULT 0,
-                _KWD INTEGER DEFAULT 0,
-                _KYD INTEGER DEFAULT 0,
-                _KZT INTEGER DEFAULT 0,
-                _LAK INTEGER DEFAULT 0,
-                _LBP INTEGER DEFAULT 0,
-                _LKR INTEGER DEFAULT 0,
-                _LRD INTEGER DEFAULT 0,
-                _LSL INTEGER DEFAULT 0,
-                _LTL INTEGER DEFAULT 0,
-                _LVL INTEGER DEFAULT 0,
-                _LYD INTEGER DEFAULT 0,
-                _MAD INTEGER DEFAULT 0,
-                _MDL INTEGER DEFAULT 0,
-                _MGA INTEGER DEFAULT 0,
-                _MKD INTEGER DEFAULT 0,
-                _MMK INTEGER DEFAULT 0,
-                _MNT INTEGER DEFAULT 0,
-                _MOP INTEGER DEFAULT 0,
-                _MRO INTEGER DEFAULT 0,
-                _MUR INTEGER DEFAULT 0,
-                _MVR INTEGER DEFAULT 0,
-                _MWK INTEGER DEFAULT 0,
-                _MXN INTEGER DEFAULT 0,
-                _MYR INTEGER DEFAULT 0,
-                _MZN INTEGER DEFAULT 0,
-                _NAD INTEGER DEFAULT 0,
-                _NGN INTEGER DEFAULT 0,
-                _NIO INTEGER DEFAULT 0,
-                _NOK INTEGER DEFAULT 0,
-                _NPR INTEGER DEFAULT 0,
-                _NZD INTEGER DEFAULT 0,
-                _OMR INTEGER DEFAULT 0,
-                _PAB INTEGER DEFAULT 0,
-                _PEN INTEGER DEFAULT 0,
-                _PGK INTEGER DEFAULT 0,
-                _PHP INTEGER DEFAULT 0,
-                _PKR INTEGER DEFAULT 0,
-                _PLN INTEGER DEFAULT 0,
-                _PYG INTEGER DEFAULT 0,
-                _QAR INTEGER DEFAULT 0,
-                _RON INTEGER DEFAULT 0,
-                _RSD INTEGER DEFAULT 0,
-                _RUB INTEGER DEFAULT 0,
-                _RWF INTEGER DEFAULT 0,
-                _SAR INTEGER DEFAULT 0,
-                _SBD INTEGER DEFAULT 0,
-                _SCR INTEGER DEFAULT 0,
-                _SDG INTEGER DEFAULT 0,
-                _SEK INTEGER DEFAULT 0,
-                _SGD INTEGER DEFAULT 0,
-                _SHP INTEGER DEFAULT 0,
-                _SLL INTEGER DEFAULT 0,
-                _SOS INTEGER DEFAULT 0,
-                _SRD INTEGER DEFAULT 0,
-                _SVC INTEGER DEFAULT 0,
-                _SYP INTEGER DEFAULT 0,
-                _SZL INTEGER DEFAULT 0,
-                _THB INTEGER DEFAULT 0,
-                _TJS INTEGER DEFAULT 0,
-                _TMT INTEGER DEFAULT 0,
-                _TND INTEGER DEFAULT 0,
-                _TOP INTEGER DEFAULT 0,
-                _TRY INTEGER DEFAULT 0,
-                _TTD INTEGER DEFAULT 0,
-                _TWD INTEGER DEFAULT 0,
-                _TZS INTEGER DEFAULT 0,
-                _UAH INTEGER DEFAULT 0,
-                _UGX INTEGER DEFAULT 0,
-                _USD INTEGER DEFAULT 0,
-                _UYU INTEGER DEFAULT 0,
-                _UZS INTEGER DEFAULT 0,
-                _VEF INTEGER DEFAULT 0,
-                _VND INTEGER DEFAULT 0,
-                _VUV INTEGER DEFAULT 0,
-                _WST INTEGER DEFAULT 0,
-                _XAF INTEGER DEFAULT 0,
-                _XAG INTEGER DEFAULT 0,
-                _XAU INTEGER DEFAULT 0,
-                _XCD INTEGER DEFAULT 0,
-                _XOF INTEGER DEFAULT 0,
-                _XPF INTEGER DEFAULT 0,
-                _YER INTEGER DEFAULT 0,
-                _ZAR INTEGER DEFAULT 0,
-                _ZMW INTEGER DEFAULT 0,
-                _ZWL INTEGER DEFAULT 0,
-                _ADA INTEGER DEFAULT 0,
-                _BCH INTEGER DEFAULT 0,
-                _BNB INTEGER DEFAULT 0,
-                _BTC INTEGER DEFAULT 0,
-                _DASH INTEGER DEFAULT 0,
-                _DOGE INTEGER DEFAULT 0,
-                _ETC INTEGER DEFAULT 0,
-                _ETH INTEGER DEFAULT 0,
-                _LTC INTEGER DEFAULT 0,
-                _RVN INTEGER DEFAULT 0,
-                _TRX INTEGER DEFAULT 0,
-                _XLM INTEGER DEFAULT 0,
-                _XMR INTEGER DEFAULT 0,
-                _XRP INTEGER DEFAULT 0
+                {currencyCodes},
+                {cryptoCodes}
             );
         """)
 
@@ -376,16 +543,16 @@ def CreateServiceDataBase():
             );
         """)
 
-    with con:
-        con.execute("""
-            CREATE TABLE Reports (
-                date TEXT,
-                chatID INTEGER DEFAULT 0,
-                userID INTEGER DEFAULT 0,
-                message TEXT,
-                reply TEXT
-            );
-        """)
+    # with con:
+    #     con.execute("""
+    #         CREATE TABLE Reports (
+    #             date TEXT,
+    #             chatID INTEGER DEFAULT 0,
+    #             userID INTEGER DEFAULT 0,
+    #             message TEXT,
+    #             reply TEXT
+    #         );
+    #     """)
 
     con.close()
     Print("Service DB is created.", "S")
@@ -411,6 +578,7 @@ def CreateDataBaseTemplate():
                 deleteButton INTEGER DEFAULT 1,
                 editSettings TEXT DEFAULT admins,
                 flags INTEGER DEFAULT 1,
+                currencySymbol INTEGER DEFAULT 1,
                 lang TEXT DEFAULT en
             );
         """)
@@ -420,6 +588,7 @@ def CreateDataBaseTemplate():
                 chatID INTEGER NOT NULL PRIMARY KEY ,
                 deleteButton INTEGER DEFAULT 1,
                 flags INTEGER DEFAULT 1,
+                currencySymbol INTEGER DEFAULT 1,
                 lang TEXT DEFAULT en
             );
         """)
@@ -440,197 +609,36 @@ def CreateDataBaseTemplate():
             );
         """)
 
+    # use codes from json. ETH and BTC are default
+    cryptoCodes = [crypto['code'] for crypto in cryptoData['crypto']]
     with con:
-        con.execute("""
+        con.execute(f"""
             CREATE TABLE SettingsCryptoRates (
                 chatID INTEGER NOT NULL PRIMARY KEY,
-                ADA INTEGER DEFAULT 0,
-                BCH INTEGER DEFAULT 0,
-                BNB INTEGER DEFAULT 0,
-                BTC INTEGER DEFAULT 1,
-                DASH INTEGER DEFAULT 0,
-                DOGE INTEGER DEFAULT 0,
-                ETC INTEGER DEFAULT 0,
-                ETH INTEGER DEFAULT 1,
-                LTC INTEGER DEFAULT 0,
-                RVN INTEGER DEFAULT 0,
-                TRX INTEGER DEFAULT 0,
-                XLM INTEGER DEFAULT 0,
-                XMR INTEGER DEFAULT 0,
-                XRP INTEGER DEFAULT 0  
+                {', '.join([f"{code} INTEGER DEFAULT {int(code == 'ETH' or code == 'BTC')}" for code in cryptoCodes])}
             );
         """)
+
+    # use codes from json
+    currencyCodes = [currency['code'] for currency in currenciesData['currencies']]
 
     with con:
-        con.execute("""
+        con.execute(f"""
             CREATE TABLE SettingsExchangeRates (
                 chatID INTEGER NOT NULL PRIMARY KEY ,
-                _AED INTEGER DEFAULT 0,
-                _AFN INTEGER DEFAULT 0,
-                _ALL INTEGER DEFAULT 0,
-                _AMD INTEGER DEFAULT 0,
-                _ANG INTEGER DEFAULT 0,
-                _AOA INTEGER DEFAULT 0,
-                _ARS INTEGER DEFAULT 0,
-                _AUD INTEGER DEFAULT 0,
-                _AWG INTEGER DEFAULT 0,
-                _AZN INTEGER DEFAULT 0,
-                _BAM INTEGER DEFAULT 0,
-                _BBD INTEGER DEFAULT 0,
-                _BDT INTEGER DEFAULT 0,
-                _BGN INTEGER DEFAULT 0,
-                _BHD INTEGER DEFAULT 0,
-                _BIF INTEGER DEFAULT 0,
-                _BMD INTEGER DEFAULT 0,
-                _BND INTEGER DEFAULT 0,
-                _BOB INTEGER DEFAULT 0,
-                _BRL INTEGER DEFAULT 0,
-                _BSD INTEGER DEFAULT 0,
-                _BTN INTEGER DEFAULT 0,
-                _BWP INTEGER DEFAULT 0,
-                _BYN INTEGER DEFAULT 0,
-                _BZD INTEGER DEFAULT 0,
-                _CAD INTEGER DEFAULT 0,
-                _CDF INTEGER DEFAULT 0,
-                _CHF INTEGER DEFAULT 0,
-                _CLF INTEGER DEFAULT 0,
-                _CLP INTEGER DEFAULT 0,
-                _CNY INTEGER DEFAULT 0,
-                _COP INTEGER DEFAULT 0,
-                _CRC INTEGER DEFAULT 0,
-                _CUC INTEGER DEFAULT 0,
-                _CUP INTEGER DEFAULT 0,
-                _CVE INTEGER DEFAULT 0,
-                _CZK INTEGER DEFAULT 0,
-                _DJF INTEGER DEFAULT 0,
-                _DKK INTEGER DEFAULT 0,
-                _DOP INTEGER DEFAULT 0,
-                _DZD INTEGER DEFAULT 0,
-                _EGP INTEGER DEFAULT 0,
-                _ERN INTEGER DEFAULT 0,
-                _ETB INTEGER DEFAULT 0,
-                _EUR INTEGER DEFAULT 1,
-                _FJD INTEGER DEFAULT 0,
-                _FKP INTEGER DEFAULT 0,
-                _GBP INTEGER DEFAULT 1,
-                _GEL INTEGER DEFAULT 0,
-                _GGP INTEGER DEFAULT 0,
-                _GHS INTEGER DEFAULT 0,
-                _GIP INTEGER DEFAULT 0,
-                _GMD INTEGER DEFAULT 0,
-                _GNF INTEGER DEFAULT 0,
-                _GTQ INTEGER DEFAULT 0,
-                _GYD INTEGER DEFAULT 0,
-                _HKD INTEGER DEFAULT 0,
-                _HNL INTEGER DEFAULT 0,
-                _HRK INTEGER DEFAULT 0,
-                _HTG INTEGER DEFAULT 0,
-                _HUF INTEGER DEFAULT 0,
-                _IDR INTEGER DEFAULT 0,
-                _ILS INTEGER DEFAULT 0,
-                _IMP INTEGER DEFAULT 0,
-                _INR INTEGER DEFAULT 0,
-                _IQD INTEGER DEFAULT 0,
-                _IRR INTEGER DEFAULT 0,
-                _ISK INTEGER DEFAULT 0,
-                _JEP INTEGER DEFAULT 0,
-                _JMD INTEGER DEFAULT 0,
-                _JOD INTEGER DEFAULT 0,
-                _JPY INTEGER DEFAULT 0,
-                _KES INTEGER DEFAULT 0,
-                _KGS INTEGER DEFAULT 0,
-                _KHR INTEGER DEFAULT 0,
-                _KMF INTEGER DEFAULT 0,
-                _KPW INTEGER DEFAULT 0,
-                _KRW INTEGER DEFAULT 0,
-                _KWD INTEGER DEFAULT 0,
-                _KYD INTEGER DEFAULT 0,
-                _KZT INTEGER DEFAULT 0,
-                _LAK INTEGER DEFAULT 0,
-                _LBP INTEGER DEFAULT 0,
-                _LKR INTEGER DEFAULT 0,
-                _LRD INTEGER DEFAULT 0,
-                _LSL INTEGER DEFAULT 0,
-                _LTL INTEGER DEFAULT 0,
-                _LVL INTEGER DEFAULT 0,
-                _LYD INTEGER DEFAULT 0,
-                _MAD INTEGER DEFAULT 0,
-                _MDL INTEGER DEFAULT 0,
-                _MGA INTEGER DEFAULT 0,
-                _MKD INTEGER DEFAULT 0,
-                _MMK INTEGER DEFAULT 0,
-                _MNT INTEGER DEFAULT 0,
-                _MOP INTEGER DEFAULT 0,
-                _MRO INTEGER DEFAULT 0,
-                _MUR INTEGER DEFAULT 0,
-                _MVR INTEGER DEFAULT 0,
-                _MWK INTEGER DEFAULT 0,
-                _MXN INTEGER DEFAULT 0,
-                _MYR INTEGER DEFAULT 0,
-                _MZN INTEGER DEFAULT 0,
-                _NAD INTEGER DEFAULT 0,
-                _NGN INTEGER DEFAULT 0,
-                _NIO INTEGER DEFAULT 0,
-                _NOK INTEGER DEFAULT 0,
-                _NPR INTEGER DEFAULT 0,
-                _NZD INTEGER DEFAULT 0,
-                _OMR INTEGER DEFAULT 0,
-                _PAB INTEGER DEFAULT 0,
-                _PEN INTEGER DEFAULT 0,
-                _PGK INTEGER DEFAULT 0,
-                _PHP INTEGER DEFAULT 0,
-                _PKR INTEGER DEFAULT 0,
-                _PLN INTEGER DEFAULT 0,
-                _PYG INTEGER DEFAULT 0,
-                _QAR INTEGER DEFAULT 0,
-                _RON INTEGER DEFAULT 0,
-                _RSD INTEGER DEFAULT 0,
-                _RUB INTEGER DEFAULT 1,
-                _RWF INTEGER DEFAULT 0,
-                _SAR INTEGER DEFAULT 0,
-                _SBD INTEGER DEFAULT 0,
-                _SCR INTEGER DEFAULT 0,
-                _SDG INTEGER DEFAULT 0,
-                _SEK INTEGER DEFAULT 0,
-                _SGD INTEGER DEFAULT 0,
-                _SHP INTEGER DEFAULT 0,
-                _SLL INTEGER DEFAULT 0,
-                _SOS INTEGER DEFAULT 0,
-                _SRD INTEGER DEFAULT 0,
-                _SVC INTEGER DEFAULT 0,
-                _SYP INTEGER DEFAULT 0,
-                _SZL INTEGER DEFAULT 0,
-                _THB INTEGER DEFAULT 0,
-                _TJS INTEGER DEFAULT 0,
-                _TMT INTEGER DEFAULT 0,
-                _TND INTEGER DEFAULT 0,
-                _TOP INTEGER DEFAULT 0,
-                _TRY INTEGER DEFAULT 0,
-                _TTD INTEGER DEFAULT 0,
-                _TWD INTEGER DEFAULT 0,
-                _TZS INTEGER DEFAULT 0,
-                _UAH INTEGER DEFAULT 1,
-                _UGX INTEGER DEFAULT 0,
-                _USD INTEGER DEFAULT 1,
-                _UYU INTEGER DEFAULT 0,
-                _UZS INTEGER DEFAULT 0,
-                _VEF INTEGER DEFAULT 0,
-                _VND INTEGER DEFAULT 0,
-                _VUV INTEGER DEFAULT 0,
-                _WST INTEGER DEFAULT 0,
-                _XAF INTEGER DEFAULT 0,
-                _XAG INTEGER DEFAULT 0,
-                _XAU INTEGER DEFAULT 0,
-                _XCD INTEGER DEFAULT 0,
-                _XOF INTEGER DEFAULT 0,
-                _XPF INTEGER DEFAULT 0,
-                _YER INTEGER DEFAULT 0,
-                _ZAR INTEGER DEFAULT 0,
-                _ZMW INTEGER DEFAULT 0,
-                _ZWL INTEGER DEFAULT 0
+                {', '.join([f"{'_'+code} INTEGER DEFAULT {int(code in ['USD','EUR','UAH','GBP','PLN'])}" for code in currencyCodes])}
             );
         """)
 
+    # create ignored currencies table
+    with con:
+        con.execute(f"""
+            CREATE TABLE IgnoredCurrencies (
+                chatID INTEGER NOT NULL PRIMARY KEY ,
+                {', '.join([f"{'_'+code} INTEGER DEFAULT 0" for code in currencyCodes])} ,
+                {', '.join([f"{'_'+code} INTEGER DEFAULT 0" for code in cryptoCodes])}
+            );
+        """)
     con.close()
     Print("Main DB is created.", "S")
 
@@ -704,6 +712,64 @@ def SetCryptoSetting(chatID: str, crypto: str, val: str):
     except:
         Print("No such column. Cannot find '" + str(crypto) + "'. Error in 'SetCryptoSetting'.", "E")
 
+def AddIgnoredCurrency(chatID: str):
+    chatID = int(chatID)
+    con = sql.connect('DataBases/DataForBot.sqlite')
+    cursor = con.cursor()
+    cursor.execute(
+        "INSERT OR IGNORE INTO IgnoredCurrencies (chatID) values (?)", tuple([chatID]))
+    con.commit()
+
+def SetIgnoredCurrency(chatID: str, currency: str, val: int):
+    chatID = int(chatID)
+    con = sql.connect('DataBases/DataForBot.sqlite')
+    cursor = con.cursor()
+    try:
+        cursor.execute("UPDATE OR ABORT IgnoredCurrencies SET " + "_"+str(currency)+"= "+str(val)+" WHERE chatID = "+str(chatID))
+        con.commit()
+    except:
+        Print("No such column. Cannot find '" + str(currency) + "'. Error in 'SetIgnoredCurrency'.", "E")
+
+def GetIgnoredCurrency(chatID: str, currency: str) -> bool:
+    chatID = int(chatID)
+    con = sql.connect('DataBases/DataForBot.sqlite')
+    cursor = con.cursor()
+    try:
+        cursor.execute("SELECT "+ "_"+str(currency) + " from IgnoredCurrencies WHERE chatID = "+str(chatID))
+        res = cursor.fetchone()
+        return bool(res[0])
+    except:
+        Print("No such column. Cannot find '" + str(currency) + "'. Error in 'GetIgnoredCurrency'.", "E")
+        return False
+
+def GetIgnoredCurrencies(chatID: str) -> list:
+    chatID = int(chatID)
+    con = sql.connect('DataBases/DataForBot.sqlite')
+    cursor = con.cursor()
+    try:
+        cursor.execute("SELECT * from IgnoredCurrencies WHERE chatID = ?", (chatID,))
+        res = cursor.fetchone()
+        if res is not None:
+            column_names = [column[0].replace('_', '') for column, value in zip(cursor.description, res) if value == 1]
+            return column_names
+        else:
+            Print("No such column. Cannot find '" + str(chatID) + "'. Error in 'GetIgnoredCurrencies'.","E")
+            return []
+    except Exception as e:
+        Print("Error:"+e, "E")
+        return []
+    
+def ReverseIgnoredCurrency(chatID: str, currency: str):
+    chatID = int(chatID)
+    con = sql.connect('DataBases/DataForBot.sqlite')
+    cursor = con.cursor()
+    try:
+        cursor.execute("SELECT "+ "_"+str(currency) + " from IgnoredCurrencies WHERE chatID = "+str(chatID))
+        res = cursor.fetchone()
+        cursor.execute("UPDATE OR ABORT IgnoredCurrencies SET " + "_"+str(currency)+"= "+str(int(not res[0]))+" WHERE chatID = "+str(chatID))
+        con.commit()
+    except:
+        Print("No such column. Cannot find '" + str(currency) + "'. Error in 'ReverseIgnoredCurrency'.", "E")
 
 def GetAllSettings(chatID: str, chatType: str) -> dict:
     chatID = int(chatID)
@@ -753,7 +819,7 @@ def GetAllCurrencies(chatID: str) -> list:
         cursor.execute(
             "SELECT * FROM SettingsExchangeRates WHERE chatID = "+str(chatID))
         res = dict(cursor.fetchone())
-        return [k[1:] for k, v in res.items() if v == 1]
+        return sorted([k[1:] for k, v in res.items() if v == 1])
     except:
         Print("No such column. Cannot find '" + str(chatID) + "'. Error in 'GetAllCurrencies'.", "E")
         return None
@@ -768,7 +834,7 @@ def GetAllCrypto(chatID: str) -> list:
         cursor.execute(
             "SELECT * FROM SettingsCryptoRates WHERE chatID = "+str(chatID))
         res = dict(cursor.fetchone())
-        return [k for k, v in res.items() if v == 1]
+        return sorted([k[0:] for k, v in res.items() if v == 1])
     except:
         Print("No such column. Cannot find '" + str(chatID) + "'. Error in 'GetAllCrypto'.", "E")
         return None
@@ -882,7 +948,7 @@ def GetListOfCurrencies() -> list:
     cursor = con.execute("SELECT * FROM SettingsExchangeRates")
     names = [description[0] for description in cursor.description]
     names.pop(0)
-    return [i[1:] for i in names]
+    return sorted([i[1:] for i in names])
 
 
 def GetListOfCrypto() -> list:
@@ -912,18 +978,15 @@ def UpdateExchangeRatesDB(exchangeRates: dict):
 def UpdateCryptoRatesDB(cryptoRates: dict):
     con = sql.connect('DataBases/DataForBot.sqlite')
     cursor = con.cursor()
-    f = open("Dictionaries/currencies.json", encoding="utf-8")
-    data = json.load(f)
     for cur, rate in cryptoRates.items():
         cursor.execute("INSERT OR REPLACE INTO CryptoRates (currency,flag,exchangeRates) values ('" +cur+"','"+""+"',?)", tuple([rate]))
     con.commit()
 
 
-def AddIDStats(chatID: str, chatType: str):
+def AddIDStats(chatID: str, chatType: str, chatName: str):
     con = sql.connect('DataBases/StatsData.sqlite')
     cursor = con.cursor()
-    cursor.execute("INSERT OR IGNORE INTO ChatsUsage (chatID, chatType, timeAdded, lastTimeUse) values (" +
-                   str(chatID)+",'"+chatType+"',DATETIME(),DATETIME())")
+    cursor.execute("INSERT OR IGNORE INTO ChatsUsage (chatID, chatType, timeAdded, lastTimeUse, chatName) values ("+str(chatID)+",'"+chatType+"',DATETIME(),DATETIME(),'"+chatName+"')")
     con.commit()
 
 
@@ -1030,6 +1093,45 @@ def ProcessedCurrency(chatID: str, userID: str, processedCurrency: str, message:
     cursor.execute(query, tuple(values_q))
     con.commit()
 
+def NewProcessedCurrency(chatID: str, userID: str, lang: str, convertedFrom: str, convertedTo: str, messageID: str):
+    values_q = [chatID, userID, lang, convertedFrom, convertedTo, messageID]
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    query = "INSERT INTO NewProcessedCurrencies (date, chatID, userID, lang, convertedFrom, convertedTo, messageID) values (DATETIME(), ?,?,?,?,?,?)"
+    cursor.execute(query, tuple(values_q))
+    con.commit()
+
+def DeleteProcessedCurrency(chatID: str, messageID: str):
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    # change deleted to true and add deleted date
+    cursor.execute("UPDATE NewProcessedCurrencies SET deleted = 1, deletedDate = DATETIME() WHERE chatID = ? AND messageID = ?", (chatID, messageID))
+    con.commit()
+
+def GetProcessedCurrencies():
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+
+    cursor.execute("SELECT * FROM NewProcessedCurrencies")
+    rows = cursor.fetchall()
+
+    records_list = []
+
+    for row in rows:
+        record_dict = {
+            'date': row[0],
+            'chatID': row[1],
+            'userID': row[2],
+            'lang': row[3],
+            'convertedFrom': row[4],
+            'convertedTo': row[5],
+            'deleted': row[6],
+            'deletedDate': row[7],
+            'messageID': row[8]
+        }
+        records_list.append(record_dict)
+
+    return records_list
 
 def GetDictOfFlags() -> dict:
     con = sql.connect('DataBases/DataForBot.sqlite')
@@ -1076,6 +1178,24 @@ def GetStatsInPeriod(days: int) -> dict:
     res['activeGroups'] = cursor.fetchone()[0]
     return res
 
+def GetStatsForChart() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    res = {}
+
+    cursor.execute("DELETE FROM ChatsTimeStats WHERE (DATE(date), TIME(date)) NOT IN (SELECT DATE(date), MAX(TIME(date)) FROM ChatsTimeStats GROUP BY DATE(date))")
+    con.commit()
+    
+    cursor.execute("SELECT DATE(date), privateChatsAmount, groupChatsAmount, activeWeekPrivateChats, activeWeekGroupChats, activeMonthPrivateChats, activeMonthGroupChats FROM ChatsTimeStats")
+    data = cursor.fetchall()
+    res['dates'] = [k[0] for k in data]
+    res['privateChatsAmount'] = [k[1] for k in data]
+    res['groupChatsAmount'] = [k[2] for k in data]
+    res['activeWeekPrivateChats'] = [k[3] for k in data]
+    res['activeWeekGroupChats'] = [k[4] for k in data]
+    res['activeMonthPrivateChats'] = [k[5] for k in data]
+    res['activeMonthGroupChats'] = [k[6] for k in data]
+    return res
 
 def AddReport(chatID: str, userID: str, message: str, reply: str = ""):
     con = sql.connect('DataBases/ServiceData.sqlite')
@@ -1092,3 +1212,4 @@ def ClearReports():
     con.commit()
     cursor.execute("VACUUM")
     con.commit()
+

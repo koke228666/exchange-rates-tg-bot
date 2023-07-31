@@ -1,42 +1,42 @@
 from TextHelper import GetText
-from NewPrint import Print
-from DBH import GetAllCrypto, GetAllCurrencies, GetExchangeRates, GetListOfCrypto, GetListOfCurrencies, GetDictOfFlags, GetSetting
+from DBH import GetAllCrypto, GetAllCurrencies, GetExchangeRates, GetListOfCrypto, GetListOfCurrencies, GetDictOfFlags, GetSetting, GetIgnoredCurrencies
 import GetExchangeRates
 import ListsCache
 import os
 import unicodedata
 import re
+import json
 
-ListEntry = []
-ListEqual = []
-ListCryptoEntry = []
-ListCryptoEqual = []
+ListEntry = {}
+ListEqual = {}
+ListCryptoEntry = {}
+ListCryptoEqual = {}
+
 
 def RemoveSeparator(match):
     return match.group(1).replace(" ", "")
+
 
 def MessagePreparation(MesTxt: str) -> str:
     MesTxt = MesTxt.lower()
     indexOfAtSign = -1
     indexOfSpace = -1
-    while MesTxt.find("@") != -1:
-        if MesTxt.find("@") != len(MesTxt) - 1:
-            indexOfAtSign = MesTxt.find("@")
-            indexOfSpace = MesTxt.find(" ", indexOfAtSign)
-            MesTxt = MesTxt[0:indexOfAtSign] + MesTxt[indexOfSpace:]
-        else:
-            MesTxt = MesTxt[0:-1]
-
-    while MesTxt.find("http") != -1:
-        if MesTxt.find("@") != len(MesTxt) - 1:
-            indexOfAtSign = MesTxt.find("http")
-            indexOfSpace = MesTxt.find(" ", indexOfAtSign)
-            MesTxt = MesTxt[0:indexOfAtSign] + MesTxt[indexOfSpace:]
-        else:
-            MesTxt = MesTxt[0:-1]
 
     while MesTxt.find("\n") != -1: # Removing line breaks
         MesTxt = MesTxt.replace("\n", " , ")
+
+    while MesTxt.find("@") != -1:
+        indexOfAtSign = MesTxt.find("@")
+        indexOfSpace = MesTxt.find(" ", indexOfAtSign)
+        if indexOfSpace == -1:
+            indexOfSpace = len(MesTxt)
+        if indexOfSpace > indexOfAtSign:
+            MesTxt = MesTxt[0:indexOfAtSign] + MesTxt[indexOfSpace:]
+        else: 
+            break
+
+    pattern = r"\b(?:https?:\/\/|www\.)\S+\b|\b\S+\.com\S*\b"
+    MesTxt = re.sub(pattern, "", MesTxt) # Removing links       
 
     while MesTxt.find("  ") != -1: # Removing double spaces
         MesTxt = MesTxt.replace("  ", " ")
@@ -49,12 +49,15 @@ def MessagePreparation(MesTxt: str) -> str:
 
     MesTxt = "".join(c for c in MesTxt if unicodedata.category(c) not in ["No", "Lo"])
 
+    pattern = r"(?<=\d),(?=\d{3})"
+    MesTxt = re.sub(pattern, "", MesTxt) # 1,000,000 to 1000000
+
     for i in range(len(MesTxt) - 2):
         if MesTxt[i].isdigit() and MesTxt[i + 2].isdigit() and MesTxt[i + 1] == ",":
             MesTxt = MesTxt[0:i + 1] + "." + MesTxt[i + 2:len(MesTxt)] # comma to dot
 
     pattern = r"(?<!\d)(\d{1,3}(?: \d{3})*(?:\.\d+)?)(?=(?:\s\d{3})*(?:\.\d+)?|\D|$)"
-    MesTxt = re.sub(pattern, RemoveSeparator, MesTxt) # removing spaces in numbers
+    MesTxt = re.sub(pattern, RemoveSeparator, MesTxt) # 1 000 000 to 1000000
 
     return MesTxt
 
@@ -95,12 +98,14 @@ def SpecialSplit(MesTxt: str) -> list:
         if i != "":
             b.append(i)
     
-    #for i in range(len(b)):
-    #    if b[i][0].isdigit() and b[i].count(".") >= 2:
-    #        while b[i].find(".") != -1:
-    #            b[i] = b[i].replace(".", "")
+    c = []
+    for i in b:
+        if i[0].isdigit() and i.count(".") >= 2:
+            pass
+        else:
+            c.append(i)
 
-    return b
+    return c
 
 def LoadCurrencies():
     ListsCache.SetListOfCur(GetListOfCurrencies())
@@ -116,109 +121,74 @@ def LoadFlags():
         EmptyDictOfFlags[i] = ""
     ListsCache.SetEmptyDictOfFlags(EmptyDictOfFlags)
 
+def LoadSymbols():
+    File = open("Dictionaries/currencies.json", "r")
+    Dic = json.load(File)
+    Dic = Dic["currencies"]
+    DictOfSymbols = {}
+    for i in Dic:
+        DictOfSymbols[i["code"]] = i["symbol_native"]
+    ListsCache.SetDictOfSymbols(DictOfSymbols)
+    EmptyDictOfSymbols = {}
+    for i in DictOfSymbols:
+        EmptyDictOfSymbols[i] = ""
+    ListsCache.SetEmptyDictOfSymbols(EmptyDictOfSymbols)
+
 def LoadDictionaries():
     global ListEntry, ListEqual, ListCryptoEntry, ListCryptoEqual
 
-    # Find all files where CurEntry in name
-    filesEntry = []
-    filesCryptoEntry = []
-    for i in os.listdir("Dictionaries/Currencies"):
-        if i.find("CurEntry") != -1:
-            filesEntry.append(i)
-        elif i.find("CryptoEntry") != -1:
-            filesCryptoEntry.append(i)
-    
+    File = open("Dictionaries/currencies.json", "r")
+    Dic = json.load(File)
+    Dic = Dic["currencies"]
+    for i in Dic:
+        ListEqual[i["code"]] = i["equal"]
+        ListEntry[i["code"]] = []
+        for j in i["entry"]:
+            ListEntry[i["code"]] = ListEntry[i["code"]] + i["entry"][j]
+        ListEntry[i["code"]] = list(dict.fromkeys(ListEntry[i["code"]]))
+        while ListEqual[i["code"]].count("") != 0:
+            ListEqual[i["code"]].remove("")
+        while ListEntry[i["code"]].count("") != 0:
+            ListEntry[i["code"]].remove("")
 
-    # Fill ListEntry
-    for i in filesEntry:
-        FileEntry = open("Dictionaries/Currencies/" + i, "r")
-        DicEntry = FileEntry.readlines()
-        counter = 0
-        for j in range(len(DicEntry)):
-            if len(ListEntry) - 1 < counter:
-                ListEntry.append("")
-                ListEntry[counter] = DicEntry[j].replace("\n", "").split(",")
-            else:
-                ListEntry[counter] += DicEntry[j].replace("\n", "").split(",")
-            for k in ListEntry[counter]:
-                if k == "":
-                    ListEntry[counter].remove(k)
-            counter += 1
-        FileEntry.close()
-
-    # Fill ListEqual
-    FileEqual = open("Dictionaries/Currencies/CurEqual.txt", "r")
-    DicEqual = FileEqual.readlines()
-    counter = 0
-    for j in range(len(DicEqual)):
-        if len(ListEqual) - 1 < counter:
-            ListEqual.append("")
-            ListEqual[counter] = DicEqual[j].replace("\n", "").split(",")
-        else:
-            ListEqual[counter] += DicEqual[j].replace("\n", "").split(",")
-        for k in ListEqual[counter]:
-            if k == "":
-                ListEqual[counter].remove(k)
-        counter += 1
-    FileEqual.close()
-
-    # Fill ListCryptoEntry
-    for i in filesCryptoEntry:
-        FileEntry = open("Dictionaries/Currencies/" + i, "r")
-        DicEntry = FileEntry.readlines()
-        counter = 0
-        for j in range(len(DicEntry)):
-            if len(ListCryptoEntry) - 1 < counter:
-                ListCryptoEntry.append("")
-                ListCryptoEntry[counter] = DicEntry[j].replace("\n", "").split(",")
-            else:
-                ListCryptoEntry[counter] += DicEntry[j].replace("\n", "").split(",")
-            for k in ListCryptoEntry[counter]:
-                if k == "":
-                    ListCryptoEntry[counter].remove(k)
-            counter += 1
-        FileEntry.close()
-
-    # Fill ListCryptoEqual
-    FileEqual = open("Dictionaries/Currencies/CryptoEqual.txt", "r")
-    DicEqual = FileEqual.readlines()
-    counter = 0
-    for j in range(len(DicEqual)):
-        if len(ListCryptoEqual) - 1 < counter:
-            ListCryptoEqual.append("")
-            ListCryptoEqual[counter] = DicEqual[j].replace("\n", "").split(",")
-        else:
-            ListCryptoEqual[counter] += DicEqual[j].replace("\n", "").split(",")
-        for k in ListCryptoEqual[counter]:
-            if k == "":
-                ListCryptoEqual[counter].remove(k)
-        counter += 1
-    FileEqual.close()
+    FileCrypto = open("Dictionaries/crypto.json", "r")
+    DicCrypto = json.load(FileCrypto)
+    DicCrypto = DicCrypto["crypto"]
+    for i in DicCrypto:
+        ListCryptoEqual[i["code"]] = i["equal"]
+        ListCryptoEntry[i["code"]] = []
+        for j in i["entry"]:
+            ListCryptoEntry[i["code"]] = ListCryptoEntry[i["code"]] + i["entry"][j]
+        ListCryptoEntry[i["code"]] = list(dict.fromkeys(ListCryptoEntry[i["code"]]))
+        while ListCryptoEqual[i["code"]].count("") != 0:
+            ListCryptoEqual[i["code"]].remove("")
+        while ListCryptoEntry[i["code"]].count("") != 0:
+            ListCryptoEntry[i["code"]].remove("")
         
 
 def SearchCurrency(cur: str) -> int:
-    for i in range(len(ListEntry)):
+    for i in ListEntry:
         for j in range(len(ListEntry[i])):
             if cur.find(' ') != -1:
                 if cur.find(ListEntry[i][j]) == 0 and ListEntry[i] != [''] and ListEntry[i][j].find(' ') != -1:
                     return i
             elif cur.find(ListEntry[i][j]) == 0 and ListEntry[i] != ['']:
                 return i
-    for i in range(len(ListEqual)):
+    for i in ListEqual:
         for j in range(len(ListEqual[i])):
             if cur == ListEqual[i][j]:
                 return i
     return -1
 
 def SearchCrypto(cur: str) -> int:
-    for i in range(len(ListCryptoEntry)):
+    for i in ListCryptoEntry:
         for j in range(len(ListCryptoEntry[i])):
             if cur.find(' ') != -1:
                 if cur.find(ListCryptoEntry[i][j]) == 0 and ListCryptoEntry[i] != [''] and ListCryptoEntry[i][j].find(' ') != -1:
                     return i
             elif cur.find(ListCryptoEntry[i][j]) == 0 and ListCryptoEntry[i] != ['']:
                 return i
-    for i in range(len(ListCryptoEqual)):
+    for i in ListCryptoEqual:
         for j in range(len(ListCryptoEqual[i])):
             if cur == ListCryptoEqual[i][j]:
                 return i
@@ -226,9 +196,9 @@ def SearchCrypto(cur: str) -> int:
 
 def SearchValuesAndCurrencies(arr: list) -> list:
     Values = [] #values of national currencies
-    CurNumber = [] #numbers of national currencies
+    CurCodes = [] #numbers of national currencies
     CryptoValues = [] #values of cryptocurrencies
-    CryptoNumber = [] #numbers of cryptocurrencies
+    CryptoCodes = [] #codes of cryptocurrencies
     i = 0
     j = 0
 
@@ -239,61 +209,61 @@ def SearchValuesAndCurrencies(arr: list) -> list:
             # two words in the name of the currency
             u += 2
             if u <= len(arr) - 3:
-                curIndex = SearchCurrency(arr[u + 1] + " " + arr[u + 2])
-                if curIndex != -1:
+                curCode = SearchCurrency(arr[u + 1] + " " + arr[u + 2])
+                if curCode != -1:
                     Values.append(arr[u])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
                     Values.append(arr[u - 2])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
             u -= 2
             if u >= 2: 
-                curIndex = SearchCurrency(arr[u - 2] + " " + arr[u - 1])
-                if curIndex != -1:
+                curCode = SearchCurrency(arr[u - 2] + " " + arr[u - 1])
+                if curCode != -1:
                     Values.append(arr[u])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
                     Values.append(arr[u + 2])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
             # one word in the name of the currency
             u += 2
             if u <= len(arr) - 2: 
-                curIndex = SearchCurrency(arr[u + 1])
-                if curIndex != -1:
+                curCode = SearchCurrency(arr[u + 1])
+                if curCode != -1:
                     Values.append(arr[u])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
                     Values.append(arr[u - 2])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
             u -= 2
             if u >= 1:
-                curIndex = SearchCurrency(arr[u - 1])
-                if curIndex != -1:
+                curCode = SearchCurrency(arr[u - 1])
+                if curCode != -1:
                     Values.append(arr[u])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
                     Values.append(arr[u + 2])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
             u += 2
         elif arr[u][0].isdigit():
             # two words in the name of the currency
             if u <= len(arr) - 3: 
-                curIndex = SearchCurrency(arr[u + 1] + " " + arr[u + 2])
-                if curIndex != -1:
+                curCode = SearchCurrency(arr[u + 1] + " " + arr[u + 2])
+                if curCode != -1:
                     Values.append(arr[u])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
             if u >= 2:
-                curIndex = SearchCurrency(arr[u - 2] + " " + arr[u - 1])
-                if curIndex != -1:
+                curCode = SearchCurrency(arr[u - 2] + " " + arr[u - 1])
+                if curCode != -1:
                     Values.append(arr[u])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
             # one word in the name of the currency
             if u <= len(arr) - 2:
-                curIndex = SearchCurrency(arr[u + 1])
-                if curIndex != -1:
+                curCode = SearchCurrency(arr[u + 1])
+                if curCode != -1:
                     Values.append(arr[u])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
             if u >= 1:
-                curIndex = SearchCurrency(arr[u - 1])
-                if curIndex != -1:
+                curCode = SearchCurrency(arr[u - 1])
+                if curCode != -1:
                     Values.append(arr[u])
-                    CurNumber.append(curIndex)
+                    CurCodes.append(curCode)
 
     # search for cryptocurrencies
     for u in range(len(arr)):
@@ -302,63 +272,63 @@ def SearchValuesAndCurrencies(arr: list) -> list:
             # two words in the name of the currency
             u += 2
             if u <= len(arr) - 3: 
-                crypIndex = SearchCrypto(arr[u + 1] + " " + arr[u + 2]) 
-                if crypIndex != -1:
+                cryptoCode = SearchCrypto(arr[u + 1] + " " + arr[u + 2]) 
+                if cryptoCode != -1:
                     CryptoValues.append(arr[u])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
                     CryptoValues.append(arr[u - 2])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
             u -= 2
             if u >= 2:
-                crypIndex = SearchCrypto(arr[u - 2] + " " + arr[u - 1])
-                if crypIndex != -1:
+                cryptoCode = SearchCrypto(arr[u - 2] + " " + arr[u - 1])
+                if cryptoCode != -1:
                     CryptoValues.append(arr[u])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
                     CryptoValues.append(arr[u + 2])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
             # one word in the name of the currency
             u += 2
             if u <= len(arr) - 2:
-                crypIndex = SearchCrypto(arr[u + 1])
-                if crypIndex != -1:
+                cryptoCode = SearchCrypto(arr[u + 1])
+                if cryptoCode != -1:
                     CryptoValues.append(arr[u])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
                     CryptoValues.append(arr[u - 2])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
             u -= 2
             if u >= 1:
-                crypIndex = SearchCrypto(arr[u - 1])
-                if crypIndex != -1:
+                cryptoCode = SearchCrypto(arr[u - 1])
+                if cryptoCode != -1:
                     CryptoValues.append(arr[u])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
                     CryptoValues.append(arr[u + 2])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
             u += 2
         elif arr[u][0].isdigit():
             # two words in the name of the currency
             if u <= len(arr) - 3:
-                crypIndex = SearchCrypto(arr[u + 1] + " " + arr[u + 2])
-                if crypIndex != -1:
+                cryptoCode = SearchCrypto(arr[u + 1] + " " + arr[u + 2])
+                if cryptoCode != -1:
                     CryptoValues.append(arr[u])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
             if u >= 2:
-                crypIndex = SearchCrypto(arr[u - 2] + " " + arr[u - 1])
-                if crypIndex != -1:
+                cryptoCode = SearchCrypto(arr[u - 2] + " " + arr[u - 1])
+                if cryptoCode != -1:
                     CryptoValues.append(arr[u])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
             # one word in the name of the currency
             if u <= len(arr) - 2:
-                crypIndex = SearchCrypto(arr[u + 1])
-                if crypIndex != -1:
+                cryptoCode = SearchCrypto(arr[u + 1])
+                if cryptoCode != -1:
                     CryptoValues.append(arr[u])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
             if u >= 1:
-                crypIndex = SearchCrypto(arr[u - 1])
-                if crypIndex != -1:
+                cryptoCode = SearchCrypto(arr[u - 1])
+                if cryptoCode != -1:
                     CryptoValues.append(arr[u])
-                    CryptoNumber.append(crypIndex)
+                    CryptoCodes.append(cryptoCode)
 
-    answ_ar = [Values, CurNumber, CryptoValues, CryptoNumber]
+    answ_ar = [Values, CurCodes, CryptoValues, CryptoCodes]
     #remove duplicates
     n = len(answ_ar[0])
     i = 0
@@ -400,8 +370,30 @@ def SearchValuesAndCurrencies(arr: list) -> list:
             answ_ar[3].pop(i)
             n -= 1
             i -= 1
-        i += 1
+        i += 1    
+
+    for i in range(len(answ_ar[0])):
+        answ_ar[0][i] = float(answ_ar[0][i])
+    for i in range(len(answ_ar[2])):
+        answ_ar[2][i] = float(answ_ar[2][i])
     return answ_ar
+
+def RemoveIgnored(arr: list, chatID: str) -> list:
+    IgnoredCurrencies = GetIgnoredCurrencies(chatID)
+    newarr = [[], [], [], []]
+    for i in range(len(arr[1])):
+        if arr[1][i] in IgnoredCurrencies:
+            pass
+        else:
+            newarr[0].append(arr[0][i])
+            newarr[1].append(arr[1][i])
+    for i in range(len(arr[3])):
+        if arr[3][i] in IgnoredCurrencies:
+            pass
+        else:
+            newarr[2].append(arr[2][i])
+            newarr[3].append(arr[3][i])
+    return newarr
     
 def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
     def TwoZeroesToOne(s: str):
@@ -410,43 +402,50 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         return s
 
     DictOfFlagsForChat = {}
+    DictofSymbolsForChat = {}
 
     if GetSetting(chatID, "flags", chatType):
         DictOfFlagsForChat = ListsCache.GetDictOfFlags()
     else:
         DictOfFlagsForChat = ListsCache.GetEmptyDictOfFlags()
 
+    if GetSetting(chatID, "currencySymbol", chatType):
+        DictofSymbolsForChat = ListsCache.GetDictOfSymbols()
+    else:
+        DictofSymbolsForChat = ListsCache.GetEmptyDictOfSymbols()
+
     isCryptoLink = False
 
     answer = ''
-    for i in range(len(Arr[1])): #Проходимся по всем распознаным классическим валютам
+    for i in range(len(Arr[1])): #National currencies
         CurVault = float(Arr[0][i])
-        CurCurrency = ListsCache.GetListOfCur()[Arr[1][i]]
+        CurCurrency = Arr[1][i]
         answer += "\n" + "======" + "\n"
-        PartOfAnswer = DictOfFlagsForChat[CurCurrency] + str(f'{CurVault:,.2f}'.replace(","," ")) + " " + CurCurrency + "\n"
-
+        PartOfAnswer = DictOfFlagsForChat[CurCurrency] + str(f'{CurVault:,.2f}'.replace(","," ")) + DictofSymbolsForChat[CurCurrency] + " " + CurCurrency + "\n"
+        
         ListOfChatCurrencies = GetAllCurrencies(chatID)
         ListOfChatCrypto = GetAllCrypto(chatID)
-        for j in ListOfChatCurrencies: #Проходимся по всем классическим валютам
+
+        for j in ListOfChatCurrencies: #National currencies
             if CurCurrency == j:
                 pass
             elif j == 'EUR':
                 Vault = round(CurVault / GetExchangeRates.exchangeRates[CurCurrency], 2)
                 Vault = f'{Vault:,.2f}'.replace(","," ")
-                PartOfAnswer += "\n" + DictOfFlagsForChat[j] + str(Vault) + " " + j
+                PartOfAnswer += "\n" + DictOfFlagsForChat[j] + str(Vault) + DictofSymbolsForChat[j] + " " + j
             elif j != 'EUR':
                 Vault = round(CurVault * (GetExchangeRates.exchangeRates[j] / GetExchangeRates.exchangeRates[CurCurrency]), 2)
                 Vault = f'{Vault:,.2f}'.replace(","," ")
-                PartOfAnswer += "\n" + DictOfFlagsForChat[j] + str(Vault) + " " + j
+                PartOfAnswer += "\n" + DictOfFlagsForChat[j] + str(Vault) + DictofSymbolsForChat[j] + " " + j
         if CurCurrency == 'UAH' and CurVault == 40.0:
-            PartOfAnswer += "\n👖1 штаны"
+            PartOfAnswer += "\n👖1 штани"
         elif CurCurrency == 'USD' and CurVault == 300.0:
             PartOfAnswer += "\n🤛1"
 
         if len(ListOfChatCurrencies) != 0:
             PartOfAnswer += "\n"
         
-        for j in ListOfChatCrypto: #Проходимся по всем криптовалютам
+        for j in ListOfChatCrypto: #Crypto
             isCryptoLink = True
             if CurCurrency == 'EUR':
                 Vault = round(CurVault / GetExchangeRates.exchangeRates[CurCurrency] / GetExchangeRates.cryptoRates[j], 9)
@@ -458,16 +457,17 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
                 PartOfAnswer += "\n" + TwoZeroesToOne(str(Vault)) + " " + j
         answer += PartOfAnswer + "\n"
 
-    for i in range(len(Arr[3])): #Проходимся по всем распознаным криптовалютам
+    for i in range(len(Arr[3])): #Crypto
         isCryptoLink = True
         answer += "\n" + "======" + "\n"
         CurVault = float(Arr[2][i])
-        CurCurrency = ListsCache.GetListOfCrypto()[Arr[3][i]]
+        CurCurrency = Arr[3][i]
         PartOfAnswer = TwoZeroesToOne(str(f'{CurVault:,.9f}'.replace(","," "))) + " " + CurCurrency + "\n"
 
         ListOfChatCurrencies = GetAllCurrencies(chatID)
         ListOfChatCrypto = GetAllCrypto(chatID)
-        for j in ListOfChatCurrencies: #Проходимся по всем классическим валютам
+                
+        for j in ListOfChatCurrencies: #National currencies
             if j == 'EUR':
                 Vault = round(CurVault * 1 / GetExchangeRates.exchangeRates['USD'] * GetExchangeRates.cryptoRates[CurCurrency], 2)
                 Vault = f'{Vault:,.2f}'.replace(","," ")
@@ -480,7 +480,7 @@ def AnswerText(Arr: list, chatID: str, chatType: str) -> str:
         if len(ListOfChatCurrencies) != 0:
             PartOfAnswer += "\n"
         
-        for j in ListOfChatCrypto: #Проходимся по всем криптовалютам
+        for j in ListOfChatCrypto: #Crypto
             if CurCurrency == j:
                 pass
             else:
