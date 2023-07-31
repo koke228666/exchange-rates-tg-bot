@@ -244,7 +244,7 @@ All the arguments for run:
     <td><code>/amount</code></td>
     <td>The number of chats and groups in which the bot was used at least once for the full time, day, week, and month.</td>
     <td><code>/amount</code></td>
-    <td><code>For all the time:<br style="display:block">PM: 32235<br style="display:block">Groups: 11938<br style="display:block"><br style="display:block">In 24 hours:<br style="display:block">PM: 549<br style="display:block">Groups: 998<br style="display:block"><br style="display:block">In a week:<br style="display:block"><br style="display:block">PM: 1662<br style="display:block">Groups: 1928<br style="display:block">In 30 days:<br style="display:block">PM: 3522<br style="display:block">Groups: 2859</code></td>
+    <td><p>For all the time:<br>PM: 32235<br>Groups: 11938<br><br>In 24 hours:<br>PM: 549<br>Groups: 998<br><br>In a week:<br><br>PM: 1662<br>Groups: 1928<br>In 30 days:<br>PM: 3522<br>Groups: 2859</p></td>
   </tr>
   <tr>
     <td><code>/plotamount</code></td>
@@ -256,7 +256,7 @@ All the arguments for run:
     <td><code>/stats</code></td>
     <td>Statistics on bot usage by users per day, week, and month.</td>
     <td><code>/amount</code></td>
-    <td><code>Bot activity:<br style="display:block">In the last 24 hours: 100<br style="display:block">In the last week: 700<br style="display:block">In the last month: 3000</code></td>
+    <td><p>Bot activity:<br>In the last 24 hours: 100<br>In the last week: 700<br>In the last month: 3000</p></td>
   </tr>
   <tr>
     <td><code>/plotstats</code></td>
