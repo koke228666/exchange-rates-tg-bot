@@ -7,7 +7,7 @@ delete_button;🗑 Кнопка видалення;🗑 Delete-Button;🗑 Кн�
 mes_view;🎨 Зовнішній вигляд;🎨 Appearance;🎨 Внешний вид;🎨 Wygląd;!!!🎨 Appearance;🎨 Erscheinungsbild;!!!🎨 Appearance;!!!🎨 Appearance
 permisssions;Права доступу до налаштувань та видалення;Permissions to settings and deletion;Права доступа к настройкам и удалению;Uprawnienia do ustawień i usuwania;!!!Permissions to settings and deleting;Zugriffsrechte auf Einstellungen und Löschung;!!!Permissions to settings and deleting;!!!Permissions to settings and deleting
 lang;🌏 Мова інтерфейсу бота;🌏 Language of bot interface;🌏 Язык интерфейса бота;🌏 Język interfejsu bota;!!!🌏 Language of bot interface;🌏 Sprache der Botschnittstelle;!!!🌏 Language of bot interface;!!!🌏 Language of bot interface
-creator;Творець;Creator;Создатель;Twórca;!!!Creator;Schöpfer;!!!Creator;!!!Creator
+creator;Власник;Owner;Владелец;Twórca;!!!Owner;Inhaber;!!!Owner;!!!Owner
 admins;Адміністратори;Administrators;Администраторы;Administratorzy;!!!Administrators;Administratoren;!!!Administrators;!!!Administrators
 everybody;Усі учасники;All members;Все участники;Wszyscy członkowie;!!!All members;Alle Mitglieder;!!!All members;!!!All members
 delbutton;Кнопка \'Видалити\';Delete-Button;Кнопка \'Удалить\';Przycisk \'Usuń\';!!!Delete-Button;Löschen-Taste;!!!Delete-Button;!!!Delete-Button

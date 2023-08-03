@@ -25,6 +25,8 @@ def SheduleCryptoUpdate():
     global cryptoRates
     while True:
         cryptoRates = UpdateCryptoRates()
+        cryptoRates['TON'] = UpdateTON()
+        UpdateCryptoRatesDB(cryptoRates.copy())
         time.sleep(randint(10,30))  
 
 def UpdateExchangeRates() -> dict:
@@ -61,7 +63,6 @@ def UpdateCryptoRates() -> dict:
         for pair in response.json():
             if pair['symbol'].find("USDT") != -1 and any(pair['symbol'][:-4] == s for s in cryptoList):
                 cryptoRates[pair['symbol'][:-4]]=float(pair['price'])
-        UpdateCryptoRatesDB(cryptoRates.copy())
         Print("Updating of crypto rates is successfull.", "S")
     except:
         Print("Updating CR failed. Trying different endpoint", "E")
@@ -72,7 +73,6 @@ def UpdateCryptoRates() -> dict:
             for pair in response.json():
                 if pair['symbol'].find("USDT") != -1 and any(pair['symbol'][:-4] == s for s in cryptoList):
                     cryptoRates[pair['symbol'][:-4]]=float(pair['price'])
-            UpdateCryptoRatesDB(cryptoRates.copy())
             Print("Updating of crypto rates is successfull.", "S")
         except:
             Print("Updating CR failed. Trying different endpoint", "E")
@@ -83,7 +83,6 @@ def UpdateCryptoRates() -> dict:
                 for pair in response.json():
                     if pair['symbol'].find("USDT") != -1 and any(pair['symbol'][:-4] == s for s in cryptoList):
                         cryptoRates[pair['symbol'][:-4]]=float(pair['price'])
-                UpdateCryptoRatesDB(cryptoRates.copy())
                 Print("Updating of crypto rates is successfull.", "S")
             except:
                 Print("Updating CR failed. Trying different endpoint", "E")
@@ -94,10 +93,20 @@ def UpdateCryptoRates() -> dict:
                     for pair in response.json():
                         if pair['symbol'].find("USDT") != -1 and any(pair['symbol'][:-4] == s for s in cryptoList):
                             cryptoRates[pair['symbol'][:-4]]=float(pair['price'])
-                    UpdateCryptoRatesDB(cryptoRates.copy())
                     Print("Updating of crypto rates is successfull.", "S")
                 except:
                     Print("Using crypto rates from DB.", "S")
                     cryptoRates = GetCryptoRates()
         
     return cryptoRates.copy()
+
+def UpdateTON() -> float:
+    try:
+        url = "https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd"
+        response = requests.get(url,headers=headers)
+        Print("Updating TON rate is successfull.", "S")
+    except:
+        Print("Updating TON rate failed.", "E")
+        Print("Using TON rate from DB.", "W")
+        return GetCryptoRates()['TON']
+    return response.json()['the-open-network']['usd']
