@@ -62,9 +62,9 @@ async def AboutMes(message: types.Message):
 @dp.message_handler(commands=['help'])
 async def HelpMes(message: types.Message):
     messageData = GetDataFromMessage(message)
-    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"], messageData["chatName"]):
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
         return
-    IsChatExist(messageData["chatID"], messageData["chatType"])
+    IsChatExist(messageData["chatID"], messageData["chatType"], messageData["chatName"])
     await message.reply(GetText(messageData["chatID"], "help", messageData["chatType"]), reply_markup=CustomMarkup.DeleteMarkup(messageData["chatID"], messageData["chatType"]))
 
 
@@ -103,9 +103,9 @@ async def SettingsMes(message: types.Message):
 
     member = await message.chat.get_member(messageData["fromUserId"])
     if CanUserEditSettings(messageData["chatID"], messageData["chatType"], member.status, message.from_user.id, messageData["userName"], message.chat.all_members_are_administrators):
-        await message.reply(GetText(messageData["chatID"], "main_settings_menu", messageData["chatType"]), reply_markup=CustomMarkup.SettingsMarkup(messageData['chatID'], messageData['chatType']))
+        await message.reply(GetText(messageData["chatID"], "main_settings_menu", messageData["chatType"]), parse_mode="HTML", reply_markup=CustomMarkup.SettingsMarkup(messageData['chatID'], messageData['chatType']))
     else:
-        await message.reply(GetText(messageData["chatID"], "error_main_settings_menu", messageData["chatType"]), reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
+        await message.reply(GetText(messageData["chatID"], "error_main_settings_menu", messageData["chatType"]), parse_mode="HTML", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
 
 @dp.message_handler(commands=['donate'])
@@ -328,48 +328,50 @@ async def PlotStatsVoid(message: types.Message):
         allRecords = DBH.GetProcessedCurrencies()
         botUsageAllTimeByDay = {}
         botUsageLastDayByMinute = {}
-        botUsageLastWeekByMinute = {}
+        botUsageLastWeekByHour = {}
         botUsageLastMonthByDay = {}
         botUsage24HoursAvgPerWeekByMinute = {}
         for i in allRecords:
+            
             #date = yyyy-MM-dd hh:mm:ss
-            date = i["date"]
-            date = date.split(" ")
-            date = date[0]
-            if date in botUsageAllTimeByDay:
-                botUsageAllTimeByDay[date] += 1
-            else:
-                botUsageAllTimeByDay[date] = 1
-            if date == datetime.datetime.now().strftime("%Y-%m-%d"):
-                date = i["date"]
-                lastIndex = date.rfind(":")
-                date = date[:lastIndex]
-                if date in botUsageLastDayByMinute:
-                    botUsageLastDayByMinute[date] += 1
-                else:
-                    botUsageLastDayByMinute[date] = 1
-            if date >= (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"):
-                date = i["date"]
-                lastIndex = date.rfind(":")
-                date = date[:lastIndex]
-                if date in botUsageLastWeekByMinute:
-                    botUsageLastWeekByMinute[date] += 1
-                else:
-                    botUsageLastWeekByMinute[date] = 1
-            if date >= (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"):
+            if not i["deleted"] or i["deleted"] and (datetime.datetime.strptime(i["deletedDate"], "%Y-%m-%d %H:%M:%S") - datetime.datetime.strptime(i["date"], "%Y-%m-%d %H:%M:%S")).seconds >= 3:
                 date = i["date"]
                 date = date.split(" ")
                 date = date[0]
-                if date in botUsageLastMonthByDay:
-                    botUsageLastMonthByDay[date] += 1
+                if date in botUsageAllTimeByDay:
+                    botUsageAllTimeByDay[date] += 1
                 else:
-                    botUsageLastMonthByDay[date] = 1
-        for i in botUsageLastWeekByMinute:
-            botUsage24HoursAvgPerWeekByMinute[i] = botUsageLastWeekByMinute[i] / 7
+                    botUsageAllTimeByDay[date] = 1
+                if date == datetime.datetime.now().strftime("%Y-%m-%d"):
+                    date = i["date"]
+                    lastIndex = date.rfind(":")
+                    date = date[:lastIndex]
+                    if date in botUsageLastDayByMinute:
+                        botUsageLastDayByMinute[date] += 1
+                    else:
+                        botUsageLastDayByMinute[date] = 1
+                if date >= (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"):
+                    date = i["date"]
+                    lastIndex = date.rfind(":")
+                    date = date[:lastIndex]
+                    if date in botUsageLastWeekByHour:
+                        botUsageLastWeekByHour[date] += 1
+                    else:
+                        botUsageLastWeekByHour[date] = 1
+                if date >= (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"):
+                    date = i["date"]
+                    date = date.split(" ")
+                    date = date[0]
+                    if date in botUsageLastMonthByDay:
+                        botUsageLastMonthByDay[date] += 1
+                    else:
+                        botUsageLastMonthByDay[date] = 1
+        for i in botUsageLastWeekByHour:
+            botUsage24HoursAvgPerWeekByMinute[i] = botUsageLastWeekByHour[i] / 7
         chartsNames = ["botUsageAllTimeByDay", "botUsageLastDayByMinute", "botUsageLastWeekByMinute", "botUsageLastMonthByDay", "botUsage24HoursAvgPerWeekByMinute"]
         BuildChart(list(botUsageAllTimeByDay.values()), list(botUsageAllTimeByDay.keys()), "botUsageAllTimeByDay", chartsNames[0])
         BuildChart(list(botUsageLastDayByMinute.values()), list(botUsageLastDayByMinute.keys()), "botUsageLastDayByMinute", chartsNames[1])
-        BuildChart(list(botUsageLastWeekByMinute.values()), list(botUsageLastWeekByMinute.keys()), "botUsageLastWeekByMinute", chartsNames[2])
+        BuildChart(list(botUsageLastWeekByHour.values()), list(botUsageLastWeekByHour.keys()), "botUsageLastWeekByMinute", chartsNames[2])
         BuildChart(list(botUsageLastMonthByDay.values()), list(botUsageLastMonthByDay.keys()), "botUsageLastMonthByDay", chartsNames[3])
         BuildChart(list(botUsage24HoursAvgPerWeekByMinute.values()), list(botUsage24HoursAvgPerWeekByMinute.keys()), "botUsage24HoursAvgPerWeekByMinute", chartsNames[4])
         media = types.MediaGroup()
@@ -605,7 +607,7 @@ async def CallbackAnswer(call: types.CallbackQuery):
             DBH.SetSetting(chatID, 'deleteButton', int(not IsFlag), chatType)
         else:
             DBH.SetSetting(chatID, 'deleteRules', Value, chatType)
-        await bot.edit_message_text(GetText(chatID, 'delete_button_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.DeleteButtonMenuMarkup(chatID, chatType))
+        await bot.edit_message_text(GetText(chatID, 'delete_button_menu', chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.DeleteButtonMenuMarkup(chatID, chatType))
 
     elif str(callData).find("lang_") == 0:
         member = await call.message.chat.get_member(fromUserId)
@@ -617,7 +619,7 @@ async def CallbackAnswer(call: types.CallbackQuery):
             pass
         else:
             DBH.SetSetting(chatID, 'lang', Value, chatType)
-        await bot.edit_message_text(GetText(chatID, 'lang_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.LanguageMenuMarkup(chatID, chatType))
+        await bot.edit_message_text(GetText(chatID, 'lang_menu', chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.LanguageMenuMarkup(chatID, chatType))
 
     elif str(callData).find("ui_") == 0:
         member = await call.message.chat.get_member(fromUserId)
@@ -633,7 +635,8 @@ async def CallbackAnswer(call: types.CallbackQuery):
         elif Value == "symbols":
             IsSymbol = DBH.GetSetting(chatID, 'currencySymbol', chatType)
             DBH.SetSetting(chatID, 'currencySymbol', int(not IsSymbol), chatType)
-        await bot.edit_message_text(GetText(chatID, 'mes_view_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.MessageViewMarkup(chatID, chatType))
+        Print(GetText(chatID, 'mes_view_menu', chatType), "L")
+        await bot.edit_message_text(GetText(chatID, 'mes_view_menu', chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.MessageViewMarkup(chatID, chatType))
 
     elif str(callData).find("edit_") == 0:
         member = await call.message.chat.get_member(fromUserId)
@@ -651,7 +654,7 @@ async def CallbackAnswer(call: types.CallbackQuery):
                 DBH.SetSetting(chatID, 'editSettings', Value, chatType)
             elif memberStatus == "creator":
                 DBH.SetSetting(chatID, 'editSettings', Value, chatType)
-        await bot.edit_message_text(GetText(chatID, 'edit_menu', chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.EditMenuMarkup(chatID, chatType))
+        await bot.edit_message_text(GetText(chatID, 'edit_menu', chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.EditMenuMarkup(chatID, chatType))
 
     elif str(callData).find("cur_ignore_") == 0:
         member = await call.message.chat.get_member(fromUserId)
@@ -662,22 +665,22 @@ async def CallbackAnswer(call: types.CallbackQuery):
         Value = str(callData)[0:len(str(callData))]
 
         if Value == "menu":
-            await bot.edit_message_text(GetText(chatID, "ignore_currencies_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesMainMenuMarkup(chatID, chatType))
+            await bot.edit_message_text(GetText(chatID, "ignore_currencies_mainmenu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.IgnoreCurrenciesMainMenuMarkup(chatID, chatType))
         elif Value == "cryptomenu":
-            await bot.edit_message_text(GetText(chatID, "ignore_crypto_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCryptoMenuMarkup(chatID, chatType))
+            await bot.edit_message_text(GetText(chatID, "ignore_crypto_mainmenu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.IgnoreCryptoMenuMarkup(chatID, chatType))
         elif Value == "curmenu":
-            await bot.edit_message_text(GetText(chatID, "ignore_currencies_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesMenuMarkup(chatID, chatType))
+            await bot.edit_message_text(GetText(chatID, "ignore_currencies_menu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.IgnoreCurrenciesMenuMarkup(chatID, chatType))
         elif len(Value) == 1 or len(Value) == 2:
-            await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesSetupMarkup(chatID, chatType, Value))
+            await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.IgnoreCurrenciesSetupMarkup(chatID, chatType, Value))
         elif len(Value) == 3 or len(Value) == 4:
             DBH.SetIgnoredCurrency(chatID, Value, not DBH.GetIgnoredCurrency(chatID, Value))
             DBH.ReverseCurrencySetting(chatID, Value)
             if Value in ListsCache.GetListOfCrypto():
-                await bot.edit_message_text(GetText(chatID, "ignore_crypto_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCryptoMenuMarkup(chatID, chatType))
+                await bot.edit_message_text(GetText(chatID, "ignore_crypto_mainmenu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.IgnoreCryptoMenuMarkup(chatID, chatType))
             else:
                 dictForMU = {'A': 'a', 'B': 'b', 'C': 'c', 'D': 'df', 'E': 'df', 'F': 'df', 'G': 'gh', 'H': 'gh', 'I': 'ij', 'J': 'ij', 'K': 'kl', 'L': 'kl', 'M': 'm',
                              'N': 'nq', 'O': 'nq', 'P': 'nq', 'Q': 'nq', 'R': 'rs', 'S': 'rs', 'T': 'tu', 'U': 'tu', 'V': 'vz', 'W': 'vz', 'X': 'vz', 'Y': 'vz', 'Z': 'vz'}
-                await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.IgnoreCurrenciesSetupMarkup(chatID, chatType, dictForMU[Value[0]]))
+                await bot.edit_message_text(GetText(chatID, "ignore_letter_menu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.IgnoreCurrenciesSetupMarkup(chatID, chatType, dictForMU[Value[0]]))
 
     elif str(callData).find("cur_") == 0:
         member = await call.message.chat.get_member(fromUserId)
@@ -688,24 +691,24 @@ async def CallbackAnswer(call: types.CallbackQuery):
         Value = str(callData)[Index:len(str(callData))]
 
         if Value == "menu":
-            await bot.edit_message_text(GetText(chatID, "currencies_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CurrenciesMainMenuMarkup(chatID, chatType))
+            await bot.edit_message_text(GetText(chatID, "currencies_mainmenu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.CurrenciesMainMenuMarkup(chatID, chatType))
         elif Value == "cryptomenu":
-            await bot.edit_message_text(GetText(chatID, "crypto_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CryptoMenuMarkup(chatID, chatType))
+            await bot.edit_message_text(GetText(chatID, "crypto_mainmenu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.CryptoMenuMarkup(chatID, chatType))
         elif Value == "curmenu":
-            await bot.edit_message_text(GetText(chatID, "currencies_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CurrenciesMenuMarkup(chatID, chatType))
+            await bot.edit_message_text(GetText(chatID, "currencies_menu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.CurrenciesMenuMarkup(chatID, chatType))
         elif len(Value) == 1 or len(Value) == 2:
-            await bot.edit_message_text(GetText(chatID, "letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CurrenciesSetupMarkup(chatID, chatType, Value))
+            await bot.edit_message_text(GetText(chatID, "letter_menu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.CurrenciesSetupMarkup(chatID, chatType, Value))
         elif len(Value) == 3 or len(Value) == 4:
             DBH.ReverseCurrencySetting(chatID, Value)
             if Value in ListsCache.GetListOfCrypto():
-                await bot.edit_message_text(GetText(chatID, "crypto_mainmenu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CryptoMenuMarkup(chatID, chatType))
+                await bot.edit_message_text(GetText(chatID, "crypto_mainmenu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.CryptoMenuMarkup(chatID, chatType))
             else:
                 dictForMU = {'A': 'a', 'B': 'b', 'C': 'c', 'D': 'df', 'E': 'df', 'F': 'df', 'G': 'gh', 'H': 'gh', 'I': 'ij', 'J': 'ij', 'K': 'kl', 'L': 'kl', 'M': 'm',
                              'N': 'nq', 'O': 'nq', 'P': 'nq', 'Q': 'nq', 'R': 'rs', 'S': 'rs', 'T': 'tu', 'U': 'tu', 'V': 'vz', 'W': 'vz', 'X': 'vz', 'Y': 'vz', 'Z': 'vz'}
-                await bot.edit_message_text(GetText(chatID, "letter_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.CurrenciesSetupMarkup(chatID, chatType, dictForMU[Value[0]]))
+                await bot.edit_message_text(GetText(chatID, "letter_menu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.CurrenciesSetupMarkup(chatID, chatType, dictForMU[Value[0]]))
 
     elif callData == "settings":
-        await bot.edit_message_text(GetText(chatID, "main_settings_menu", chatType), chatID, call.message.message_id, reply_markup=CustomMarkup.SettingsMarkup(chatID, chatType))
+        await bot.edit_message_text(GetText(chatID, "main_settings_menu", chatType), chatID, call.message.message_id, parse_mode="HTML", reply_markup=CustomMarkup.SettingsMarkup(chatID, chatType))
 
 
 def CheckArgument(key: str, value: str) -> bool:
@@ -758,6 +761,7 @@ def BuildChart(arr: list[int], dates: list[str], label: str, chartName: str):
                 date_interval = 1
         except:
             date_interval = 1
+        dates = [datetime.datetime.strptime(date_str, "%Y-%m-%d") for date_str in dates]
         plt.plot(dates, arr, label=label)
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=date_interval))
