@@ -359,6 +359,24 @@
             }
         },
         {
+            "name": "TON",
+            "code": "TON",
+            "equal": [
+                "ton"
+            ],
+            "entry": {
+                "en": [
+                    "ton"
+                ],
+                "ru": [
+                    "тон"
+                ],
+                "ua": [
+                    "тон"
+                ]
+            }
+        },
+        {
             "name": "stellar",
             "code": "XLM",
             "equal": [
@@ -411,24 +429,6 @@
                 "ua": [
                     "ріпл",
                     "ріппл"
-                ]
-            }
-        },
-        {
-            "name": "TON",
-            "code": "TON",
-            "equal": [
-                "ton"
-            ],
-            "entry": {
-                "en": [
-                    "ton"
-                ],
-                "ru": [
-                    "тон"
-                ],
-                "ua": [
-                    "тон"
                 ]
             }
         }
