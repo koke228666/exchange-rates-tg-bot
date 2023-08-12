@@ -1214,3 +1214,11 @@ def ClearReports():
     cursor.execute("VACUUM")
     con.commit()
 
+def GetChatIDs():
+    con = sql.connect('DataBases/DataForBot.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT chatID FROM SettingsGroups")
+    res = [k[0] for k in cursor.fetchall()]
+    cursor.execute("SELECT chatID FROM SettingsPrivateChats")
+    res += [k[0] for k in cursor.fetchall()]
+    return res
