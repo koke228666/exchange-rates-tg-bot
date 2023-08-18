@@ -421,24 +421,6 @@
       }
     },
     {
-      "name": "TON",
-      "code": "TON",
-      "equal": [
-        "ton",
-        "тон"
-      ],
-      "entry": {
-        "en": [
-        ],
-        "ru": [
-        ],
-        "ua": [
-        ],
-        "by": [
-        ]
-      }
-    },
-    {
       "name": "stellar",
       "code": "XLM",
       "equal": [
