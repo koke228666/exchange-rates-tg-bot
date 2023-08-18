@@ -75,7 +75,7 @@ Bot answer:
     <th>Enhanced recognition of national currencies</th>
     <td>
     <ul>
-    <li><b>Belarusian</b> – ???</li>
+    <li><b>Belarusian</b> – 59 and gold and silver (in ounces)</li>
     <li><b>English</b> – 47 and gold and silver (in ounces)</li>
     <li><b>German</b> (coming soon)</li>
     <li><b>Russian</b> <i>(no longer support)</i> – 24 and gold and silver (in ounces)</li>
