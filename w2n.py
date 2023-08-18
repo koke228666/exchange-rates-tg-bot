@@ -1,5 +1,5 @@
 from ListsCache import GetTokensForW2N, GetExceptionsForW2N
-from NewPrint import Print, IsEnabledLogging
+from NewPrint import Print
 
 #df = pd.read_excel('tokens.xlsx')
 df = ""
@@ -46,19 +46,33 @@ def wordsMatching(word, tokens):
             fitting_token = token
     return (fitting_token, min_deviation)
 
-def ConvertWordsToNumber(words):
+def IsWordNumber(word):
     global df
     df = GetTokensForW2N()
+    tokenWord, errorValue = wordsMatching(word, df['token'])
+    Print("Word: " + str(word) + " | Token: " + str(tokenWord) + " | Error: " + str(errorValue) + " | Coef: " + str(errorValue / len(word)), "L")
+    if (errorValue / len(word) < 0.12 and errorValue < 0.5 and len(word) > 3 or errorValue < 0.3 and len(word) <= 3) or word[0].isdigit():
+        return tokenWord
+    return -1
+
+def ConvertWordsToNumber(words):
     arr = []
+    newWords = []
     for word in words:
-        errorValue = wordsMatching(word, df['token'])[1]
-        if IsEnabledLogging():
-            tokenWord = wordsMatching(word, df['token'])[0]
-            Print("Word: " + str(word) + " | Token: " + str(tokenWord) + " | Error: " + str(errorValue) + " | Coef: " + str(errorValue / len(word)), "L")
-        if (errorValue / len(word) < 0.12 and errorValue < 0.5 and len(word) > 3 or errorValue < 0.3 and len(word) <= 3) or word[0].isdigit():
+        if IsWordNumber(word) != -1:
             arr.append(1)
+            newWords.append(word)
+        elif word == "-":
+            if len(arr) > 0 and arr[-1] == 1 and not newWords[-1][0].isdigit():
+                pass
+            else:
+                arr.append(0)
+                newWords.append(word)
         else:
             arr.append(0)
+            newWords.append(word)
+
+    words = newWords
     
     while 1 in arr:
         startIndex = 0
