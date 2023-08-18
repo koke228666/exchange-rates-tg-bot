@@ -467,6 +467,21 @@ async def UnbanVoid(message: types.Message):
         else:
             await message.reply("The ID should only contain numbers and minus.", reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
 
+
+@dp.message_handler(commands=['chats'])
+async def ChatsVoid(message: types.Message):
+    messageData = GetDataFromMessage(message)
+
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
+        return
+    if DBH.IsAdmin(messageData["fromUserId"]):
+        with open("chats.txt", "w") as file:
+            for chat in DBH.GetChatIDs():
+                file.write(str(chat) + "\n")
+        await bot.send_document(messageData["chatID"], types.InputFile("chats.txt"))
+        os.remove("chats.txt")         
+
+
 # Technical commands
 @dp.message_handler(commands=['start'])
 async def StartVoid(message: types.Message):
@@ -482,6 +497,8 @@ async def StartVoid(message: types.Message):
                 lang = "en"
             elif lang == "uk":
                 lang = "ua"
+            elif lang == "pt-br":
+                lang = "br"
             DBH.SetSetting(messageData["chatID"], "lang", lang, messageData["chatType"])
             await message.reply(GetText(messageData["chatID"], "main_settings_menu", messageData["chatType"]), reply_markup=CustomMarkup.SettingsMarkup(messageData['chatID'], messageData['chatType']))
 

@@ -271,6 +271,12 @@ All the arguments for run:
     <td>Archive with database backups.</td>
   </tr>
   <tr>
+    <td><code>/chats</code></td>
+    <td>Sends a file with a list of IDs of all chats (group and private)</td>
+    <td><code>/chats</code></td>
+    <td>A file with a list of IDs of all chats (group and private).</td>
+  </tr>
+  <tr>
     <td><code>/ban</code></td>
     <td>Block a user/group chat by ID.</td>
     <td><code>/ban 123456789</code></td>

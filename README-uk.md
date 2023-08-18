@@ -272,6 +272,12 @@ ERTB – exchange rates telegram bot.<br>
     <td>Архів з бекапами баз данних.</td>
   </tr>
   <tr>
+    <td><code>/chats</code></td>
+    <td>Надсилає файл зі списком ID всіх чатів (групових та приватних)</td>
+    <td><code>/chats</code></td>
+    <td>Файл зі списком ID всіх чатів (групових та приватних).</td>
+  </tr>
+  <tr>
     <td><code>/ban</code></td>
     <td>Заблокувати користувача/груповий чат по ID.</td>
     <td><code>/ban 123456789</code></td>
