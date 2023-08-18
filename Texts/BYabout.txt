@@ -1,16 +1,16 @@
 ERTB – exchange rates telegram bot.
-©VirtualSoftKey
+©Lanasys
 
 Бот створаны для распазнавання ў тэксце пар лікаў і валют, з аўтаматычным наступным канверсаваннем у іншыя валюты па актуальным курсам.
 
-Больш інфармацыі пра бота: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/README.md
+Больш інфармацыі пра бота: https://github.com/Lanasys/exchange-rates-tg-bot/blob/main/README.md
 
 Курсы класічных валют абнаўляюцца раз у дзень. API: http://data.fixer.io/api/
 Курсы крыптавалют абнаўляюцца некалькі разоў у хвіліну. API: https://api.binance.com/api/v3/
 
 На цяперашні момант падтрымліваюцца ўсе класічныя валюты свету, а таксама больш дзесятка крыптавалют.
 
-Арыгінальны код адкрыты і распаўсюджваецца пад ліцэнзіяй MIT. Тэкст ліцэнзіі: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/LICENSE
+Арыгінальны код адкрыты і распаўсюджваецца пад ліцэнзіяй MIT. Тэкст ліцэнзіі: https://github.com/Lanasys/exchange-rates-tg-bot/blob/main/LICENSE
 
 Актуальная версія: 3.0 Beta 2
 Дата апошняга абнаўлення: жнівень 2023 года
