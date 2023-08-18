@@ -580,14 +580,15 @@ async def MainVoid(message: types.Message):
     result = AnswerText(NumArray, messageData["chatID"], messageData["chatType"])
     try:
         reply_message = await message.reply(result, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
+        DBH.UpdateChatUsage(messageData["chatID"])
+        DBH.NewProcessedCurrency(messageData["chatID"], messageData["fromUserId"], message.from_user.language_code, ','.join(NumArray[1]+NumArray[3]), ','.join(DBH.GetAllCurrencies(messageData["chatID"]) + DBH.GetAllCrypto(messageData["chatID"])), reply_message.message_id)
     except:
         Print("Cannot send message. Chat ID: " + str(message.chat.id) +
               " | Chat name: " + str(message.chat.title) +
               " | Chat username: " + 
               str(message.chat.username) + 
               " | Chat type: "+str(message.chat.type), "E")
-    DBH.UpdateChatUsage(messageData["chatID"])
-    DBH.NewProcessedCurrency(messageData["chatID"], messageData["fromUserId"], message.from_user.language_code, ','.join(NumArray[1]+NumArray[3]), ','.join(DBH.GetAllCurrencies(messageData["chatID"]) + DBH.GetAllCrypto(messageData["chatID"])), reply_message.message_id)
+    
     
 
 # Callbacks
