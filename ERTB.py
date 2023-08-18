@@ -14,6 +14,7 @@ import logging
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import datetime
+import json
 
 # Own libraries
 import DBH
@@ -492,13 +493,17 @@ async def StartVoid(message: types.Message):
 
     if not IsChatExist(messageData["chatID"], messageData["chatType"], messageData["chatName"]):
         if messageData["chatType"] == "private":
-            lang = message.from_user.language_code
-            if lang == None:
-                lang = "en"
-            elif lang == "uk":
-                lang = "ua"
-            elif lang == "pt-br":
-                lang = "br"
+            userLang = message.from_user.language_code
+            lang = "en"
+            langs = []
+            with open("Dictionaries/langs.json", "r", encoding="utf-8") as file:
+                langs = json.load(file)
+            langs = langs['langs']
+            for i in langs:
+                if i['code'] == userLang:
+                    lang = i['botCode']
+                    break
+            
             DBH.SetSetting(messageData["chatID"], "lang", lang, messageData["chatType"])
             await message.reply(GetText(messageData["chatID"], "main_settings_menu", messageData["chatType"]), reply_markup=CustomMarkup.SettingsMarkup(messageData['chatID'], messageData['chatType']))
 
