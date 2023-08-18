@@ -619,17 +619,17 @@ async def CallbackAnswer(call: types.CallbackQuery):
                 CanUserDeleteMes = True
             elif chatType == "group":
                 member = await call.message.chat.get_member(fromUserId)
-                if allAdmins == True and whoCanDeleteMes == 'admins':
+                if allAdmins == True and (whoCanDeleteMes == 'admins' or whoCanDeleteMes == 'everybody'):
                     CanUserDeleteMes = True
                 elif allAdmins == True and whoCanDeleteMes == 'creator':
                     if member.status == 'creator':
                         CanUserDeleteMes = True
                 elif allAdmins == False:
-                    if whoCanDeleteMes == 'admins' and (member.status == "administrator" or member.status == "creator") or whoCanDeleteMes == 'creator' and member.status == "creator":
+                    if whoCanDeleteMes == 'admins' and (member.status == "administrator" or member.status == "creator") or whoCanDeleteMes == 'creator' and member.status == "creator" or whoCanDeleteMes == 'everybody':
                         CanUserDeleteMes = True
             elif chatType == "supergroup":
                 member = await call.message.chat.get_member(fromUserId)
-                if whoCanDeleteMes == 'admins' and (member.status == "administrator" or member.status == "creator") or whoCanDeleteMes == 'creator' and member.status == "creator":
+                if whoCanDeleteMes == 'admins' and (member.status == "administrator" or member.status == "creator") or whoCanDeleteMes == 'creator' and member.status == "creator" or whoCanDeleteMes == 'everybody':
                     CanUserDeleteMes = True
         if CanUserDeleteMes:
             try: 

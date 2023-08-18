@@ -4,8 +4,8 @@
             "lang": "Belarusian",
             "code": "be",
             "botCode": "by",
-            "interface": "🇧🇾 Беларуская",
-            "active": false
+            "interface": "⚪️🔴⚪️  Беларуская",
+            "active": true
         },
         {
             "lang": "German",
@@ -39,7 +39,7 @@
             "lang": "Russian",
             "codes": "ru",
             "botCode": "ru",
-            "interface": "💩 руский",
+            "interface": "⚪️🔵⚪️ Руский",
             "active": true
         },
         {
