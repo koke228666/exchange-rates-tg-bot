@@ -1,0 +1,53 @@
+{
+    "langs": [
+        {
+            "lang": "Belarusian",
+            "code": "be",
+            "botCode": "by",
+            "interface": "🇧🇾 Беларуская",
+            "active": false
+        },
+        {
+            "lang": "German",
+            "code": "de",
+            "botCode": "de",
+            "interface": "🇩🇪 Deutsch",
+            "active": true
+        },
+        {
+            "lang": "English",
+            "codes": "en",
+            "botCode": "en",
+            "interface": "🇬🇧 English",
+            "active": true
+        },
+        {
+            "lang": "Polish",
+            "codes": "pl",
+            "botCode": "pl",
+            "interface": "🇵🇱 Polski",
+            "active": true
+        },
+        {
+            "lang": "Portuguese (Brazilian)",
+            "codes": "pt-br",
+            "botCode": "pt",
+            "interface": "🇧🇷 Português brasileiro",
+            "active": false
+        },
+        {
+            "lang": "Russian",
+            "codes": "ru",
+            "botCode": "ru",
+            "interface": "💩 руский",
+            "active": true
+        },
+        {
+            "lang": "Ukrainian",
+            "codes": "uk",
+            "botCode": "ua",
+            "interface": "🇺🇦 Українська",
+            "active": true
+        }
+    ]
+}

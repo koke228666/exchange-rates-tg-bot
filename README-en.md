@@ -44,10 +44,10 @@ Bot answer:
     <th>Bot interface languages</th>
     <td>
     <ul>
-    <li><b>Belarusian</b> (coming soon)</li>
-    <li><b>Czech</b> (coming soon)</li>
+    <li><b>Belarusian</b></li>
     <li><b>English</b></li>
     <li><b>German</b></li>
+    <li><b>Polish</b></li>
     <li><b>Polish</b></li>
     <li><b>Russian</b></li>
     <li><b>Ukrainian</b></li>
@@ -59,9 +59,9 @@ Bot answer:
     <i>('Twenty-five dollars' is recognized as '$25')</i></th>
     <td>
     <ul>
+    <li><b>Belarusian</b></li>
     <li><b>English</b></li>
     <li><b>German</b> (coming soon)</li>
-    <li><b>Polish</b> (coming soon)</li>
     <li><b>Russian</b></li>
     <li><b>Ukrainian</b></li>
     </ul>
@@ -75,9 +75,9 @@ Bot answer:
     <th>Enhanced recognition of national currencies</th>
     <td>
     <ul>
+    <li><b>Belarusian</b> – ???</li>
     <li><b>English</b> – 47 and gold and silver (in ounces)</li>
     <li><b>German</b> (coming soon)</li>
-    <li><b>Polish</b> (coming soon)</li>
     <li><b>Russian</b> <i>(no longer support)</i> – 24 and gold and silver (in ounces)</li>
     <li><b>Ukrainian</b> – 50 and gold and silver (in ounces)</li>
     </ul>
@@ -269,6 +269,12 @@ All the arguments for run:
     <td>Sends an archive with copies of databases.</td>
     <td><code>/backup</code></td>
     <td>Archive with database backups.</td>
+  </tr>
+  <tr>
+    <td><code>/chats</code></td>
+    <td>Sends a file with a list of IDs of all chats (group and private)</td>
+    <td><code>/chats</code></td>
+    <td>A file with a list of IDs of all chats (group and private).</td>
   </tr>
   <tr>
     <td><code>/ban</code></td>
