@@ -11,7 +11,7 @@ def Print(printingText: str, status: str = "L"):
     printingText = str(printingText)
     global counterS, counterL, counterE
     status = status.lower()
-    if consoleLog or status == "e" or status == "s":
+    if consoleLog or status == "e" or status == "w" or status == "s":
         if status == 's':
             print("\033[36m{} ".format("Service") + "\033[37m{}".format(str(counterS)) + ": "+ printingText)
             counterS += 1

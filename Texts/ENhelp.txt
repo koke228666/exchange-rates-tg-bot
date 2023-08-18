@@ -1,9 +1,9 @@
-This bot recognizes numbers and currencies in the text and then automatically sends a message converting the amount to other currencies.
+This bot recognizes numbers and currencies in the text and then automatically sends a message in which the amount is converted to other currencies.
+
+Try writing: "5 euros" or "two hundred and forty four dollars".
 
 If you want to know about the authors, version, source code, and/or license, use the /about command.
 
 If you want to change the output currencies or the rights to delete messages, use the /settings command.
 
-If you notice an error in the bot's text recognition, please reply to the original message with the /wrong command.
-
-If you notice any other problems, please write to one of the creators in a private message.
+If you notice a recognition error, other malfunctions, or have a suggestion for improvement, please write to us in the feedback bot: @ertb_support_bot
