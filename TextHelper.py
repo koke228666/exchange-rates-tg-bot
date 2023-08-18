@@ -3,6 +3,7 @@ from aiogram.types.inline_keyboard import InlineKeyboardMarkup, InlineKeyboardBu
 import DBH
 import ListsCache
 import os
+import json
 from NewPrint import Print
 
 AllBigTexts = {}
@@ -126,16 +127,19 @@ def LanguageMenuMarkup(chatID: str, chatType: str):
         else:
             return " ❌"
     
+    #open json
+    langs = []
+    with open("Dictionaries/langs.json", "r", encoding="utf-8") as file:
+        langs = json.load(file)
+    langs = langs['langs']
+
     lang = DBH.GetSetting(chatID, "lang", chatType)
     AllSettings = DBH.GetAllSettings(chatID, chatType)
     dictLang = ButtonTexts[lang]
     LanguageMenuMU = InlineKeyboardMarkup()
-    LanguageMenuMU.add(InlineKeyboardButton("🇧🇾BY" + RulesMark('by', AllSettings), callback_data = "lang_by"))
-    LanguageMenuMU.add(InlineKeyboardButton("🇩🇪DE" + RulesMark('de', AllSettings), callback_data = "lang_de"))
-    LanguageMenuMU.add(InlineKeyboardButton("🇬🇧EN" + RulesMark('en', AllSettings), callback_data = "lang_en"))
-    LanguageMenuMU.add(InlineKeyboardButton("🇵🇱PL" + RulesMark('pl', AllSettings), callback_data = "lang_pl"))
-    LanguageMenuMU.add(InlineKeyboardButton("💩RU" + RulesMark('ru', AllSettings), callback_data = "lang_ru"))
-    LanguageMenuMU.add(InlineKeyboardButton("🇺🇦UA" + RulesMark('ua', AllSettings), callback_data = "lang_ua"))
+    for i in langs:
+        if i["active"]:
+            LanguageMenuMU.add(InlineKeyboardButton(i['interface'] + RulesMark(i['botCode'], AllSettings), callback_data = "lang_" + i['botCode']))
     LanguageMenuMU.add(InlineKeyboardButton(dictLang['back'], callback_data = "settings"))
     return LanguageMenuMU
 
