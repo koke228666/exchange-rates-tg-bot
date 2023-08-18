@@ -16,35 +16,35 @@
         },
         {
             "lang": "English",
-            "codes": "en",
+            "code": "en",
             "botCode": "en",
             "interface": "🇬🇧 English",
             "active": true
         },
         {
             "lang": "Polish",
-            "codes": "pl",
+            "code": "pl",
             "botCode": "pl",
             "interface": "🇵🇱 Polski",
             "active": true
         },
         {
             "lang": "Portuguese (Brazilian)",
-            "codes": "pt-br",
+            "code": "pt-br",
             "botCode": "pt",
             "interface": "🇧🇷 Português brasileiro",
             "active": false
         },
         {
             "lang": "Russian",
-            "codes": "ru",
+            "code": "ru",
             "botCode": "ru",
             "interface": "⚪️🔵⚪️ Руский",
             "active": true
         },
         {
             "lang": "Ukrainian",
-            "codes": "uk",
+            "code": "uk",
             "botCode": "ua",
             "interface": "🇺🇦 Українська",
             "active": true

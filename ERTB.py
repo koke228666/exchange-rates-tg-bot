@@ -519,6 +519,7 @@ async def MainVoid(message: types.Message):
 
     # Checking if a user is on the blacklist
     if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
+        Print("User (" + str(messageData["fromUserId"]) + ") is in the blacklist. Message: " + message.text, "L")
         return
 
     # Get message text
@@ -605,7 +606,7 @@ async def CallbackAnswer(call: types.CallbackQuery):
     callData = call.data
     allAdmins = call.message.chat.all_members_are_administrators
     userName = call.from_user.username
-    #Print("Callback data: " + callData, "L")
+    Print("Callback data: " + str(call), "L")
 
     if IsUserInBlackList(call.message.from_user.id, chatID):
         return
