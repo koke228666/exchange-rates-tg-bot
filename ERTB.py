@@ -629,9 +629,12 @@ async def CallbackAnswer(call: types.CallbackQuery):
                     if whoCanDeleteMes == 'admins' and (member.status == "administrator" or member.status == "creator") or whoCanDeleteMes == 'creator' and member.status == "creator" or whoCanDeleteMes == 'everybody':
                         CanUserDeleteMes = True
             elif chatType == "supergroup":
-                member = await call.message.chat.get_member(fromUserId)
-                if whoCanDeleteMes == 'admins' and (member.status == "administrator" or member.status == "creator") or whoCanDeleteMes == 'creator' and member.status == "creator" or whoCanDeleteMes == 'everybody':
-                    CanUserDeleteMes = True
+                try:
+                    member = await call.message.chat.get_member(fromUserId)
+                    if whoCanDeleteMes == 'admins' and (member.status == "administrator" or member.status == "creator") or whoCanDeleteMes == 'creator' and member.status == "creator" or whoCanDeleteMes == 'everybody':
+                        CanUserDeleteMes = True
+                except:
+                    pass
         if CanUserDeleteMes:
             try: 
                 await bot.edit_message_text(call.message.text + "\n\n@" + str(call.from_user.username) + " (id: " + str(fromUserId) + ")" + " delete it.", chatID, call.message.message_id)
