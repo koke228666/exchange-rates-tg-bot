@@ -1,0 +1,18 @@
+ERTB - exchange rates telegram bot.
+©Lanasys
+
+Este bot foi criado para reconhecer pares de números e moedas digitados no texto das mensagens, com conversão automática para os valores atuais.
+
+Mais informações sobre o bot: https://github.com/Lanasys/exchange-rates-tg-bot/blob/main/README.md
+
+Os valores de câmbio entre moedas são atualizados uma vez por dia. API: http://data.fixer.io/api/.
+Os valores de criptomoedas são atualizados diversas vezes por minuto. API: https://api.binance.com/api/v3/
+
+No momento, todas as moedas clássicas do mundo são suportadas, além de algumas dezenas de criptomoedas.
+
+O código fonte original é aberto e distribuído sob a Licença MIT. Texto da licença: https://github.com/Lanasys/exchange-rates-tg-bot/blob/main/LICENSE.
+
+Versão atual: 3.0 Beta 2
+Data da última atualização: Agosto de 2023
+
+Feedback: @ertb_support_bot

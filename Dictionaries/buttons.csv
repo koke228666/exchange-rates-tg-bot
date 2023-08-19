@@ -1,18 +1,18 @@
-name;ua;en;ru;pl;by;de;cz;pt
-donate;💵 Підтримати;💵 Donate;💵 Поддержать;💵 Wesprzyj;💵 Падтрымаць ;💵 Unterstützung;!!!💵 Donate;!!!💵 Donate
-delete;Видалити;Delete;Удалить;Usuń;Выдаліць;Löschen;!!!Delete;!!!Delete
-currencies;💵 Валюти для конвертації;💵 Currencies for conversion;💵 Валюты для конвертации;💵 Waluty do przeliczenia;💵 Валюты для канверсавання ;💵 Währungen zur Umrechnung;!!!💵 Currencies for conversion;!!!💵 Currencies for conversion
-ignore;🚫 Валюти, що будуть ігноруватись;🚫 Ignored currencies;🚫 Игнорируемые валюты;🚫 Waluty ignorowane;🚫 Ігнаруемыя валюты;🚫 Ignorierte Währungen;!!!🚫 Ignored currencies;!!!🚫 Ignored currencies
-delete_button;🗑 Кнопка видалення;🗑 Delete-Button;🗑 Кнопка удаления;🗑 Przycisk usunięcia;🗑 Кнопка выдалення;🗑 Löschtaste;!!!🗑 Delete-Button;!!!🗑 Delete-Button
-mes_view;🎨 Зовнішній вигляд;🎨 Appearance;🎨 Внешний вид;🎨 Wygląd;🎨 Знешні выгляд;🎨 Erscheinungsbild;!!!🎨 Appearance;!!!🎨 Appearance
-permisssions;Права доступу до налаштувань та видалення;Permissions to settings and deletion;Права доступа к настройкам и удалению;Uprawnienia do ustawień i usuwania;Правы доступу да настроек і выдалення;Zugriffsrechte auf Einstellungen und Löschung;!!!Permissions to settings and deleting;!!!Permissions to settings and deleting
-lang;🌏 Мова інтерфейсу бота;🌏 Language of bot interface;🌏 Язык интерфейса бота;🌏 Język interfejsu bota;🌏 Мова інтэрфейса бота;🌏 Sprache der Botschnittstelle;!!!🌏 Language of bot interface;!!!🌏 Language of bot interface
-creator;Власник;Owner;Владелец;Właściciel;Уладальнік;Inhaber;!!!Creator;!!!Creator
-admins;Адміністратори;Administrators;Администраторы;Administratorzy;Адміністратары;Administratoren;!!!Administrators;!!!Administrators
-everybody;Усі учасники;All members;Все участники;Wszyscy członkowie;Усе ўдзельнікі;Alle Mitglieder;!!!All members;!!!All members
-delbutton;Кнопка \'Видалити\';Delete-Button;Кнопка \'Удалить\';Przycisk \'Usuń\';Кнопка \’Выдаліць\’;Löschen-Taste;!!!Delete-Button;!!!Delete-Button
-back;Назад;Back;Назад;Wróć;Назад;Zurück;!!!Back;!!!Back
-flags_button;🏁 Прапори;🏁 Flags;🏁 Флаги;🏁 Flagi;🏁 Сцягі;🏁 Flaggen;!!!🏁 Flags;!!!🏁 Flags
-symbols_button;€$ Символи;€$ Symbols;€$ Символы;€$ Symbole;€$ Сімвалы;€$ Währungssymbole;!!!💲 Symbols;!!!💲 Symbols
-cur_menu;Національні (класичні) валюти;National (classic) currencies;Национальные (классические) валюты;Waluty narodowe (klasyczne);Нацыянальныя (класічныя) валюты;Nationale (traditionelle) Währungen;!!!National (classic) currencies;!!!National (classic) currencies
-crypto_menu;Криптовалюти;Cryptocurrencies;Криптовалюты;Kryptowaluty;Крыптавалюты;Kryptowährungen;!!!Cryptocurrencies;!!!Cryptocurrencies
+﻿name;ua;en;ru;pl;by;de;cz;pt
+donate;💵 Підтримати;💵 Donate;💵 Поддержать;💵 Wesprzyj;"💵 Падтрымаць ";💵 Unterstützung;!!!💵 Donate;💵 Doar
+delete;Видалити;Delete;Удалить;Usuń;Выдаліць;Löschen;!!!Delete;Deletar
+currencies;💵 Валюти для конвертації;💵 Currencies for conversion;💵 Валюты для конвертации;💵 Waluty do przeliczenia;"💵 Валюты для канверсавання ";💵 Währungen zur Umrechnung;!!!💵 Currencies for conversion;💵 Moedas para conversão
+ignore;🚫 Валюти, що будуть ігноруватись;🚫 Ignored currencies;🚫 Игнорируемые валюты;🚫 Waluty ignorowane;🚫 Ігнаруемыя валюты;🚫 Ignorierte Währungen;!!!🚫 Ignored currencies;🚫 Moedas ignoradas
+delete_button;🗑 Кнопка видалення;🗑 Delete-Button;🗑 Кнопка удаления;🗑 Przycisk usunięcia;🗑 Кнопка выдалення;🗑 Löschtaste;!!!🗑 Delete-Button;🗑 Botão para Deletar
+mes_view;🎨 Зовнішній вигляд;🎨 Appearance;🎨 Внешний вид;🎨 Wygląd;🎨 Знешні выгляд;🎨 Erscheinungsbild;!!!🎨 Appearance;🎨 Aparência
+permisssions;Права доступу до налаштувань та видалення;Permissions to settings and deletion;Права доступа к настройкам и удалению;Uprawnienia do ustawień i usuwania;Правы доступу да настроек і выдалення;Zugriffsrechte auf Einstellungen und Löschung;!!!Permissions to settings and deleting;Permissões para configurar e deletar
+lang;🌏 Мова інтерфейсу бота;🌏 Language of bot interface;🌏 Язык интерфейса бота;🌏 Język interfejsu bota;🌏 Мова інтэрфейса бота;🌏 Sprache der Botschnittstelle;!!!🌏 Language of bot interface;🌏 Língua da interface do bot
+creator;Власник;Owner;Владелец;Właściciel;Уладальнік;Inhaber;!!!Creator;Dono
+admins;Адміністратори;Administrators;Администраторы;Administratorzy;Адміністратары;Administratoren;!!!Administrators;Administradores
+everybody;Усі учасники;All members;Все участники;Wszyscy członkowie;Усе ўдзельнікі;Alle Mitglieder;!!!All members;Todos os membros
+delbutton;Кнопка \'Видалити\';Delete-Button;Кнопка \'Удалить\';Przycisk \'Usuń\';Кнопка \’Выдаліць\’;Löschen-Taste;!!!Delete-Button;Botão para Deletar
+back;Назад;Back;Назад;Wróć;Назад;Zurück;!!!Back;Voltar
+flags_button;🏁 Прапори;🏁 Flags;🏁 Флаги;🏁 Flagi;🏁 Сцягі;🏁 Flaggen;!!!🏁 Flags;🏁 Bandeiras
+symbols_button;€$ Символи;€$ Symbols;€$ Символы;€$ Symbole;€$ Сімвалы;€$ Währungssymbole;!!!💲 Symbols;💲 Símbolos
+cur_menu;Національні (класичні) валюти;National (classic) currencies;Национальные (классические) валюты;Waluty narodowe (klasyczne);Нацыянальныя (класічныя) валюты;Nationale (traditionelle) Währungen;!!!National (classic) currencies;"Moedas nacionais (clássicas) "
+crypto_menu;Криптовалюти;Cryptocurrencies;Криптовалюты;Kryptowaluty;Крыптавалюты;Kryptowährungen;!!!Cryptocurrencies;Criptomoedas

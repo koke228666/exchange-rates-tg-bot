@@ -33,7 +33,7 @@
             "code": "pt-br",
             "botCode": "pt",
             "interface": "🇧🇷 Português brasileiro",
-            "active": false
+            "active": true
         },
         {
             "lang": "Russian",

@@ -1,0 +1,9 @@
+Este bot reconhece valores monetários no texto das mensagens e automaticamente responde com uma conversão para outras moedas.
+
+Tente escrever: "5 euros" ou "two hundred and forty four dollars".
+
+Se você quiser saber mais sobre os autores, versão, código fonte e/ou licenças, use o comando /about.
+
+Se você quiser mudar quais moedas irão aparecer na resposta ou quem poderá deletar as mensagens, use o comando /settings.
+
+Se você perceber qualquer erro de reconhecimento, identificar problemas ou quiser dar uma sugestão para aprimoramento, por favor fale conosco em: @ertb_support_bot
