@@ -562,8 +562,6 @@ async def MainVoid(message: types.Message):
     Print("After ConvertWordsToNumber(): " + str(TextArray), "L")
 
     # Searching Currencies
-    NumArray = SearchValuesAndCurrencies(TextArray)
-    NumArray = RemoveIgnored(NumArray, messageData["chatID"])
     try:
         NumArray = SearchValuesAndCurrencies(TextArray)
         NumArray = RemoveIgnored(NumArray, messageData["chatID"])
