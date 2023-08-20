@@ -77,8 +77,8 @@ Bot answer:
     <ul>
     <li><b>Belarusian</b> – 59 and gold and silver (in ounces)</li>
     <li><b>English</b> – 47 and gold and silver (in ounces)</li>
-    <li><b>German</b> (coming soon)</li>
-    <li><b>Russian</b> <i>(no longer support)</i> – 24 and gold and silver (in ounces)</li>
+    <li><b>German</b> – 161 and gold and silver (in ounces)</li>
+    <li><b>Russian</b> <i>(no longer support)</i> – 25 and gold and silver (in ounces)</li>
     <li><b>Ukrainian</b> – 50 and gold and silver (in ounces)</li>
     </ul>
     </td>
