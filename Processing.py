@@ -36,13 +36,14 @@ def MessagePreparation(MesTxt: str) -> str:
             break
 
     pattern = r"\b(?:https?:\/\/|www\.)\S+\b|\b\S+\.com\S*\b"
-    MesTxt = re.sub(pattern, "", MesTxt) # Removing links       
+    MesTxt = re.sub(pattern, "", MesTxt) # Removing links
 
     while MesTxt.find("  ") != -1: # Removing double spaces
         MesTxt = MesTxt.replace("  ", " ")
 
     while MesTxt.find("'") != -1: # Removing apostrophes
         MesTxt = MesTxt.replace("'", "")
+
 
     while MesTxt.find("\xa0") != -1: # Removing non-breaking spaces
         MesTxt = MesTxt.replace("\xa0", " ")
