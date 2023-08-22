@@ -256,7 +256,7 @@ All the arguments for run:
     <td><code>/stats</code></td>
     <td>Statistics on bot usage by users per day, week, and month.</td>
     <td><code>/amount</code></td>
-    <td><p>Bot activity:<br>In the last 24 hours: 100<br>In the last week: 700<br>In the last month: 3000</p></td>
+    <td><p>Bot activity:<br><br>Today: 6095<br>In the last week: 101781<br>In this month: 299825<br><br>Unique users:<br><br>Today: 1985<br>In the last week: 12802<br>In the last month: 23628</p></td>
   </tr>
   <tr>
     <td><code>/plotstats</code></td>

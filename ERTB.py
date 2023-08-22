@@ -45,7 +45,7 @@ def GetDataFromMessage(message: types.Message):
 
 def IsFromBot(message: types.Message):
     try:
-        if message.forward_from.username == botUsername:
+        if message.forward_from.username == botUsername or message.from_user.id == 777000:
             return True
     except:
         return False
@@ -276,58 +276,9 @@ async def StatsVoid(message: types.Message):
         return
     if DBH.IsAdmin(messageData["fromUserId"]):
         allRecords = DBH.GetProcessedCurrencies()
-        botUsageLastDayByMinute = {}
-        botUsageLastWeekByMinute = {}
-        botUsageLastMonthByDay = {}
-        for i in allRecords:
-            #date = yyyy-MM-dd hh:mm:ss
-            date = i["date"]
-            date = date.split(" ")
-            date = date[0]
-            if date == datetime.datetime.now().strftime("%Y-%m-%d"):
-                date = i["date"]
-                date = date.split(" ")
-                date = date[1]
-                date = date.split(":")
-                date = date[0] + ":" + date[1]
-                if date in botUsageLastDayByMinute:
-                    botUsageLastDayByMinute[date] += 1
-                else:
-                    botUsageLastDayByMinute[date] = 1
-            if date >= (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"):
-                date = i["date"]
-                date = date.split(" ")
-                date = date[1]
-                date = date.split(":")
-                date = date[0] + ":" + date[1]
-                if date in botUsageLastWeekByMinute:
-                    botUsageLastWeekByMinute[date] += 1
-                else:
-                    botUsageLastWeekByMinute[date] = 1
-            if date >= (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"):
-                date = i["date"]
-                date = date.split(" ")
-                date = date[0]
-                if date in botUsageLastMonthByDay:
-                    botUsageLastMonthByDay[date] += 1
-                else:
-                    botUsageLastMonthByDay[date] = 1
-        usageByDay = sum(list(botUsageLastDayByMinute.values()))
-        usageByWeek = sum(list(botUsageLastWeekByMinute.values()))
-        usageByMonth = sum(list(botUsageLastMonthByDay.values()))
-        answerMes = "Bot activity:\n\nIn the last 24 hours: " + str(usageByDay) + "\nIn the last week: " + str(usageByWeek) + "\nIn the last month: " + str(usageByMonth)
-        await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
-        
-
-@dp.message_handler(commands=['plotstats'])
-async def PlotStatsVoid(message: types.Message):
-    messageData = GetDataFromMessage(message)
-
-    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
-        return
-    if DBH.IsAdmin(messageData["fromUserId"]):
-        allRecords = DBH.GetProcessedCurrencies()
         botUsageAllTimeByDay = {}
+        botUniqueUsersAllTimeByDay = {}
+        botUniqueUsersAllTimeByMonth = {}
         botUsageLastDayByMinute = {}
         botUsageLastWeekByHour = {}
         botUsageLastMonthByDay = {}
@@ -338,6 +289,8 @@ async def PlotStatsVoid(message: types.Message):
             if not i["deleted"] or i["deleted"] and (datetime.datetime.strptime(i["deletedDate"], "%Y-%m-%d %H:%M:%S") - datetime.datetime.strptime(i["date"], "%Y-%m-%d %H:%M:%S")).seconds >= 3:
                 if i["userID"] not in uniqueIDs:
                     uniqueIDs[i["userID"]] = i["lang"] if i["lang"] != None else "unknown"
+                elif i["userID"] in uniqueIDs and uniqueIDs[i["userID"]] != i["lang"] and i["lang"] != None:
+                    uniqueIDs[i["userID"]] = i["lang"]
                 if i["lang"] == None:
                     i["lang"] = "unknown"
                 if i["lang"] in langActivity:
@@ -351,6 +304,111 @@ async def PlotStatsVoid(message: types.Message):
                     botUsageAllTimeByDay[date] += 1
                 else:
                     botUsageAllTimeByDay[date] = 1
+                if date not in botUniqueUsersAllTimeByDay:
+                    botUniqueUsersAllTimeByDay[date] = []
+                if i["userID"] not in botUniqueUsersAllTimeByDay[date]:
+                    botUniqueUsersAllTimeByDay[date].append(i["userID"])
+                date = date.split("-")
+                date = date[0] + "-" + date[1]
+                if date not in botUniqueUsersAllTimeByMonth:
+                    botUniqueUsersAllTimeByMonth[date] = []
+                if i["userID"] not in botUniqueUsersAllTimeByMonth[date]:
+                    botUniqueUsersAllTimeByMonth[date].append(i["userID"])
+                date = i["date"]
+                date = date.split(" ")
+                date = date[0]
+                if date == datetime.datetime.now().strftime("%Y-%m-%d"):
+                    date = i["date"]
+                    lastIndex = date.rfind(":")
+                    date = date[:lastIndex]
+                    if date in botUsageLastDayByMinute:
+                        botUsageLastDayByMinute[date] += 1
+                    else:
+                        botUsageLastDayByMinute[date] = 1
+                if date >= (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"):
+                    date = i["date"]
+                    date = date.split(":")
+                    date = date[0] + ":00"
+                    if date in botUsageLastWeekByHour:
+                        botUsageLastWeekByHour[date] += 1
+                    else:
+                        botUsageLastWeekByHour[date] = 1
+                if date >= (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"):
+                    date = i["date"]
+                    date = date.split(" ")
+                    date = date[0]
+                    if date in botUsageLastMonthByDay:
+                        botUsageLastMonthByDay[date] += 1
+                    else:
+                        botUsageLastMonthByDay[date] = 1
+
+        usageToday = sum(list(botUsageLastDayByMinute.values()))
+        usageLastWeek = sum(list(botUsageLastWeekByHour.values()))
+        usageLastMonth = sum(list(botUsageLastMonthByDay.values()))
+        uniqueUsersToday = botUniqueUsersAllTimeByDay[datetime.datetime.now().strftime("%Y-%m-%d")]
+        uniqueUsersLastWeek = []
+        for i in botUniqueUsersAllTimeByDay:
+            if i >= (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"):
+                uniqueUsersLastWeek += botUniqueUsersAllTimeByDay[i]
+        uniqueUsersLastWeek = len(list(set(uniqueUsersLastWeek)))
+        uniqueUsersThisMonth = []
+        for i in botUniqueUsersAllTimeByMonth:
+            if i >= (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m"):
+                uniqueUsersThisMonth += botUniqueUsersAllTimeByMonth[i]
+        uniqueUsersThisMonth = len(list(set(uniqueUsersThisMonth)))
+        answerMes = "Bot activity:\n\nToday: " + str(usageToday) + "\nIn the last week: " + str(usageLastWeek) + "\nIn this month: " + str(usageLastMonth) + "\n\nUnique users:\n\nToday: " + str(len(uniqueUsersToday)) + "\nIn the last week: " + str(uniqueUsersLastWeek) + "\nIn the last month: " + str(uniqueUsersThisMonth)
+        await message.reply(answerMes, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
+        
+
+@dp.message_handler(commands=['plotstats'])
+async def PlotStatsVoid(message: types.Message):
+    messageData = GetDataFromMessage(message)
+
+    if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
+        return
+    if DBH.IsAdmin(messageData["fromUserId"]):
+        allRecords = DBH.GetProcessedCurrencies()
+        botUsageAllTimeByDay = {}
+        botUniqueUsersAllTimeByDay = {}
+        botUniqueUsersAllTimeByMonth = {}
+        botUsageLastDayByMinute = {}
+        botUsageLastWeekByHour = {}
+        botUsageLastMonthByDay = {}
+        uniqueIDs = {}
+        langActivity = {}
+        for i in allRecords:
+            #date = yyyy-MM-dd hh:mm:ss
+            if not i["deleted"] or i["deleted"] and (datetime.datetime.strptime(i["deletedDate"], "%Y-%m-%d %H:%M:%S") - datetime.datetime.strptime(i["date"], "%Y-%m-%d %H:%M:%S")).seconds >= 3:
+                if i["userID"] not in uniqueIDs:
+                    uniqueIDs[i["userID"]] = i["lang"] if i["lang"] != None else "unknown"
+                elif i["userID"] in uniqueIDs and uniqueIDs[i["userID"]] != i["lang"] and i["lang"] != None:
+                    uniqueIDs[i["userID"]] = i["lang"]
+                if i["lang"] == None:
+                    i["lang"] = "unknown"
+                if i["lang"] in langActivity:
+                    langActivity[i["lang"]] += 1
+                else:
+                    langActivity[i["lang"]] = 1
+                date = i["date"]
+                date = date.split(" ")
+                date = date[0]
+                if date in botUsageAllTimeByDay:
+                    botUsageAllTimeByDay[date] += 1
+                else:
+                    botUsageAllTimeByDay[date] = 1
+                if date not in botUniqueUsersAllTimeByDay:
+                    botUniqueUsersAllTimeByDay[date] = []
+                if i["userID"] not in botUniqueUsersAllTimeByDay[date]:
+                    botUniqueUsersAllTimeByDay[date].append(i["userID"])
+                date = date.split("-")
+                date = date[0] + "-" + date[1]
+                if date not in botUniqueUsersAllTimeByMonth:
+                    botUniqueUsersAllTimeByMonth[date] = []
+                if i["userID"] not in botUniqueUsersAllTimeByMonth[date]:
+                    botUniqueUsersAllTimeByMonth[date].append(i["userID"])
+                date = i["date"]
+                date = date.split(" ")
+                date = date[0]
                 if date == datetime.datetime.now().strftime("%Y-%m-%d"):
                     date = i["date"]
                     lastIndex = date.rfind(":")
@@ -387,19 +445,25 @@ async def PlotStatsVoid(message: types.Message):
 
         for i in botUsageLastWeekByHour:
             botUsageLastWeekByHour[i] = botUsageLastWeekByHour[i] / 60
-        chartsNames = ["botUsageAllTimeByDay", "botUsageLastDayByMinute", "botUsageLastWeekByHour", "botUsageLastMonthByDay", "langDistributionUsers", "langDistributionPercentage", "langActivityCalls", "langActivityPercentage"]
+        chartsNames = ["botUsageAllTimeByDay", "botUniqueUsersAllTimeByDay", "botUniqueUsersAllTimeByMonth", "botUsageLastDayByMinute", "botUsageLastWeekByHour", "botUsageLastMonthByDay", "langDistributionUsers", "langDistributionPercentage", "langActivityCalls", "langActivityPercentage"]
         BuildChart(list(botUsageAllTimeByDay.values()), list(botUsageAllTimeByDay.keys()), "Bot usage for all time by day", "Calls per day", chartsNames[0])
-        BuildChart(list(botUsageLastDayByMinute.values()), list(botUsageLastDayByMinute.keys()), "Bot usage today by minute", "Calls per minute", chartsNames[1])
-        BuildChart(list(botUsageLastWeekByHour.values()), list(botUsageLastWeekByHour.keys()), "Bot usage last week by hour", "Calls per minute", chartsNames[2])
-        BuildChart(list(botUsageLastMonthByDay.values()), list(botUsageLastMonthByDay.keys()), "Bot usage last month by day", "Calls per day", chartsNames[3])
-        BuildBarChart(list(langDistribution.keys()), list(langDistribution.values()), "Language distribution", "Users", chartsNames[4])
+        for day, users in botUniqueUsersAllTimeByDay.items():
+            botUniqueUsersAllTimeByDay[day] = len(users)
+        BuildChart(list(botUniqueUsersAllTimeByDay.values()), list(botUniqueUsersAllTimeByDay.keys()), "Bot unique users for all time by day", "Users per day", chartsNames[1])
+        for month, users in botUniqueUsersAllTimeByMonth.items():
+            botUniqueUsersAllTimeByMonth[month] = len(users)
+        BuildChart(list(botUniqueUsersAllTimeByMonth.values()), list(botUniqueUsersAllTimeByMonth.keys()), "Bot unique users for all time by month", "Users per month", chartsNames[2])
+        BuildChart(list(botUsageLastDayByMinute.values()), list(botUsageLastDayByMinute.keys()), "Bot usage today by minute", "Calls per minute", chartsNames[3])
+        BuildChart(list(botUsageLastWeekByHour.values()), list(botUsageLastWeekByHour.keys()), "Bot usage last week by hour", "Calls per minute", chartsNames[4])
+        BuildChart(list(botUsageLastMonthByDay.values()), list(botUsageLastMonthByDay.keys()), "Bot usage last month by day", "Calls per day", chartsNames[5])
+        BuildBarChart(list(langDistribution.keys()), list(langDistribution.values()), "Language distribution", "Users", chartsNames[6])
         for lang, count in langDistribution.items():
             langDistribution[lang] = count / totalUsers * 100
-        BuildBarChart(list(langDistribution.keys()), list(langDistribution.values()), "Language distribution", "Percentage", chartsNames[5])
-        BuildBarChart(list(langActivity.keys()), list(langActivity.values()), "Language activity", "Calls", chartsNames[6])
+        BuildBarChart(list(langDistribution.keys()), list(langDistribution.values()), "Language distribution", "Percentage", chartsNames[7])
+        BuildBarChart(list(langActivity.keys()), list(langActivity.values()), "Language activity", "Calls", chartsNames[8])
         for lang, count in langActivity.items():
             langActivity[lang] = count / len(allRecords) * 100
-        BuildBarChart(list(langActivity.keys()), list(langActivity.values()), "Language activity", "Percentage", chartsNames[7])
+        BuildBarChart(list(langActivity.keys()), list(langActivity.values()), "Language activity", "Percentage", chartsNames[9])
         media = types.MediaGroup()
         for i in chartsNames:
             media.attach_document(types.InputFile(i + ".png"))
@@ -594,7 +658,6 @@ async def MainVoid(message: types.Message):
               " | Chat type: "+str(message.chat.type), "E")
     
     
-
 # Callbacks
 @dp.callback_query_handler(lambda call: True)
 async def CallbackAnswer(call: types.CallbackQuery):
@@ -822,8 +885,14 @@ def BuildChart(arr: list[int], dates: list[str], label: str, labely: str, chartN
         dates = [datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M") for date_str in dates]
         plt.plot(dates, arr, label=label)
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M"))
-        date_interval = 12
+        date_interval = 24
         plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=date_interval))
+    elif label.find("by month") != -1:
+        dates = [datetime.datetime.strptime(date_str, "%Y-%m") for date_str in dates]
+        plt.plot(dates, arr, label=label)
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+        date_interval = 1
+        plt.gca().xaxis.set_major_locator(mdates.MonthLocator(interval=date_interval))
     plt.ylabel(labely)
     plt.grid()
     plt.legend()        

@@ -48,9 +48,6 @@ def MessagePreparation(MesTxt: str) -> str:
     while MesTxt.find("\xa0") != -1: # Removing non-breaking spaces
         MesTxt = MesTxt.replace("\xa0", " ")
 
-    for a in MesTxt:
-        print(unicodedata.category(a))
-
     MesTxt = "".join(c for c in MesTxt if unicodedata.category(c) not in ["No"])
 
     pattern = r"(?<=\d),(?=\d{3})"
