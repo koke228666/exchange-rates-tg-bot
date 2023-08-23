@@ -12,7 +12,7 @@ ERTB - exchange rates telegram bot.
 
 Оригинальный код открыт и распространяется под лицензией MIT. Текст лицензии: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/LICENSE.
 
-Актуальная версия: 3.0 Beta 2
+Актуальная версия: 3.0
 Дата последнего обновления: июль 2023 года
 
 Обратная связь: @ertb_support_bot

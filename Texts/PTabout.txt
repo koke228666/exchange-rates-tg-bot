@@ -12,7 +12,7 @@ No momento, todas as moedas clássicas do mundo são suportadas, além de alguma
 
 O código fonte original é aberto e distribuído sob a Licença MIT. Texto da licença: https://github.com/Lanasys/exchange-rates-tg-bot/blob/main/LICENSE.
 
-Versão atual: 3.0 Beta 2
+Versão atual: 3.0
 Data da última atualização: Agosto de 2023
 
 Feedback: @ertb_support_bot
