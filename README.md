@@ -1,8 +1,8 @@
 # exchange-rates-tg-bot
 
-<img alt="GitHub" src="https://img.shields.io/github/license/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
-<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/VirtualSoftKey/exchange-rates-tg-bot/3.0.0r1/total?style=flat-square"><br>
-<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/VirtualSoftKey/exchange-rates-tg-bot/main.yml?style=flat-square"> <img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
+<img alt="GitHub" src="https://img.shields.io/github/license/Lanasys/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/Lanasys/exchange-rates-tg-bot?style=flat-square"><br>
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/Lanasys/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/Lanasys/exchange-rates-tg-bot/3.0.0r1/total?style=flat-square"><br>
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/Lanasys/exchange-rates-tg-bot/main.yml?style=flat-square"> <img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
 <hr>
 <h3>Project information and manuals:</h3>
 <ul>
@@ -27,8 +27,8 @@
 <hr>
 <h3>Releases:</h3>
 <ul>
-<li>Last release of ERTB – ver. 3.0.0. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0r1">here</a>.</li>
-<li>Previous release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.</li>
+<li>Last release of ERTB – ver. 3.0.0. You can download it <a href="https://github.com/Lanasys/exchange-rates-tg-bot/releases/tag/3.0.0r1">here</a>.</li>
+<li>Previous release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/Lanasys/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.</li>
 </ul>
 <hr>
 <h3>Acknowledgments:</h3>
