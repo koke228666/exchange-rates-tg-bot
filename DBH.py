@@ -1134,6 +1134,133 @@ def GetProcessedCurrencies():
 
     return records_list
 
+def GetProcessedCurrenciesForStats():
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+
+    cursor.execute("SELECT * FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3))")
+    rows = cursor.fetchall()
+
+    records_list = []
+
+    for row in rows:
+        record_dict = {
+            'date': row[0],
+            'chatID': row[1],
+            'userID': row[2],
+            'lang': row[3],
+            'convertedFrom': row[4],
+            'convertedTo': row[5],
+            'deleted': row[6],
+            'deletedDate': row[7],
+            'messageID': row[8]
+        }
+        records_list.append(record_dict)
+
+    return records_list
+
+def GetProcessedCurrenciesCountForStats() -> int:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT COUNT(*) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3))")
+    res = cursor.fetchone()
+    return res[0]
+
+def GetUniqueUsersCount() -> int:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT COUNT(DISTINCT userID) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3))")
+    res = cursor.fetchone()
+    return res[0]
+
+def GetLangActivity() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT lang, COUNT(*) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) GROUP BY lang")
+    rows = cursor.fetchall()
+    res = {row[0]: row[1] for row in rows}
+    res["unknown"] = res.pop(None)
+    res = dict(sorted(res.items(), key=lambda item: item[1], reverse=True))
+    return res
+
+def GetLangDistribution() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT lang, COUNT(DISTINCT userID) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) GROUP BY lang")
+    rows = cursor.fetchall()
+    res = {row[0]: row[1] for row in rows}
+    res["unknown"] = res.pop(None)
+    res = dict(sorted(res.items(), key=lambda item: item[1], reverse=True))
+    return res
+
+def GetBotUsageLastDayByMinute() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT strftime('%Y-%m-%d %H:%M', date), COUNT(*) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) AND date(date) = date('now') GROUP BY strftime('%H:%M', date)")
+    rows = cursor.fetchall()
+    res = {row[0]: row[1] for row in rows}
+    res = dict(sorted(res.items(), key=lambda item: item[0]))
+    return res
+
+def GetBotUsageAllTimeByDay() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT strftime('%Y-%m-%d', date), COUNT(*) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) GROUP BY strftime('%Y-%m-%d', date)")
+    rows = cursor.fetchall()
+    res = {row[0]: row[1] for row in rows}
+    res = dict(sorted(res.items(), key=lambda item: item[0]))
+    return res
+
+def GetBotUniqueUsersAllTimeByDay() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT strftime('%Y-%m-%d', date), COUNT(DISTINCT userID) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) GROUP BY strftime('%Y-%m-%d', date)")
+    rows = cursor.fetchall()
+    res = {row[0]: row[1] for row in rows}
+    res = dict(sorted(res.items(), key=lambda item: item[0]))
+    return res
+
+def GetBotUniqueUsersAllTimeByMonth() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT strftime('%Y-%m', date), COUNT(DISTINCT userID) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) GROUP BY strftime('%Y-%m', date)")
+    rows = cursor.fetchall()
+    res = {row[0]: row[1] for row in rows}
+    res = dict(sorted(res.items(), key=lambda item: item[0]))
+    return res
+
+def GetBotUsageLastWeekByHour() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT strftime('%Y-%m-%d %H:00', date), COUNT(*) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) AND date(date) > datetime('now', '-7 days') GROUP BY strftime('%Y-%m-%d %H', date)")
+    rows = cursor.fetchall()
+    res = {row[0]: row[1] for row in rows}
+    res = dict(sorted(res.items(), key=lambda item: item[0]))
+    return res
+
+def GetBotUsageLastMonthByDay() -> dict:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT strftime('%Y-%m-%d', date), COUNT(*) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) AND date(date) > datetime('now', '-1 month') GROUP BY strftime('%Y-%m-%d', date)")
+    rows = cursor.fetchall()
+    res = {row[0]: row[1] for row in rows}
+    res = dict(sorted(res.items(), key=lambda item: item[0]))
+    return res
+
+def GetBotUniqueUsersLastWeek() -> int:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT COUNT(DISTINCT userID) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) AND date(date) > datetime('now', '-7 days')")
+    res = cursor.fetchone()
+    return res[0]
+
+def GetBotUniqueUsersLastMonth() -> int:
+    con = sql.connect('DataBases/StatsData.sqlite')
+    cursor = con.cursor()
+    cursor.execute("SELECT COUNT(DISTINCT userID) FROM NewProcessedCurrencies WHERE (NOT deleted OR (deleted AND (strftime('%s', deletedDate) - strftime('%s', date)) >= 3)) AND date(date) > datetime('now', '-1 month')")
+    res = cursor.fetchone()
+    return res[0]
+
 def GetDictOfFlags() -> dict:
     con = sql.connect('DataBases/DataForBot.sqlite')
     cursor = con.cursor()
