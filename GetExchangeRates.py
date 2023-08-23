@@ -9,7 +9,6 @@ import json
 #Own libraries
 from NewPrint import Print
 
-#cryptoList = ["ADA", "BCH", "BNB", "BTC", "DASH", "DOGE", "ETC", "ETH", "LTC", "RVN", "TRX", "XLM", "XMR", "XRP"]
 exchangeRates = {}
 cryptoRates = []
 

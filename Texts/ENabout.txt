@@ -1,16 +1,16 @@
 ERTB - exchange rates telegram bot.
-©VirtualSoftKey
+©Lanasys
 
 The bot is designed to recognize pairs of numbers and currencies in the text, with automatic converting to other currencies at current rates.
 
-More information about the bot: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/README.md
+More information about the bot: https://github.com/Lanasys/exchange-rates-tg-bot/blob/main/README.md
 
 The rates of classic currencies are updated once a day. API: http://data.fixer.io/api/.
 Cryptocurrency rates are updated several times a minute. API: https://api.binance.com/api/v3/
 
 At the moment, all classic world currencies are supported, as well as more than a dozen cryptocurrencies.
 
-The original code is open source and distributed under the MIT license. License text: https://github.com/VirtualSoftKey/exchange-rates-tg-bot/blob/main/LICENSE.
+The original code is open source and distributed under the MIT license. License text: https://github.com/Lanasys/exchange-rates-tg-bot/blob/main/LICENSE.
 
 Current version: 3.0 Beta 2
 Date of last update: August 2023

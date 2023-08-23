@@ -36,7 +36,7 @@ def MessagePreparation(MesTxt: str) -> str:
             break
 
     pattern = r"\b(?:https?:\/\/|www\.)\S+\b|\b\S+\.com\S*\b"
-    MesTxt = re.sub(pattern, "", MesTxt) # Removing links       
+    MesTxt = re.sub(pattern, "", MesTxt) # Removing links
 
     while MesTxt.find("  ") != -1: # Removing double spaces
         MesTxt = MesTxt.replace("  ", " ")
@@ -44,10 +44,11 @@ def MessagePreparation(MesTxt: str) -> str:
     while MesTxt.find("'") != -1: # Removing apostrophes
         MesTxt = MesTxt.replace("'", "")
 
+
     while MesTxt.find("\xa0") != -1: # Removing non-breaking spaces
         MesTxt = MesTxt.replace("\xa0", " ")
 
-    MesTxt = "".join(c for c in MesTxt if unicodedata.category(c) not in ["No", "Lo"])
+    MesTxt = "".join(c for c in MesTxt if unicodedata.category(c) not in ["No"])
 
     pattern = r"(?<=\d),(?=\d{3})"
     MesTxt = re.sub(pattern, "", MesTxt) # 1,000,000 to 1000000
@@ -329,29 +330,36 @@ def SearchValuesAndCurrencies(arr: list) -> list:
                     CryptoCodes.append(cryptoCode)
 
     answ_ar = [Values, CurCodes, CryptoValues, CryptoCodes]
+    if len(answ_ar[0]) == 0 and len(answ_ar[2]) == 0:
+        return answ_ar
     #remove duplicates
-    n = len(answ_ar[0])
-    i = 0
-    while i < n:
+    temp_arr = answ_ar.copy()
+    answ_ar = [[], [], [], []]
+    for i in range(len(temp_arr[0])):
+        if len(answ_ar[0]) == 0 and len(temp_arr[0]) != 0:
+            answ_ar[0].append(temp_arr[0][i])
+            answ_ar[1].append(temp_arr[1][i])
+        flag = False
         for j in range(len(answ_ar[0])):
-            if answ_ar[1][i] == answ_ar[1][j] and answ_ar[0][i] == answ_ar[0][j] and j != i:
-                answ_ar[0].pop(j)
-                answ_ar[1].pop(j)
-                j -= 1
-                n -= 1
+            if temp_arr[0][i] == answ_ar[0][j] and temp_arr[1][i] == answ_ar[1][j]:
+                flag = True
                 break
-        i += 1
-    n = len(answ_ar[2])
-    i = 0
-    while i < n:
+        if flag == False:
+            answ_ar[0].append(temp_arr[0][i])
+            answ_ar[1].append(temp_arr[1][i])
+    for i in range(len(temp_arr[2])):
+        if len(answ_ar[2]) == 0 and len(temp_arr[2]) != 0:
+            answ_ar[2].append(temp_arr[2][i])
+            answ_ar[3].append(temp_arr[3][i])
+        flag = False
         for j in range(len(answ_ar[2])):
-            if answ_ar[3][i] == answ_ar[3][j] and answ_ar[2][i] == answ_ar[2][j] and j != i:
-                answ_ar[2].pop(j)
-                answ_ar[3].pop(j)
-                j -= 1
-                n -= 1
+            if temp_arr[2][i] == answ_ar[2][j] and temp_arr[3][i] == answ_ar[3][j]:
+                flag = True
                 break
-        i += 1
+        if flag == False:
+            answ_ar[2].append(temp_arr[2][i])
+            answ_ar[3].append(temp_arr[3][i])
+
     #remove 0 values
     n = len(answ_ar[0])
     i = 0

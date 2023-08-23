@@ -4,3 +4,4 @@ Token.py
 DataBases/*.sqlite
 Backups/*.zip
 error_log.txt
+*.png

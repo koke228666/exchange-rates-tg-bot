@@ -61,8 +61,8 @@ ERTB – exchange rates telegram bot.<br>
     <td>
     <ul>
     <li><b>Англійська</b></li>
-    <li><b>Білоруська (скоро)</b></li>
-    <li><b>Німецька</b> (скоро)</li>
+    <li><b>Білоруська</b></li>
+    <li><b>Німецька</b></li>
     <li><b>російська</b></li>
     <li><b>Українська</b></li>
     </ul>
@@ -77,9 +77,9 @@ ERTB – exchange rates telegram bot.<br>
     <td>
     <ul>
     <li><b>Англійська</b> – 47, а також золото та срібло (в унціях)</li>
-    <li><b>Білоруська</b> – ???</li>
-    <li><b>Німецька</b> (скоро)</li>
-    <li><b>російська</b> <i>(підтримку закінчено)</i> – 24, а також золото та срібло (в унціях)</li>
+    <li><b>Білоруська</b> – 59, а також золото та срібло (в унціях)</li>
+    <li><b>Німецька</b> – 161, а також золото та срібло (в унціях)</li>
+    <li><b>російська</b> <i>(підтримку закінчено)</i> – 25, а також золото та срібло (в унціях)</li>
     <li><b>Українська</b> – 50, а також золото та срібло (в унціях)</li>
     </ul>
     </td>
@@ -257,7 +257,7 @@ ERTB – exchange rates telegram bot.<br>
     <td><code>/stats</code></td>
     <td>Статистика по використанню бота користувачами за день, тиждень та місяць.</td>
     <td><code>/amount</code></td>
-    <td><p>Bot activity:<br>In the last 24 hours: 100<br>In the last week: 700<br>In the last month: 3000</p></td>
+    <td><p>Bot activity:<br><br>Today: 6095<br>In the last week: 101781<br>In this month: 299825<br><br>Unique users:<br><br>Today: 1985<br>In the last week: 12802<br>In the last month: 23628</p></td>
   </tr>
   <tr>
     <td><code>/plotstats</code></td>

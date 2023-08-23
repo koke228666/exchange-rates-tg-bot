@@ -1,6 +1,6 @@
 Dieser Bot erkennt Zahlen und Währungen im Text und sendet dann automatisch eine Nachricht, in der der Betrag in andere Währungen umgerechnet wird.
 
-Versuchen Sie zu schreiben: "5 Euro" oder "two hundred and forty four dollars".
+Versuchen Sie zu schreiben: "5 USD" oder "einhundertdreiunddreißig euro".
 
 Wenn Sie etwas über die Autoren, die Version, den Quellcode und/oder die Lizenz erfahren möchten, verwenden Sie den Befehl /about.
 

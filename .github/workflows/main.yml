@@ -32,4 +32,5 @@ jobs:
           script: |
             screen -X -S ERTB quit
             cd bot/exchange-rates-tg-bot-master/
+            pip3 install -r requirementsLinux.txt
             screen -S ERTB -d -m python3 -i ERTB.py

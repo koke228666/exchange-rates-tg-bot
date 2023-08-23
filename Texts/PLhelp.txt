@@ -1,6 +1,6 @@
 Ten bot rozpoznaje liczby i waluty w tekście, a następnie automatycznie wysyła wiadomość, w której kwota jest przeliczana na inne waluty.
 
-Spróbuj napisać: „5 złotych” lub „dwieście czterdzieści cztery dolary”.
+Spróbuj napisać: „5 złotych” lub „two hundred and forty four dollars”.
 
 Jeśli chcesz wiedzieć o autorach, wersji, oryginalnym kodzie i/lub licencji, użyj polecenia /about.
 

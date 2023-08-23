@@ -29,3 +29,8 @@
 <li>Pre-release of ERTB – ver. 3.0.0 (beta 2). You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/3.0.0b2">here</a>.</li>
 <li>Last stable release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/VirtualSoftKey/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.</li>
 </ul>
+<hr>
+<h3>Acknowledgments:</h3>
+<ul>
+<li><a href="https://t.me/rotlir">rotlir</a> for translating the bot into Belarusian and adding currency and number recognition in this language.</li>
+</ul>
