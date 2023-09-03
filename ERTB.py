@@ -470,7 +470,7 @@ async def MainVoid(message: types.Message):
 
     # Checking if a user is on the blacklist
     if IsUserInBlackList(messageData["fromUserId"], messageData["chatID"]):
-        Print("User (" + str(messageData["fromUserId"]) + ") is in the blacklist. Message: " + message.text, "L")
+        Print("User (" + str(messageData["fromUserId"]) + ") is in the blacklist. Message: " + str(message.text), "L")
         return
 
     # Get message text
