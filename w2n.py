@@ -90,9 +90,12 @@ def ConvertWordsToNumber(words):
             if german_indexes[i] == 0 and german_indexes[i - 1] == 1 or i == len(german_indexes) - 1 and german_indexes[i] == 1:
                 endIndex = i
                 break
-        num = zahlwort2num.convert(" ".join(words[startIndex:endIndex]))
-        # replace words with number
-        words[startIndex:endIndex] = [str(num)]
+        try:
+            num = zahlwort2num.convert(" ".join(words[startIndex:endIndex]))
+            # replace words with number
+            words[startIndex:endIndex] = [str(num)]
+        except:
+            pass
         # replace 1 with 0
         german_indexes[startIndex:endIndex] = [0]
 
