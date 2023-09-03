@@ -534,7 +534,7 @@ async def MainVoid(message: types.Message):
 
     result = AnswerText(NumArray, messageData["chatID"], messageData["chatType"])
     endtime = time.time()
-    Print("Time: " + str(endtime - starttime), "S")
+    Print("Time: " + str(endtime - starttime), "L")
     try:
         reply_message = await message.reply(result, parse_mode="HTML", disable_web_page_preview=True, reply_markup=CustomMarkup.DeleteMarkup(messageData['chatID'], messageData['chatType']))
         DBH.UpdateChatUsage(messageData["chatID"])
