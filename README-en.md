@@ -1,6 +1,12 @@
 # exchange-rates-tg-bot
+## IMPORTANT INFORMATION
+
+This repository is <b>NO LONGER SUPPORTED</b>. Further updates of the bot are made with closed source code.<br><br>
+The ORIGINAL bot from the developers is here: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a>. All other bots are not official forks, we do not guarantee the security of your data if you use other bots.
+<hr>
+
 ERTB – exchange rates telegram bot.<br>
-The bot is created to recognize pairs of numbers and currencies in the text, with automatic further conversion to other currencies at current rates. An example of a working bot: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a><br>
+The bot is created to recognize pairs of numbers and currencies in the text, with automatic further conversion to other currencies at current rates.<br>
 <hr>
 <h3>Navigation</h3>
 <ol>
@@ -20,21 +26,21 @@ The bot is created to recognize pairs of numbers and currencies in the text, wit
 Your message:<br>
 <pre>5 dollars</pre>
 Bot answer:
-<pre>🇺🇸5.0 USD<br>
-🇪🇺4.13 EUR
-🇺🇦139.83 UAH</pre>
+<pre>5.0 USD<br>
+4.13 EUR
+139.83 UAH</pre>
 Another message:<br>
 <pre>I bought the stock for twenty five dollars, and now it's 43 dollars.</pre>
 Bot answer:
-<pre>🇺🇸25.00 USD<br>
-🇪🇺22.90 EUR
-🇬🇧19.67 GBP<br>
+<pre>25.00 USD<br>
+22.90 EUR
+19.67 GBP<br>
 0.000813843 BTC
 0.012757250 ETH<br>
 ======
-🇺🇸43.00 USD<br>
-🇪🇺39.39 EUR
-🇬🇧33.84 GBP<br>
+43.00 USD<br>
+39.39 EUR
+33.84 GBP<br>
 0.001399810 BTC
 0.021942470 ETH</pre><br>
 <hr id="features">
