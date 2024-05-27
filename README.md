@@ -1,8 +1,14 @@
 # exchange-rates-tg-bot
 
+## IMPORTANT INFORMATION
+
+This repository is <b>NO LONGER SUPPORTED</b>. Further updates of the bot are made with closed source code.<br><br>
+The ORIGINAL bot from the developers is here: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a>. All other bots are not official forks, we do not guarantee the security of your data if you use other bots.
+<hr>
+
 <img alt="GitHub" src="https://img.shields.io/github/license/Lanasys/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/Lanasys/exchange-rates-tg-bot?style=flat-square"><br>
 <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/Lanasys/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/Lanasys/exchange-rates-tg-bot/3.0.0r1/total?style=flat-square"><br>
-<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/Lanasys/exchange-rates-tg-bot/main.yml?style=flat-square"> <img alt="open issues" src="https://img.shields.io/github/issues-raw/VirtualSoftKey/exchange-rates-tg-bot?style=flat-square"><br>
+<img alt="open issues" src="https://img.shields.io/github/issues-raw/Lanasys/exchange-rates-tg-bot?style=flat-square"><br>
 <hr>
 <h3>Project information and manuals:</h3>
 <ul>
