@@ -2,7 +2,7 @@
 
 ## IMPORTANT INFORMATION
 
-This repository is <b>NO LONGER SUPPORTED</b>. Further updates of the bot are made with closed source code.<br><br>
+This repository is <b>NO LONGER SUPPORTED</b>. Further updates of the bot are made with closed source code. Stay tuned for updates on our website: <a href="https://lanasys.dev/ertb">lanasys.dev</a><br><br>
 The ORIGINAL bot from the developers is here: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a>. All other bots are not official forks, we do not guarantee the security of your data if you use other bots.
 <hr>
 
