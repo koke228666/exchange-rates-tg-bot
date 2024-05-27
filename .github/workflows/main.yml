@@ -1,36 +1,36 @@
-name: ERTB Deploy and Run
+#name: ERTB Deploy and Run
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [ main ]
-env:
-  DEPLOY_PATH: "/root/bot/exchange-rates-tg-bot-master"
-  BUILD_SCRIPT_OUTPUT: "."
+#on:
+#  workflow_dispatch:
+#  push:
+#    branches: [ main ]
+#env:
+#  DEPLOY_PATH: "/root/bot/exchange-rates-tg-bot-master"
+#  BUILD_SCRIPT_OUTPUT: "."
 
-jobs:
-  Deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Deploy
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.DEPLOY_SERVER_HOST }}
-          port: ${{ secrets.DEPLOY_SERVER_PORT }}
-          username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
-          password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
-          source: ${{ env.BUILD_SCRIPT_OUTPUT }}
-          target: ${{ env.DEPLOY_PATH }}
-      - name: Run
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEPLOY_SERVER_HOST }}
-          username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
-          password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
-          port: ${{ secrets.DEPLOY_SERVER_PORT }}
-          script: |
-            screen -X -S ERTB quit
-            cd bot/exchange-rates-tg-bot-master/
-            pip3 install -r requirementsLinux.txt
-            screen -S ERTB -d -m python3 -i ERTB.py
+#jobs:
+#  Deploy:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Deploy
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.DEPLOY_SERVER_HOST }}
+#          port: ${{ secrets.DEPLOY_SERVER_PORT }}
+#          username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
+#          password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
+#          source: ${{ env.BUILD_SCRIPT_OUTPUT }}
+#          target: ${{ env.DEPLOY_PATH }}
+#      - name: Run
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.DEPLOY_SERVER_HOST }}
+#          username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
+#          password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
+#          port: ${{ secrets.DEPLOY_SERVER_PORT }}
+#          script: |
+#            screen -X -S ERTB quit
+#            cd bot/exchange-rates-tg-bot-master/
+#            pip3 install -r requirementsLinux.txt
+#            screen -S ERTB -d -m python3 -i ERTB.py
