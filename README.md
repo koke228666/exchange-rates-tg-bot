@@ -7,7 +7,7 @@ The ORIGINAL bot from the developers is here: <a href="https://t.me/exchange_rat
 <hr>
 
 <img alt="GitHub" src="https://img.shields.io/github/license/koke228666/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/koke228666/exchange-rates-tg-bot?style=flat-square"><br>
-<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/koke228666/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/koke228666/exchange-rates-tg-bot/3.0.0r1/total?style=flat-square"><br>
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/koke228666/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/koke228666/exchange-rates-tg-bot/3.0.0/total?style=flat-square"><br>
 <img alt="open issues" src="https://img.shields.io/github/issues-raw/koke228666/exchange-rates-tg-bot?style=flat-square"><br>
 <hr>
 <h3>Project information and manuals:</h3>
