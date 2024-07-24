@@ -2,13 +2,13 @@
 
 ## IMPORTANT INFORMATION
 
-This repository is <b>NO LONGER SUPPORTED</b>. Further updates of the bot are made with closed source code. Stay tuned for updates on our website: <a href="https://lanasys.dev/ertb">lanasys.dev</a><br><br>
+This repository is <b>NO LONGER SUPPORTED</b>. Further updates of the bot are made with closed source code. Stay tuned for updates on our website: <a href="https://koke228666.dev/ertb">koke228666.dev</a><br><br>
 The ORIGINAL bot from the developers is here: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a>. All other bots are not official forks, we do not guarantee the security of your data if you use other bots.
 <hr>
 
-<img alt="GitHub" src="https://img.shields.io/github/license/Lanasys/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/Lanasys/exchange-rates-tg-bot?style=flat-square"><br>
-<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/Lanasys/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/Lanasys/exchange-rates-tg-bot/3.0.0r1/total?style=flat-square"><br>
-<img alt="open issues" src="https://img.shields.io/github/issues-raw/Lanasys/exchange-rates-tg-bot?style=flat-square"><br>
+<img alt="GitHub" src="https://img.shields.io/github/license/koke228666/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/koke228666/exchange-rates-tg-bot?style=flat-square"><br>
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/koke228666/exchange-rates-tg-bot/2.0.0/total?style=flat-square"> <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/downloads-pre/koke228666/exchange-rates-tg-bot/3.0.0r1/total?style=flat-square"><br>
+<img alt="open issues" src="https://img.shields.io/github/issues-raw/koke228666/exchange-rates-tg-bot?style=flat-square"><br>
 <hr>
 <h3>Project information and manuals:</h3>
 <ul>
@@ -33,8 +33,8 @@ The ORIGINAL bot from the developers is here: <a href="https://t.me/exchange_rat
 <hr>
 <h3>Releases:</h3>
 <ul>
-<li>Last release of ERTB – ver. 3.0.0. You can download it <a href="https://github.com/Lanasys/exchange-rates-tg-bot/releases/tag/3.0.0r1">here</a>.</li>
-<li>Previous release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/Lanasys/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.</li>
+<li>Last release of ERTB – ver. 3.0.0. You can download it <a href="https://github.com/koke228666/exchange-rates-tg-bot/releases/tag/3.0.0">here</a>.</li>
+<li>Previous release of ERTB – ver. 2.0.0. You can download it <a href="https://github.com/koke228666/exchange-rates-tg-bot/releases/tag/2.0.0">here</a>.</li>
 </ul>
 <hr>
 <h3>Acknowledgments:</h3>
