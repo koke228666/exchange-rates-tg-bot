@@ -4,7 +4,8 @@
 
 This repository is <b>NO LONGER SUPPORTED</b>. Further updates of the bot are made with closed source code. Stay tuned for updates on our website: <a href="https://lanasys.dev/ertb">lanasys.dev</a><br><br>
 The ORIGINAL bot from the developers is here: <a href="https://t.me/exchange_rates_vsk_bot">ERTB</a>. All other bots are not official forks, we do not guarantee the security of your data if you use other bots.
-This is a RESTORED repo of ERTB xddd
+
+This is a RESTORED repo of ERTB xddd, screenshot before remove you can check [HERE](https://github.com/koke228666/exchange-rates-tg-bot/blob/main/ERTBrepo.png)
 <hr>
 
 <img alt="GitHub" src="https://img.shields.io/github/license/koke228666/exchange-rates-tg-bot?style=flat-square"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/release/koke228666/exchange-rates-tg-bot?style=flat-square"><br>
